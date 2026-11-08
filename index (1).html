@@ -1,0 +1,1067 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+<title>Well Trajectory 3D</title>
+<script src="https://cdn.jsdelivr.net/npm/plotly.js-dist-min@2.32.0/plotly.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+:root{
+  --bg:#ffffff;--bg1:#f5f7fb;--bg2:#edf0f7;--bg3:#e2e6f0;
+  --bdr:#c5cde0;--bdr2:#a8b4cc;
+  --acc:#0055bb;--acc2:#bb3300;--acc3:#006622;
+  --warn:#b86000;--danger:#bb0000;
+  --txt:#111827;--txt2:#374151;--txt3:#6b7280;--txt4:#9ca3af;
+  --pw:340px;--hh:56px;
+  --font:'Consolas','Courier New',monospace;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html,body{width:100%;height:100%;overflow:hidden;background:#fff;color:var(--txt);font-family:var(--font);font-size:12px;}
+
+#hdr{position:fixed;top:0;left:0;right:0;height:var(--hh);background:#fff;
+  border-bottom:2px solid var(--bdr);display:flex;align-items:center;
+  padding:0 16px;gap:12px;z-index:100;box-shadow:0 1px 6px rgba(0,0,0,0.07);}
+#hdr h1{font-size:15px;font-weight:800;color:var(--acc);letter-spacing:.06em;white-space:nowrap;}
+.sub{font-size:9px;color:var(--txt3);letter-spacing:.13em;text-transform:uppercase;margin-top:1px;}
+.sp{flex:1;}
+.lbl{font-size:10px;color:var(--txt3);white-space:nowrap;font-weight:600;}
+select{background:#fff;color:var(--txt);border:1.5px solid var(--bdr);padding:5px 9px;
+  border-radius:5px;font-size:11px;cursor:pointer;outline:none;min-width:155px;font-family:var(--font);}
+select:focus{border-color:var(--acc);}
+.btn{padding:6px 13px;border-radius:5px;border:1.5px solid var(--bdr);background:#fff;
+  color:var(--txt2);font-size:11px;cursor:pointer;transition:all .15s;white-space:nowrap;
+  font-family:var(--font);font-weight:600;}
+.btn:hover{border-color:var(--acc);color:var(--acc);background:#eef4ff;}
+.btna{border-color:var(--acc);color:var(--acc);background:#eef4ff;}
+
+#app{position:fixed;top:var(--hh);left:0;right:0;bottom:22px;display:flex;}
+
+/* LEFT PANEL */
+#lp{width:var(--pw);flex-shrink:0;display:flex;flex-direction:column;
+  background:var(--bg1);border-right:1.5px solid var(--bdr);overflow:hidden;}
+.tabs{display:flex;border-bottom:1.5px solid var(--bdr);flex-shrink:0;background:#fff;}
+.tb{flex:1;padding:9px 4px;background:none;border:none;color:var(--txt3);font-size:10px;
+  cursor:pointer;letter-spacing:.07em;text-transform:uppercase;border-bottom:2.5px solid transparent;
+  transition:all .15s;font-family:var(--font);font-weight:600;}
+.tb.on{color:var(--acc);border-bottom-color:var(--acc);background:#eef4ff;}
+.tb:hover:not(.on){color:var(--txt);background:var(--bg2);}
+.tc{display:none;flex:1;overflow-y:auto;overflow-x:hidden;flex-direction:column;}
+.tc.on{display:flex;}
+
+/* STATS */
+.sg{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--bdr);}
+.sc{background:#fff;padding:9px 11px;display:flex;flex-direction:column;gap:2px;}
+.sc.w{grid-column:1/-1;background:var(--bg2);}
+.sl{font-size:8px;color:var(--txt3);text-transform:uppercase;letter-spacing:.1em;font-weight:600;}
+.sv{font-size:13px;font-weight:700;color:var(--acc);}
+.sv.warn{color:var(--warn)!important;}.sv.danger{color:var(--danger)!important;}
+.su{font-size:8px;color:var(--txt4);}
+.dlbar{display:flex;align-items:center;gap:7px;padding:7px 10px;flex-shrink:0;
+  border-top:1px solid var(--bdr);background:var(--bg2);font-size:9px;color:var(--txt3);}
+.dlgrad{flex:1;height:7px;border-radius:4px;
+  background:linear-gradient(90deg,#0055bb,#006622,#b86000,#bb0000);}
+
+/* TABLE */
+.tw{overflow:auto;flex:1;}
+.ttb{padding:7px;display:flex;gap:5px;flex-shrink:0;border-bottom:1px solid var(--bdr);background:#fff;}
+input[type=search]{background:#fff;color:var(--txt);border:1.5px solid var(--bdr);
+  padding:5px 9px;border-radius:4px;font-size:11px;outline:none;width:100%;font-family:var(--font);}
+input:focus{border-color:var(--acc);}
+table{width:100%;border-collapse:collapse;font-size:10px;}
+thead{position:sticky;top:0;z-index:5;}
+thead tr{background:var(--bg2);}
+th{padding:6px 5px;text-align:right;color:var(--txt2);font-size:8px;letter-spacing:.08em;
+  text-transform:uppercase;border-bottom:1.5px solid var(--bdr);white-space:nowrap;
+  cursor:pointer;user-select:none;font-weight:700;}
+th:hover{color:var(--acc);}
+th:first-child,td:first-child{text-align:left;}
+td{padding:4px 5px;text-align:right;border-bottom:1px solid var(--bg3);color:var(--txt2);white-space:nowrap;}
+tr:hover td{background:#eef4ff;color:var(--txt);}
+.cw{color:var(--warn)!important;font-weight:700;}.cd{color:var(--danger)!important;font-weight:700;}
+
+/* WELLS LIST */
+.wl{padding:8px;display:flex;flex-direction:column;gap:7px;}
+.wcard{background:#fff;border:1.5px solid var(--bdr);border-radius:6px;padding:10px 12px;transition:all .15s;}
+.wcard.hidden-well{opacity:.45;background:var(--bg2);}
+.shdr{padding:7px 10px;font-size:9px;font-weight:700;color:var(--txt3);
+  text-transform:uppercase;letter-spacing:.1em;border-bottom:1px solid var(--bdr);
+  background:var(--bg2);flex-shrink:0;}
+
+/* SURFACES LIST */
+.scard{background:#fff;border:1.5px solid var(--bdr);border-radius:6px;padding:10px 12px;
+  transition:all .15s;display:flex;flex-direction:column;gap:6px;}
+.scard.hidden-surf{opacity:.45;background:var(--bg2);}
+.surf-swatch{display:inline-block;width:32px;height:10px;border-radius:3px;vertical-align:middle;
+  margin-right:6px;border:1px solid rgba(0,0,0,0.15);}
+
+/* PLOT AREA */
+#rc{flex:1;display:flex;flex-direction:column;min-width:0;background:#fff;}
+#vt{display:flex;border-bottom:1.5px solid var(--bdr);background:#fff;flex-shrink:0;}
+.vb{padding:8px 16px;background:none;border:none;color:var(--txt3);font-size:10px;
+  cursor:pointer;border-bottom:2.5px solid transparent;letter-spacing:.07em;
+  text-transform:uppercase;transition:all .15s;font-family:var(--font);font-weight:600;}
+.vb.on{color:var(--acc);border-bottom-color:var(--acc);background:#eef4ff;}
+.vb:hover:not(.on){color:var(--txt);background:var(--bg2);}
+#pa{flex:1;position:relative;background:#fff;}
+#pa>div{position:absolute;inset:0;display:none;background:#fff;}
+#pa>div.on{display:block;}
+
+/* STATUS BAR */
+#sb{position:fixed;bottom:0;left:0;right:0;height:22px;background:var(--bg2);
+  border-top:1px solid var(--bdr);display:flex;align-items:center;padding:0 12px;
+  gap:18px;font-size:9px;color:var(--txt3);z-index:100;letter-spacing:.06em;}
+.dot{width:6px;height:6px;border-radius:50%;background:var(--acc3);}
+
+/* SCROLLBAR */
+::-webkit-scrollbar{width:5px;height:5px;}
+::-webkit-scrollbar-track{background:var(--bg1);}
+::-webkit-scrollbar-thumb{background:var(--bdr2);border-radius:3px;}
+
+/* LOADING */
+#ld{position:fixed;inset:0;background:#fff;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:14px;z-index:999;}
+#ld.h{opacity:0;pointer-events:none;transition:opacity .4s;}
+.spin{width:42px;height:42px;border:3px solid var(--bg3);border-top-color:var(--acc);
+  border-radius:50%;animation:sp .8s linear infinite;}
+@keyframes sp{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+
+<div id="ld">
+  <div style="font-size:20px;font-weight:800;color:var(--acc);letter-spacing:.06em;">&#9981; WELL TRAJECTORY 3D</div>
+  <div style="color:var(--txt3);font-size:11px;letter-spacing:.1em;">MINIMUM CURVATURE &middot; RUNS IN YOUR BROWSER</div>
+  <div style="display:flex;gap:10px;margin-top:6px;flex-wrap:wrap;justify-content:center;">
+    <button class="btn btna" onclick="pickFiles()">&#128194; Open deviation file(s)</button>
+    <button class="btn" onclick="loadSample()">Load sample wells</button>
+    <button class="btn" onclick="loadSampleSurface()">Wells + sample surface</button>
+  </div>
+  <div style="color:var(--txt3);font-size:11px;text-align:center;">Drop files anywhere: deviation .xlsx .xls .csv .txt (MD, Inc, Azi) and formation surfaces .dat</div>
+  <div id="lderr" style="color:var(--danger);font-size:12px;min-height:16px;"></div>
+</div>
+
+<div id="hdr">
+  <div>
+    <h1>WELL TRAJECTORY 3D</h1>
+    <div class="sub">Interactive Window</div>
+  </div>
+  <div class="sp"></div>
+  <span class="lbl">STATS:</span>
+  <select id="ws"></select>
+  <button class="btn" onclick="pickFiles()">&#128194; Open files</button>
+  <button class="btn" onclick="pickSurfaces()">&#9968; Load surfaces (.dat)</button>
+  <input type="file" id="fi" accept=".xlsx,.xls,.csv,.txt" multiple hidden/>
+  <input type="file" id="fs" accept=".dat" multiple hidden/>
+  <button class="btn btna" onclick="doExport()">⬇ CSV</button>
+  <button class="btn" onclick="resetCam()">⟳ Reset View</button>
+</div>
+
+<div id="app">
+  <div id="lp">
+    <div class="tabs">
+      <button class="tb on" onclick="switchTab('stats',this)">Stats</button>
+      <button class="tb"    onclick="switchTab('tbl',this)">Table</button>
+      <button class="tb"    onclick="switchTab('wls',this)">Wells</button>
+      <button class="tb"    onclick="switchTab('surfs',this)">Surfaces</button>
+    </div>
+    <div id="tc-stats" class="tc on">
+      <div id="sg" class="sg"></div>
+      <div class="dlbar">
+        <span>DLS:</span><div class="dlgrad"></div><span>0 → 3+ °/30m</span>
+      </div>
+    </div>
+    <div id="tc-tbl" class="tc">
+      <div class="ttb">
+        <input type="search" placeholder="Filter rows…" oninput="filterTbl(this.value)"/>
+        <button class="btn" onclick="doExport()" title="Export CSV">⬇</button>
+      </div>
+      <div class="tw"><table><thead id="thead"></thead><tbody id="tbody"></tbody></table></div>
+    </div>
+    <div id="tc-wls" class="tc">
+      <div class="shdr">Toggle wells visible in all plots</div>
+      <div class="wl" id="wl"></div>
+    </div>
+    <div id="tc-surfs" class="tc">
+      <div class="shdr">Toggle formation surfaces (3D view only)</div>
+      <div class="wl" id="sl"></div>
+      <div id="no-surfs" style="padding:18px 14px;font-size:10px;color:var(--txt3);display:none;">
+        No surfaces loaded. Use <b>Load surfaces (.dat)</b> in the header, or drop .dat files onto the page.
+      </div>
+    </div>
+  </div>
+
+  <div id="rc">
+    <div id="vt">
+      <button class="vb on" onclick="switchView('3d',this)">3D View</button>
+      <button class="vb"    onclick="switchView('plan',this)">Plan View</button>
+      <button class="vb"    onclick="switchView('vsec',this)">Vert. Section</button>
+      <button class="vb"    onclick="switchView('dls',this)">DLS Profile</button>
+    </div>
+    <div id="pa">
+      <div id="v3d"  class="on"><div id="p3d"   style="width:100%;height:100%;"></div></div>
+      <div id="vplan"         ><div id="pplan" style="width:100%;height:100%;"></div></div>
+      <div id="vvsec"         ><div id="pvsec" style="width:100%;height:100%;"></div></div>
+      <div id="vdls"          ><div id="pdls"  style="width:100%;height:100%;"></div></div>
+    </div>
+  </div>
+</div>
+
+<div id="sb">
+  <div class="dot"></div><span id="sb1">–</span>
+  <span>Minimum Curvature</span><span>Metric (m · °/30m)</span>
+  <div style="flex:1"></div>
+  <span>Well Trajectory 3D v2.0</span>
+</div>
+
+<script>
+// ── Data ──────────────────────────────────────────────────────────────────────
+let WD = [];
+let SD = [];   // Array of SerializableSurface
+
+// High-contrast colors for white background — 10 distinct wells
+const COLORS = [
+  '#0055bb','#bb2200','#006622','#7700cc','#b86000',
+  '#006688','#aa0044','#334d00','#003388','#883300'
+];
+
+// Distinct colorscales for surfaces so multiple surfaces are visually separable
+const SURF_COLORSCALES = [
+  'Earth', 'Hot', 'Viridis', 'Cividis', 'Plasma', 'Jet'
+];
+
+let curWell = 0, curView = '3d';
+const rendered = {};
+let visSet = new Set();
+// Surface visibility: all on by default
+let surfVisSet = new Set();
+
+// ── Plotly base layout: WHITE background, BLACK axes ─────────────────────────
+const LB = {
+  paper_bgcolor: '#ffffff',
+  plot_bgcolor:  '#ffffff',
+  font: { color: '#374151', family: 'Consolas,monospace', size: 11 },
+  legend: {
+    bgcolor: 'rgba(255,255,255,0.97)', bordercolor: '#c5cde0', borderwidth: 1.5,
+    font: { color: '#111827', size: 11 }
+  },
+  hoverlabel: {
+    bgcolor: '#ffffff', bordercolor: '#0055bb',
+    font: { color: '#111827', size: 11, family: 'Consolas,monospace' }
+  }
+};
+
+// Black axis style for 2D plots
+function ax2(title) {
+  return {
+    title: { text: title, font: { color: '#374151', size: 11 } },
+    gridcolor: '#d5dbe8', gridwidth: 1,
+    zerolinecolor: '#222222', zerolinewidth: 2,
+    linecolor: '#222222', linewidth: 1.5,
+    tickfont: { color: '#111827', size: 10 },
+    tickcolor: '#222222',
+    mirror: true, showline: true, ticks: 'outside',
+    dtick: 500
+  };
+}
+
+// Black axis style for 3D scene
+function ax3(title, extra) {
+  return Object.assign({
+    title: { text: title, font: { color: '#111827', size: 11, family: 'Consolas,monospace' } },
+    gridcolor: '#9aaabf', gridwidth: 1,
+    zerolinecolor: '#222222', zerolinewidth: 2,
+    linecolor: '#222222', linewidth: 2,
+    tickfont: { color: '#111827', size: 10 },
+    tickcolor: '#222222',
+    backgroundcolor: 'rgba(240,244,250,0.75)',
+    showbackground: true, showgrid: true,
+    ticks: 'outside',
+    dtick: 500
+  }, extra || {});
+}
+
+// ── Calculations (port of wellCalculations.ts) ───────────────────────────────
+const D2R = Math.PI / 180, R2D = 180 / Math.PI;
+function wrapAzi(d){ while(d>180) d-=360; while(d<-180) d+=360; return d; }
+function formatDir(deg){
+  const d = ((deg % 360) + 360) % 360;
+  if (d < 0.05) return 'N';
+  if (Math.abs(d-90) < 0.05) return 'E';
+  if (Math.abs(d-180) < 0.05) return 'S';
+  if (Math.abs(d-270) < 0.05) return 'W';
+  if (d < 90)  return 'N ' + d.toFixed(1) + '° E';
+  if (d < 180) return 'S ' + (180-d).toFixed(1) + '° E';
+  if (d < 270) return 'S ' + (d-180).toFixed(1) + '° W';
+  return 'N ' + (360-d).toFixed(1) + '° W';
+}
+function calculate(points){
+  const s = [...points].sort((a,b) => a.md - b.md), p0 = s[0];
+  const traj = [{ md:p0.md, inc:p0.inc, azi:p0.azi, bitSize:p0.bitSize ?? null, tvd:0, northing:0, easting:0, vertSec:0,
+    deltaMd:0, deltaInc:0, deltaAzi:0, doglegDeg:0, dls:0, dlsPer100ft:0, buildRate:0, turnRate:0,
+    closureDistance:0, closureDirection:0, closureDirStr:'N', rf:1, x:0, y:0, z:0 }];
+  let tvd=0, northing=0, easting=0;
+  for (let i=1;i<s.length;i++){
+    const pv=s[i-1], c=s[i], dMD=c.md-pv.md;
+    const i1=pv.inc*D2R, i2=c.inc*D2R, a1=pv.azi*D2R, a2=c.azi*D2R;
+    const cosDL = Math.cos(i2-i1) - Math.sin(i1)*Math.sin(i2)*(1-Math.cos(a2-a1));
+    const dlRad = Math.acos(Math.max(-1, Math.min(1, cosDL))), dlDeg = dlRad*R2D;
+    const rf = dlRad < 1e-6 ? 1 : (2/dlRad)*Math.tan(dlRad/2);
+    tvd      += (dMD/2)*(Math.cos(i1)+Math.cos(i2))*rf;
+    northing += (dMD/2)*(Math.sin(i1)*Math.cos(a1)+Math.sin(i2)*Math.cos(a2))*rf;
+    easting  += (dMD/2)*(Math.sin(i1)*Math.sin(a1)+Math.sin(i2)*Math.sin(a2))*rf;
+    const dls30 = dMD>0 ? (dlDeg/dMD)*30 : 0, dls100 = dMD>0 ? (dlDeg/dMD)*100*0.3048 : 0;
+    const dInc = c.inc-pv.inc, dAzi = wrapAzi(c.azi-pv.azi);
+    const cd = Math.sqrt(northing*northing + easting*easting);
+    let cdir = 0;
+    if (cd > 0.001){ cdir = Math.atan2(easting, northing)*R2D; if (cdir<0) cdir += 360; }
+    traj.push({ md:c.md, inc:c.inc, azi:c.azi, bitSize:c.bitSize ?? null, tvd, northing, easting, vertSec:0,
+      deltaMd:dMD, deltaInc:dInc, deltaAzi:dAzi, doglegDeg:dlDeg, dls:dls30, dlsPer100ft:dls100,
+      buildRate: dMD>0 ? (dInc/dMD)*30 : 0, turnRate: dMD>0 ? (dAzi/dMD)*30 : 0,
+      closureDistance:cd, closureDirection:cdir, closureDirStr:formatDir(cdir), rf, x:easting, y:northing, z:-tvd });
+  }
+  const fa = traj[traj.length-1].closureDirection*D2R;
+  for (const pt of traj) pt.vertSec = pt.northing*Math.cos(fa) + pt.easting*Math.sin(fa);
+  const last = traj[traj.length-1];
+  let maxDLS=0, maxDLSatMD=0, maxInc=0, kop=null;
+  for (const pt of traj){
+    if (pt.dls > maxDLS){ maxDLS=pt.dls; maxDLSatMD=pt.md; }
+    if (pt.inc > maxInc) maxInc = pt.inc;
+    if (kop === null && pt.inc > 3) kop = pt.md;
+  }
+  let wellType = 'Vertical';
+  if (maxInc >= 85) wellType='Horizontal'; else if (maxInc >= 45) wellType='Highly Deviated';
+  else if (maxInc >= 20) wellType='Deviated'; else if (kop !== null) wellType='Slightly Deviated';
+  return { trajectory:traj, stats:{ maxMD:last.md, maxTVD:last.tvd, maxInclination:maxInc, maxDLS, maxDLSatMD, kop,
+    totalNorthing:last.northing, totalEasting:last.easting, totalClosureDistance:last.closureDistance,
+    totalClosureDirection:last.closureDirection, totalClosureDirStr:last.closureDirStr,
+    verticalSection:last.vertSec, projectedHorizontalReach:last.closureDistance, wellType } };
+}
+
+// ── File reader (port of wellDataReader.ts) ──────────────────────────────────
+const MD_ALIASES  = ['md','measured depth','meas depth','measdepth','depth','dep','measured_depth','md (m)','md(m)','md (ft)','md(ft)','depth (m)','depth(m)','depth (ft)','depth(ft)','survey depth','survey_depth','bit depth','bit_depth'];
+const INC_ALIASES = ['inc','inclination','incl','inc (deg)','inc(deg)','inclination (deg)','inclination(deg)','dip','angle','hole angle','hole_angle','holeangle','deviation','dev','i','inc.','incl (deg)','incl(deg)','inc (°)','inclination (°)','vert angle'];
+const AZI_ALIASES = ['azi','azimuth','az','azi (deg)','azi(deg)','azimuth (deg)','azimuth(deg)','azm','azmth','direction','heading','bearing','a','azi.','azim','azi (°)','azimuth (°)','magnetic azimuth','true azimuth','grid azimuth'];
+const BS_ALIASES  = ['bs','bit size','bitsize','bit_size','bit size (in)','bs (in)','bit diameter','bit dia','hole size','holesize','hole_size','diameter','dia','size','bit size (mm)','bs (mm)','hole diameter'];
+function matchAlias(cell, aliases){
+  const c = cell.toLowerCase().trim();
+  return aliases.some(a => c === a || c === a.replace(/\s/g,'_') || c === a.replace(/\s/g,''));
+}
+function findHeader(raw){
+  for (let r=0; r<Math.min(25, raw.length); r++){
+    const row = raw[r];
+    if (!row || row.length < 3) continue;
+    const m = {};
+    for (let c=0;c<row.length;c++){
+      const cell = String(row[c] ?? '').toLowerCase().trim();
+      if (cell === '') continue;
+      if (m.md === undefined && matchAlias(cell, MD_ALIASES)) m.md = c;
+      else if (m.inc === undefined && matchAlias(cell, INC_ALIASES)) m.inc = c;
+      else if (m.azi === undefined && matchAlias(cell, AZI_ALIASES)) m.azi = c;
+      else if (m.bs === undefined && matchAlias(cell, BS_ALIASES)) m.bs = c;
+    }
+    if (m.md !== undefined && m.inc !== undefined && m.azi !== undefined) return { hRow:r, colMap:m };
+  }
+  return { hRow:-1, colMap:{} };
+}
+const toNum = v => { if (v === null || v === undefined || v === '') return null; const n = Number(v); return isNaN(n) ? null : n; };
+function extractPoints(rows, m){
+  const pts = [];
+  for (const row of rows){
+    if (!row || !row.length) continue;
+    const md = toNum(row[m.md]), inc = toNum(row[m.inc]), azi = toNum(row[m.azi]);
+    if (md === null || inc === null || azi === null) continue;
+    const pt = { md, inc, azi };
+    if (m.bs !== undefined){ const bs = toNum(row[m.bs]); if (bs !== null) pt.bitSize = bs; }
+    pts.push(pt);
+  }
+  return pts;
+}
+async function readFile(file){
+  const ext = file.name.split('.').pop().toLowerCase();
+  const base = file.name.replace(/\.[^.]+$/, '');
+  if (ext === 'xlsx' || ext === 'xls'){
+    const wb = XLSX.read(await file.arrayBuffer(), { type:'array', cellDates:true });
+    const out = [];
+    for (const sn of wb.SheetNames){
+      const raw = XLSX.utils.sheet_to_json(wb.Sheets[sn], { header:1, defval:null, blankrows:false });
+      if (raw.length < 2) continue;
+      const { hRow, colMap } = findHeader(raw);
+      if (hRow < 0) continue;
+      const points = extractPoints(raw.slice(hRow+1), colMap);
+      if (points.length < 2) continue;
+      out.push({ name: wb.SheetNames.length > 1 ? base + ' — ' + sn : base, points });
+    }
+    return out;
+  }
+  if (ext === 'csv' || ext === 'txt'){
+    const lines = (await file.text()).split(/\r?\n/).filter(l => l.trim().length > 0);
+    if (lines.length < 2) return [];
+    let delim = ',', maxCols = 0;
+    for (const d of [',','\t','|',';']){ const n = lines[0].split(d).length; if (n > maxCols){ maxCols = n; delim = d; } }
+    if (maxCols <= 1) delim = ' ';
+    const raw = lines.map(l => delim === ' ' ? l.trim().split(/\s+/) : l.split(delim).map(s => s.trim()));
+    const { hRow, colMap } = findHeader(raw);
+    if (hRow < 0) throw new Error('Could not find MD, Inc, Azi columns. Check column headers.');
+    const points = extractPoints(raw.slice(hRow+1), colMap);
+    if (points.length < 2) throw new Error('Not enough data rows (need at least 2).');
+    return [{ name: base, points }];
+  }
+  throw new Error('Unsupported file type: .' + ext);
+}
+
+// ── Surface reader (port of readSurface + decimation) ────────────────────────
+function readSurfaceText(text, name){
+  const lines = text.split(/\r?\n/).filter(l => l.trim().length > 0);
+  const delim = lines.length && lines[0].includes(',') ? ',' : null;
+  const parse = l => (delim ? l.split(delim) : l.trim().split(/\s+/)).map(v => parseFloat(v.trim())).filter(v => !isNaN(v));
+  const I = new Set(), J = new Set(), rows = [];
+  for (const l of lines){
+    const v = parse(l);
+    if (v.length >= 5){ const [i,j,x,y,z] = v; I.add(i); J.add(j); rows.push([i,j,x,y,z]); }
+    else if (v.length === 3){ const [x,y,z] = v; I.add(rows.length); J.add(0); rows.push([rows.length,0,x,y,z]); }
+  }
+  if (!rows.length) throw new Error('No valid surface data found in .dat file.');
+  const is = [...I].sort((a,b)=>a-b), js = [...J].sort((a,b)=>a-b);
+  const im = new Map(is.map((v,k)=>[v,k])), jm = new Map(js.map((v,k)=>[v,k]));
+  const xs = new Array(is.length).fill(0), ys = new Array(js.length).fill(0);
+  const sx = new Set(), sy = new Set();
+  const z = Array.from({length:js.length}, () => new Array(is.length).fill(null));
+  let zMin = Infinity, zMax = -Infinity;
+  for (const [i,j,x,y,zv] of rows){
+    const a = im.get(i), b = jm.get(j);
+    z[b][a] = zv;
+    if (!sx.has(a)){ xs[a] = x; sx.add(a); }
+    if (!sy.has(b)){ ys[b] = y; sy.add(b); }
+    if (zv < zMin) zMin = zv; if (zv > zMax) zMax = zv;
+  }
+  return { name, xs, ys, z, zMin, zMax };
+}
+function decimate(s){
+  const MAXG = 200, sx = Math.max(1, Math.ceil(s.xs.length/MAXG)), sy = Math.max(1, Math.ceil(s.ys.length/MAXG));
+  const z = [];
+  for (let r=0; r<s.ys.length; r+=sy){ const row = []; for (let c=0; c<s.xs.length; c+=sx) row.push(s.z[r][c]); z.push(row); }
+  return { name:s.name, xs:s.xs.filter((_,i)=>i%sx===0), ys:s.ys.filter((_,i)=>i%sy===0), z, zMin:s.zMin, zMax:s.zMax };
+}
+
+// ── Loading / init ───────────────────────────────────────────────────────────
+const fext = f => f.name.split('.').pop().toLowerCase();
+function pickFiles(){ document.getElementById('fi').click(); }
+function pickSurfaces(){
+  if (!WD.length){ setMsg('Open the viewer first: load deviation file(s), then load surfaces.'); return; }
+  document.getElementById('fs').click();
+}
+function setMsg(t){
+  const e = document.getElementById('lderr'); if (e) e.textContent = t;
+  document.getElementById('sb1').textContent = t;
+}
+async function loadFiles(files){
+  const wf = files.filter(f => fext(f) !== 'dat'), sf = files.filter(f => fext(f) === 'dat');
+  if (wf.length){
+    const all = [], errs = [];
+    for (const f of wf){ try { all.push(...await readFile(f)); } catch (e) { errs.push(f.name + ': ' + e.message); } }
+    if (!all.length){ setMsg(errs[0] || 'No valid well data found. Files must contain MD, Inc, and Azi columns.'); }
+    else { WD = all.map(d => ({ name:d.name, ...calculate(d.points) })); refresh(); if (errs.length) setMsg('Skipped ' + errs.join(' | ')); }
+  }
+  if (sf.length) await loadSurfaceFiles(sf);
+}
+async function loadSurfaceFiles(files){
+  if (!WD.length){ setMsg('Open the viewer first: load deviation file(s), then load surfaces.'); return; }
+  const got = [], errs = [];
+  for (const f of files){
+    try { got.push(decimate(readSurfaceText(await f.text(), f.name.replace(/\.[^.]+$/, '')))); }
+    catch (e) { errs.push(f.name + ': ' + e.message); }
+  }
+  if (!got.length){ setMsg('No valid surface data found. ' + (errs[0] || '')); return; }
+  SD.push(...got); refresh();
+  setMsg('Loaded ' + got.length + ' surface(s): ' + got.map(s => s.name).join(', ') + (errs.length ? ' | Skipped ' + errs.join(' | ') : ''));
+}
+function loadSample(){
+  const mk = (name, kopMd, rate, maxInc, azi, td) => {
+    const pts = [];
+    for (let md=0; md<=td; md+=30){
+      const inc = md < kopMd ? 0 : Math.min(maxInc, (md-kopMd)*rate);
+      pts.push({ md, inc, azi: azi + Math.min(25, Math.max(0, (md-kopMd)*0.02)) });
+    }
+    return { name, ...calculate(pts) };
+  };
+  WD = [mk('Sample-H1 (horizontal)', 800, 0.1, 90, 60, 3600), mk('Sample-D2 (deviated)', 500, 0.04, 35, 200, 2400)];
+  refresh();
+}
+function loadSampleSurface(){
+  if (!WD.length) loadSample();
+  const rows = [];
+  for (let i=0;i<=20;i++) for (let j=0;j<=20;j++){
+    const x = -500 + i*150, y = -500 + j*150;
+    rows.push([i+1, j+1, x, y, 2300 + 0.12*x - 0.06*y + 60*Math.sin(i/3)]);
+  }
+  const txt = rows.map(r => r.join(',')).join('\n');
+  SD.push(decimate(readSurfaceText(txt, 'Sample-Top-Reservoir'))); refresh();
+}
+function refresh(){
+  Object.keys(rendered).forEach(k => delete rendered[k]);
+  curWell = 0; visSet = new Set(WD.map((_, i) => i)); surfVisSet = new Set(SD.map((_, i) => i));
+  ['ws','wl','sl'].forEach(id => document.getElementById(id).innerHTML = '');
+  buildSelect(); buildWellsList(); buildSurfacesList(); updateStats(0); updateTable(0);
+  switchView('3d', document.querySelector('.vb'));
+  document.getElementById('sb1').textContent = WD.length + ' Well' + (WD.length > 1 ? 's' : '') + ' Loaded' +
+    (SD.length ? ' \u00B7 ' + SD.length + ' Surface' + (SD.length > 1 ? 's' : '') : '');
+  document.getElementById('ld').classList.add('h');
+}
+document.getElementById('fi').onchange = e => { if (e.target.files.length) loadFiles([...e.target.files]); e.target.value = ''; };
+document.getElementById('fs').onchange = e => { if (e.target.files.length) loadSurfaceFiles([...e.target.files]); e.target.value = ''; };
+addEventListener('dragover', e => e.preventDefault());
+addEventListener('drop', e => { e.preventDefault(); if (e.dataTransfer.files.length) loadFiles([...e.dataTransfer.files]); });
+
+// ── Well selector (Stats / Table) ─────────────────────────────────────────────
+function buildSelect() {
+  const s = document.getElementById('ws');
+  WD.forEach((w, i) => {
+    const o = document.createElement('option');
+    o.value = i; o.textContent = w.name; s.appendChild(o);
+  });
+  s.onchange = () => {
+    const v = parseInt(s.value);
+    curWell = v; updateStats(v); updateTable(v);
+  };
+}
+
+// ── Wells list with per-well visibility checkboxes ───────────────────────────
+function buildWellsList() {
+  const c = document.getElementById('wl');
+  WD.forEach((w, i) => {
+    const s = w.stats, col = COLORS[i % COLORS.length];
+    const div = document.createElement('div');
+    div.className = 'wcard'; div.id = 'wcard-' + i;
+    div.innerHTML = `
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+        <input type="checkbox" id="cb-${i}" checked onchange="toggleVis(${i})"
+          style="width:14px;height:14px;accent-color:${col};cursor:pointer;flex-shrink:0;"/>
+        <div style="width:18px;height:4px;border-radius:2px;background:${col};flex-shrink:0;"></div>
+        <span style="font-weight:700;color:#111827;font-size:11px;flex:1;">${w.name}</span>
+        <span style="font-size:9px;color:var(--txt3);">${s.wellType}</span>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:3px;font-size:9px;color:var(--txt2);">
+        <span>MD: <b>${s.maxMD.toFixed(1)} m</b></span>
+        <span>TVD: <b>${s.maxTVD.toFixed(1)} m</b></span>
+        <span>Max Inc: <b>${s.maxInclination.toFixed(1)}°</b></span>
+        <span>Max DLS: <b style="${s.maxDLS>3?'color:#bb0000':s.maxDLS>1.5?'color:#b86000':''}">${s.maxDLS.toFixed(2)}°/30m</b></span>
+        <span>N: <b>${s.totalNorthing.toFixed(1)} m</b></span>
+        <span>E: <b>${s.totalEasting.toFixed(1)} m</b></span>
+        <span>Closure: <b>${s.totalClosureDistance.toFixed(1)} m</b></span>
+        <span>KOP: <b>${s.kop !== null ? s.kop.toFixed(0)+' m' : 'N/A'}</b></span>
+      </div>
+      <div style="margin-top:7px;">
+        <button class="btn" style="font-size:9px;padding:3px 10px;"
+          onclick="focusWell(${i})">View Stats/Table</button>
+      </div>
+    `;
+    c.appendChild(div);
+  });
+}
+
+function toggleVis(idx) {
+  const cb = document.getElementById('cb-' + idx);
+  const card = document.getElementById('wcard-' + idx);
+  if (cb.checked) { visSet.add(idx); card.classList.remove('hidden-well'); }
+  else { visSet.delete(idx); card.classList.add('hidden-well'); }
+  Object.keys(rendered).forEach(k => rendered[k] = false);
+  renderCurrent();
+}
+
+function focusWell(idx) {
+  curWell = idx;
+  document.getElementById('ws').value = idx;
+  updateStats(idx); updateTable(idx);
+  document.querySelectorAll('.tb').forEach(b => b.classList.remove('on'));
+  document.querySelectorAll('.tc').forEach(t => t.classList.remove('on'));
+  document.querySelectorAll('.tb')[0].classList.add('on');
+  document.getElementById('tc-stats').classList.add('on');
+}
+
+function getVisible() {
+  return WD.map((w, i) => ({ ...w, ci: i })).filter(w => visSet.has(w.ci));
+}
+
+// ── Surfaces list with per-surface visibility checkboxes ─────────────────────
+function buildSurfacesList() {
+  const c = document.getElementById('sl');
+  const noSurfs = document.getElementById('no-surfs');
+
+  if (!SD || SD.length === 0) {
+    noSurfs.style.display = 'block';
+    return;
+  }
+  noSurfs.style.display = 'none';
+
+  SD.forEach((surf, i) => {
+    const cs = SURF_COLORSCALES[i % SURF_COLORSCALES.length];
+    const div = document.createElement('div');
+    div.className = 'scard'; div.id = 'scard-' + i;
+    div.innerHTML = `
+      <div style="display:flex;align-items:center;gap:8px;">
+        <input type="checkbox" id="scb-${i}" checked onchange="toggleSurfVis(${i})"
+          style="width:14px;height:14px;cursor:pointer;flex-shrink:0;"/>
+        <span style="font-weight:700;color:#111827;font-size:11px;flex:1;">${surf.name}</span>
+        <span style="font-size:9px;color:var(--txt3);">${cs}</span>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:3px;font-size:9px;color:var(--txt2);">
+        <span>Grid: <b>${surf.xs.length}×${surf.ys.length}</b></span>
+        <span>Z min: <b>${surf.zMin.toFixed(1)} m</b></span>
+        <span>X: ${surf.xs[0].toFixed(0)}…${surf.xs[surf.xs.length-1].toFixed(0)}</span>
+        <span>Z max: <b>${surf.zMax.toFixed(1)} m</b></span>
+      </div>
+    `;
+    c.appendChild(div);
+  });
+}
+
+function toggleSurfVis(idx) {
+  const cb = document.getElementById('scb-' + idx);
+  const card = document.getElementById('scard-' + idx);
+  if (cb.checked) { surfVisSet.add(idx); card.classList.remove('hidden-surf'); }
+  else { surfVisSet.delete(idx); card.classList.add('hidden-surf'); }
+  // Only 3D view shows surfaces — invalidate and re-render
+  rendered['3d'] = false;
+  if (curView === '3d') { render3D(); rendered['3d'] = true; }
+}
+
+// ── Stats ─────────────────────────────────────────────────────────────────────
+function updateStats(idx) {
+  const w = WD[Math.max(0, idx)], s = w.stats, col = COLORS[idx % COLORS.length];
+  const cells = [
+    { l:'Well Name',    v:w.name,                          u:'',       cls:'w', st:`color:${col};font-size:12px;font-weight:800;` },
+    { l:'Well Type',    v:s.wellType,                      u:'',       st:s.wellType==='Horizontal'?'color:var(--acc2)':s.wellType==='Highly Deviated'?'color:var(--warn)':'' },
+    { l:'Max MD',       v:s.maxMD.toFixed(2),              u:'m' },
+    { l:'Max TVD',      v:s.maxTVD.toFixed(2),             u:'m' },
+    { l:'Max Inc.',     v:s.maxInclination.toFixed(2),     u:'°',      vc:s.maxInclination>80?'danger':s.maxInclination>45?'warn':'' },
+    { l:'Max DLS',      v:s.maxDLS.toFixed(3),             u:'°/30m',  vc:s.maxDLS>3?'danger':s.maxDLS>1.5?'warn':'' },
+    { l:'DLS at MD',    v:s.maxDLSatMD.toFixed(1),         u:'m' },
+    { l:'KOP Depth',    v:s.kop!==null?s.kop.toFixed(1):'N/A', u:'m' },
+    { l:'Northing',     v:s.totalNorthing.toFixed(2),      u:'m' },
+    { l:'Easting',      v:s.totalEasting.toFixed(2),       u:'m' },
+    { l:'Closure Dist.',v:s.totalClosureDistance.toFixed(2),u:'m' },
+    { l:'Closure Dir.', v:s.totalClosureDirStr,             u:'' },
+    { l:'Vert. Section',v:s.verticalSection.toFixed(2),    u:'m' },
+    { l:'H. Reach',     v:s.projectedHorizontalReach.toFixed(2), u:'m' },
+  ];
+  document.getElementById('sg').innerHTML = cells.map(c =>
+    `<div class="sc ${c.cls||''}">
+      <div class="sl">${c.l}</div>
+      <div class="sv ${c.vc||''}" style="${c.st||''}">${c.v}</div>
+      <div class="su">${c.u}</div>
+    </div>`
+  ).join('');
+}
+
+// ── Survey Table ──────────────────────────────────────────────────────────────
+const COLS = [
+  { k:'md',               l:'MD (m)',      f: v => v.toFixed(2) },
+  { k:'inc',              l:'Inc (°)',     f: v => v.toFixed(3) },
+  { k:'azi',              l:'Azi (°)',     f: v => v.toFixed(3) },
+  { k:'tvd',              l:'TVD (m)',     f: v => v.toFixed(2) },
+  { k:'northing',         l:'N/S (m)',     f: v => v.toFixed(2) },
+  { k:'easting',          l:'E/W (m)',     f: v => v.toFixed(2) },
+  { k:'vertSec',          l:'V.Sec (m)',   f: v => v.toFixed(2) },
+  { k:'closureDistance',  l:'Clos.D (m)',  f: v => v.toFixed(2) },
+  { k:'closureDirStr',    l:'Clos.Dir',    f: v => v },
+  { k:'dls',              l:'DLS°/30m',   f: v => v.toFixed(3) },
+  { k:'dlsPer100ft',      l:'DLS°/100ft', f: v => v.toFixed(3) },
+  { k:'buildRate',        l:'Build°/30m', f: v => v.toFixed(3) },
+  { k:'turnRate',         l:'Turn°/30m',  f: v => v.toFixed(3) },
+  { k:'doglegDeg',        l:'DL (°)',     f: v => v.toFixed(3) },
+  { k:'rf',               l:'RF',         f: v => v.toFixed(4) },
+  { k:'deltaMd',          l:'ΔMD (m)',    f: v => v.toFixed(2) },
+  { k:'bitSize',          l:'Bit (in)',   f: v => v != null ? v.toFixed(3) : '-' },
+];
+let allRows = [];
+
+function updateTable(idx) {
+  const w = WD[Math.max(0, idx)]; allRows = w.trajectory;
+  document.getElementById('thead').innerHTML =
+    '<tr>' + COLS.map(c => `<th onclick="sortTbl('${c.k}')">${c.l}</th>`).join('') + '</tr>';
+  renderRows(allRows);
+}
+function renderRows(rows) {
+  document.getElementById('tbody').innerHTML = rows.map(p => {
+    const dc = p.dls > 3 ? 'cd' : p.dls > 1.5 ? 'cw' : '';
+    return '<tr>' + COLS.map(c => {
+      const v = c.f(p[c.k]);
+      return `<td class="${(c.k==='dls'||c.k==='dlsPer100ft') ? dc : ''}">${v}</td>`;
+    }).join('') + '</tr>';
+  }).join('');
+}
+let sCol = null, sAsc = true;
+function sortTbl(k) {
+  sAsc = sCol === k ? !sAsc : true; sCol = k;
+  renderRows([...allRows].sort((a, b) => {
+    const av = a[k], bv = b[k];
+    if (av == null) return 1; if (bv == null) return -1;
+    return sAsc ? (av > bv ? 1 : -1) : (av < bv ? 1 : -1);
+  }));
+}
+function filterTbl(q) {
+  if (!q.trim()) { renderRows(allRows); return; }
+  const ql = q.toLowerCase();
+  renderRows(allRows.filter(p => COLS.some(c => String(c.f(p[c.k])).toLowerCase().includes(ql))));
+}
+
+// ── Export CSV ────────────────────────────────────────────────────────────────
+function doExport() {
+  const w = WD[Math.max(0, curWell)];
+  const csv = [
+    COLS.map(c => c.l).join(','),
+    ...w.trajectory.map(p => COLS.map(c => { const v = p[c.k]; return v != null ? c.f(v) : ''; }).join(','))
+  ].join('\n');
+  try {
+    acquireVsCodeApi().postMessage({ command: 'exportCSV', data: csv, filename: w.name + '_trajectory.csv' });
+  } catch {
+    const b = new Blob([csv], { type: 'text/csv' });
+    const u = URL.createObjectURL(b);
+    const a = document.createElement('a'); a.href = u; a.download = w.name + '_trajectory.csv'; a.click();
+    URL.revokeObjectURL(u);
+  }
+}
+
+// ── Tab / View switching ──────────────────────────────────────────────────────
+function switchTab(id, btn) {
+  document.querySelectorAll('.tb').forEach(b => b.classList.remove('on'));
+  btn.classList.add('on');
+  document.querySelectorAll('.tc').forEach(t => t.classList.remove('on'));
+  document.getElementById('tc-' + id).classList.add('on');
+}
+function switchView(v, btn) {
+  curView = v;
+  document.querySelectorAll('.vb').forEach(b => b.classList.remove('on'));
+  btn.classList.add('on');
+  document.querySelectorAll('#pa>div').forEach(d => d.classList.remove('on'));
+  document.getElementById('v' + v).classList.add('on');
+  if (!rendered[v]) { renderCurrent(); rendered[v] = true; }
+  setTimeout(() => {
+    const ids = { '3d':'p3d', plan:'pplan', vsec:'pvsec', dls:'pdls' };
+    const el = document.getElementById(ids[v]);
+    if (el && el.data) Plotly.Plots.resize(el);
+  }, 60);
+}
+function renderCurrent() {
+  if      (curView === '3d')   render3D();
+  else if (curView === 'plan') renderPlan();
+  else if (curView === 'vsec') renderVSec();
+  else if (curView === 'dls')  renderDLS();
+}
+
+// ── 3D VIEW ───────────────────────────────────────────────────────────────────
+// Surfaces are rendered as Plotly 'surface' traces using the same TVD axis
+// (Z = positive depth, 0 at surface) as the well trajectories.
+// The surface grid is in absolute X/Y (Easting/Northing) coordinates; wells
+// use relative coordinates (offset from wellhead). We detect the coordinate
+// system from the data ranges and apply an offset if needed.
+
+function render3D() {
+  const ws = getVisible();
+  const tr = [];
+
+  // ── Compute global TVD / Z range ──
+  let maxTVD = 0;
+  for (const w of ws) {
+    const m = Math.max(...w.trajectory.map(p => p.tvd));
+    if (m > maxTVD) maxTVD = m;
+  }
+  // Include surface Z extents in the range
+  for (let si = 0; si < SD.length; si++) {
+    if (surfVisSet.has(si)) {
+      if (SD[si].zMax > maxTVD) { maxTVD = SD[si].zMax; }
+    }
+  }
+  const zMax = Math.ceil((maxTVD + 100) / 500) * 500;
+
+  // ── Surface traces ────────────────────────────────────────────────────────
+  // Surface coordinates are in absolute UTM (large numbers like 432000, 6477000).
+  // Well trajectories use relative offsets from (0,0) at the wellhead.
+  // We detect whether we need to offset the surface to overlap with the wells.
+  //
+  // Strategy: if any well's easting/northing values are small (<5000 offset range)
+  // but the surface X/Y values are large UTM coords, we subtract the surface grid
+  // centre so both datasets share roughly the same 3D coordinate space.
+
+  let wellXMin = Infinity, wellXMax = -Infinity;
+  let wellYMin = Infinity, wellYMax = -Infinity;
+  for (const w of ws) {
+    for (const p of w.trajectory) {
+      if (p.easting  < wellXMin) wellXMin = p.easting;
+      if (p.easting  > wellXMax) wellXMax = p.easting;
+      if (p.northing < wellYMin) wellYMin = p.northing;
+      if (p.northing > wellYMax) wellYMax = p.northing;
+    }
+  }
+
+  for (let si = 0; si < SD.length; si++) {
+    if (!surfVisSet.has(si)) { continue; }
+    const surf = SD[si];
+
+    // Decide on coordinate offset: if surface X range >> well X range, we centre
+    const surfXMid = (surf.xs[0] + surf.xs[surf.xs.length - 1]) / 2;
+    const surfYMid = (surf.ys[0] + surf.ys[surf.ys.length - 1]) / 2;
+    const wellXMid = (wellXMin + wellXMax) / 2;
+    const wellYMid = (wellYMin + wellYMax) / 2;
+    const absOffset = Math.abs(surfXMid - wellXMid) > 1000 || Math.abs(surfYMid - wellYMid) > 1000;
+    const dx = absOffset ? wellXMid - surfXMid : 0;
+    const dy = absOffset ? wellYMid - surfYMid : 0;
+
+    const xs_shifted = surf.xs.map(x => x + dx);
+    const ys_shifted = surf.ys.map(y => y + dy);
+
+    const cs = SURF_COLORSCALES[si % SURF_COLORSCALES.length];
+
+    tr.push({
+      type: 'surface',
+      name: surf.name,
+      x: xs_shifted,
+      y: ys_shifted,
+      z: surf.z,
+      colorscale: cs,
+      opacity: 0.55,
+      showscale: true,
+      colorbar: {
+        title: { text: surf.name + ' (m TVD)', side: 'right', font: { color: '#374151', size: 10 } },
+        thickness: 10,
+        len: 0.5,
+        x: 1.02 + si * 0.07,
+        tickfont: { color: '#374151', size: 9 },
+        outlinecolor: '#c5cde0',
+        outlinewidth: 1
+      },
+      hovertemplate:
+        '<b>' + surf.name + '</b><br>' +
+        'E: %{x:.0f}  N: %{y:.0f}<br>' +
+        'Depth: %{z:.1f} m<extra></extra>',
+      contours: {
+        z: { show: false }
+      }
+    });
+  }
+
+  // ── Well traces ───────────────────────────────────────────────────────────
+  for (const w of ws) {
+    const t = w.trajectory, col = COLORS[w.ci % COLORS.length];
+    const dlsArr = t.map(p => p.dls);
+    const mxDLS  = Math.max(...dlsArr, 0.01);
+
+    tr.push({
+      type: 'scatter3d', mode: 'lines', name: w.name,
+      x: t.map(p => p.x),
+      y: t.map(p => p.y),
+      z: t.map(p => p.tvd),
+      line: {
+        color: dlsArr,
+        colorscale: [[0,'#0055bb'],[0.33,'#006622'],[0.66,'#b86000'],[1,'#bb0000']],
+        width: 6,
+        cmin: 0, cmax: Math.max(mxDLS, 3)
+      },
+      hovertemplate:
+        '<b>' + w.name + '</b><br>' +
+        'MD: %{customdata[0]:.1f} m<br>' +
+        'TVD: %{z:.1f} m<br>' +
+        'Inc: %{customdata[1]:.2f}°  Azi: %{customdata[2]:.2f}°<br>' +
+        'N: %{customdata[3]:.1f} m   E: %{customdata[4]:.1f} m<br>' +
+        'DLS: %{customdata[5]:.3f} °/30m<br>' +
+        'Closure: %{customdata[6]:.1f} m' +
+        '<extra></extra>',
+      customdata: t.map(p => [p.md, p.inc, p.azi, p.northing, p.easting, p.dls, p.closureDistance])
+    });
+
+    tr.push({
+      type: 'scatter3d', mode: 'markers', showlegend: false,
+      x: [t[0].x], y: [t[0].y], z: [0],
+      marker: { color: col, size: 10, symbol: 'circle', line: { color: '#222', width: 2 } },
+      hovertemplate: '<b>' + w.name + ' — Surface</b><br>TVD: 0 m<extra></extra>'
+    });
+
+    const L = t[t.length - 1];
+    tr.push({
+      type: 'scatter3d', mode: 'markers', showlegend: false,
+      x: [L.x], y: [L.y], z: [L.tvd],
+      marker: { color: col, size: 9, symbol: 'diamond', line: { color: '#222', width: 1.5 } },
+      hovertemplate: `<b>${w.name} — TD</b><br>MD: ${L.md.toFixed(1)} m  TVD: ${L.tvd.toFixed(1)} m<extra></extra>`
+    });
+
+    if (w.stats.kop !== null) {
+      const kp = t.find(p => p.md >= w.stats.kop) || t[0];
+      tr.push({
+        type: 'scatter3d', mode: 'markers+text', showlegend: false,
+        x: [kp.x], y: [kp.y], z: [kp.tvd],
+        text: ['KOP'], textposition: 'top center',
+        textfont: { color: '#884400', size: 10 },
+        marker: { color: '#b86000', size: 7, symbol: 'square', line: { color: '#222', width: 1 } },
+        hovertemplate: `<b>KOP — ${w.name}</b><br>MD: ${kp.md.toFixed(1)} m  TVD: ${kp.tvd.toFixed(1)} m<extra></extra>`
+      });
+    }
+  }
+
+  const layout = {
+    ...LB,
+    uirevision: 'stable',
+    margin: { t: 20, b: 10, l: 10, r: 10 },
+    scene: {
+      xaxis: { ...ax3('Easting (m)') },
+      yaxis: { ...ax3('Northing (m)') },
+      zaxis: {
+        ...ax3('TVD (m)'),
+        range: [0, zMax],
+        autorange: false,
+        dtick: 500
+      },
+      camera: {
+        eye:    { x: 1.4, y: 1.4, z: -1.2 },
+        center: { x: 0,   y: 0,   z: 0 },
+        up:     { x: 0,   y: 0,   z: -1 }
+      },
+      aspectmode: 'manual',
+      aspectratio: { x: 1, y: 1, z: 1.4 },
+      bgcolor: 'rgba(245,247,251,0.8)',
+      dragmode: 'orbit'
+    }
+  };
+
+  Plotly.react('p3d', tr, layout, {
+    responsive: true,
+    displaylogo: false,
+    scrollZoom: true,
+    modeBarButtonsToRemove: ['toImage'],
+    editable: false
+  });
+}
+
+// ── PLAN VIEW ─────────────────────────────────────────────────────────────────
+function renderPlan() {
+  const ws = getVisible(); const tr = [];
+  for (const w of ws) {
+    const t = w.trajectory, col = COLORS[w.ci % COLORS.length];
+    tr.push({
+      type: 'scatter', mode: 'lines+markers', name: w.name,
+      x: t.map(p => p.easting), y: t.map(p => p.northing),
+      line: { color: col, width: 2.5 },
+      marker: {
+        color: t.map(p => p.md), colorscale: 'Blues', size: 5,
+        colorbar: { title: { text: 'MD (m)', side: 'right' }, thickness: 12, len: 0.65,
+          tickfont: { color: '#111827' }, titlefont: { color: '#374151' } }
+      },
+      hovertemplate:
+        '<b>' + w.name + '</b><br>N: %{y:.1f} m  E: %{x:.1f} m<br>MD: %{customdata:.1f} m<extra></extra>',
+      customdata: t.map(p => p.md)
+    });
+    const L = t[t.length - 1];
+    tr.push({
+      type: 'scatter', mode: 'lines', showlegend: false,
+      x: [0, L.easting], y: [0, L.northing],
+      line: { color: col, width: 1, dash: 'dash' },
+      hovertemplate: 'Closure: ' + L.closureDistance.toFixed(1) + ' m @ ' + L.closureDirStr + '<extra></extra>'
+    });
+  }
+  Plotly.react('pplan', tr, {
+    ...LB,
+    title: { text: 'Plan View (Top Down)', font: { color: '#374151', size: 13 } },
+    xaxis: { ...ax2('Easting (m)'), zeroline: true },
+    yaxis: { ...ax2('Northing (m)'), zeroline: true, scaleanchor: 'x' }
+  }, { responsive: true, displaylogo: false });
+}
+
+// ── VERTICAL SECTION ──────────────────────────────────────────────────────────
+function renderVSec() {
+  const ws = getVisible(); const tr = [];
+  for (const w of ws) {
+    const t = w.trajectory, col = COLORS[w.ci % COLORS.length];
+    tr.push({
+      type: 'scatter', mode: 'lines', name: w.name,
+      x: t.map(p => p.vertSec),
+      y: t.map(p => p.tvd),
+      line: { color: col, width: 2.5 },
+      hovertemplate:
+        '<b>' + w.name + '</b><br>' +
+        'V.Sec: %{x:.1f} m<br>TVD: %{y:.1f} m<br>' +
+        'MD: %{customdata[0]:.1f} m  Inc: %{customdata[1]:.2f}°<extra></extra>',
+      customdata: t.map(p => [p.md, p.inc])
+    });
+  }
+  Plotly.react('pvsec', tr, {
+    ...LB,
+    title: { text: 'Vertical Section', font: { color: '#374151', size: 13 } },
+    xaxis: { ...ax2('Vertical Section (m)') },
+    yaxis: {
+      ...ax2('TVD (m)'),
+      autorange: 'reversed',
+      tickformat: '.0f',
+      dtick: 500
+    }
+  }, { responsive: true, displaylogo: false });
+}
+
+// ── DLS PROFILE ───────────────────────────────────────────────────────────────
+function renderDLS() {
+  const ws = getVisible(); const tr = [];
+  for (const w of ws) {
+    const t = w.trajectory.slice(1), col = COLORS[w.ci % COLORS.length];
+    tr.push({
+      type: 'bar', name: w.name + ' DLS',
+      x: t.map(p => p.md), y: t.map(p => p.dls),
+      marker: {
+        color: t.map(p =>
+          p.dls >= 3   ? '#bb0000' :
+          p.dls >= 1.5 ? '#b86000' :
+          p.dls >= 0.5 ? '#006622' : '#0055bb')
+      },
+      hovertemplate:
+        '<b>' + w.name + '</b><br>MD: %{x:.1f} m<br>DLS: %{y:.3f} °/30m<extra></extra>'
+    });
+    tr.push({
+      type: 'scatter', mode: 'lines', name: w.name + ' Build Rate',
+      x: t.map(p => p.md), y: t.map(p => p.buildRate),
+      line: { color: col, width: 1.5, dash: 'dot' }, yaxis: 'y2',
+      hovertemplate: 'Build Rate: %{y:.3f} °/30m<extra></extra>'
+    });
+  }
+  Plotly.react('pdls', tr, {
+    ...LB,
+    title: { text: 'DLS & Build Rate Profile', font: { color: '#374151', size: 13 } },
+    xaxis: { ...ax2('MD (m)') },
+    yaxis: { ...ax2('DLS (°/30m)'), dtick: undefined },
+    yaxis2: {
+      title: { text: 'Build Rate (°/30m)', font: { color: '#6b7280', size: 11 } },
+      overlaying: 'y', side: 'right',
+      tickfont: { color: '#6b7280' }, linecolor: '#c5cde0'
+    },
+    barmode: 'group',
+    shapes: [
+      { type:'line', x0:0, x1:1, xref:'paper', y0:3,   y1:3,   yref:'y',
+        line:{ color:'#bb0000', width:1.5, dash:'dash' } },
+      { type:'line', x0:0, x1:1, xref:'paper', y0:1.5, y1:1.5, yref:'y',
+        line:{ color:'#b86000', width:1,   dash:'dot'  } }
+    ],
+    annotations: [{
+      text:'3°/30m limit', x:1, xref:'paper', y:3, yref:'y',
+      xanchor:'right', showarrow:false, font:{ color:'#bb0000', size:9 }
+    }]
+  }, { responsive: true, displaylogo: false });
+}
+
+// ── Reset camera to default ───────────────────────────────────────────────────
+function resetCam() {
+  Plotly.relayout('p3d', {
+    'scene.camera': {
+      eye:    { x: 1.4, y: 1.4, z: -1.2 },
+      center: { x: 0,   y: 0,   z: 0 },
+      up:     { x: 0,   y: 0,   z: -1 }
+    }
+  });
+}
+
+// ── Resize on window change ───────────────────────────────────────────────────
+window.onresize = () => {
+  ['p3d','pplan','pvsec','pdls'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el && el.data) Plotly.Plots.resize(el);
+  });
+};
+</script>
+</body>
+</html>
