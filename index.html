@@ -200,10 +200,11 @@ tr:hover td{background:#eef4ff;color:var(--txt);}
       <button class="vb"    onclick="switchView('vsec',this)">Vert. Section</button>
       <button class="vb"    onclick="switchView('dls',this)">DLS Profile</button>
       <div class="sp"></div>
+      <button class="btn btna" id="shb" onclick="toggleShape()" style="font-size:9px;padding:4px 10px;margin:4px 8px 4px 0;" title="Far-apart wells: multiply each well's horizontal drift so its drawn inclination matches reality. Wellhead positions stay true; hover values and Plan/Vert.Section are always true. Switch off for a strictly to-scale picture.">TRUE-ANGLE SHAPES: ON</button>
       <button class="btn" id="fcb" onclick="toggleFocus()" style="font-size:9px;padding:4px 10px;margin:4px 12px 4px 0;" title="3D view of only the well chosen in the STATS dropdown, at true 1:1:1 scale, TVD tick every 100 m">TRUE SCALE: SELECTED WELL</button>
-      <label class="lbl" id="dsw" style="display:flex;align-items:center;gap:7px;padding-right:12px;" title="Zoom the 3D view towards the well chosen in STATS. All three axes magnify together, so true proportions are kept (double-click to reset)">
-        MAGNIFIER
-        <input type="range" id="dsl" min="0" max="2.7" step="0.02" value="0" style="width:140px;accent-color:var(--acc);cursor:pointer;" ondblclick="this.value=0;setMagnifier(0)" oninput="setMagnifier(this.value)"/>
+      <label class="lbl" id="dsw" style="display:flex;align-items:center;gap:7px;padding-right:12px;" title="Stretch or squash the TVD axis in the 3D view (double-click to reset)">
+        DEPTH SCALE
+        <input type="range" id="dsl" min="-2" max="2" step="0.05" value="0" style="width:120px;accent-color:var(--acc);cursor:pointer;" ondblclick="this.value=0;setDepthScale(0)" oninput="setDepthScale(this.value)"/>
         <span id="dsv" style="min-width:34px;color:var(--txt2);">1.0x</span>
       </label>
     </div>
@@ -220,7 +221,7 @@ tr:hover td{background:#eef4ff;color:var(--txt);}
   <div class="dot"></div><span id="sb1">–</span>
   <span>Minimum Curvature</span><span>Metric (m · °/30m)</span>
   <div style="flex:1"></div>
-  <span>Well Trajectory 3D v2.7 (georef, true 1:1:1 scale, magnifier)</span>
+  <span>Well Trajectory 3D v2.6 (georef, 100 m TVD ticks, true-angle shapes)</span>
 </div>
 
 <script>
@@ -239,36 +240,21 @@ const SURF_COLORSCALES = [
   'Earth', 'Hot', 'Viridis', 'Cividis', 'Plasma', 'Jet'
 ];
 
-let curWell = 0, curView = '3d', focus3d = false, mag = 1, g3 = null;
-// Common magnifier: moves the camera in/out (all three axes scale together, so true proportions are kept).
-// Zooms towards the well selected in the STATS dropdown; drag to rotate, scroll to zoom further.
-function applyMag(){
-  const gd = document.getElementById('p3d'); if (!gd || !gd.data || !g3) return;
-  const cur = (gd._fullLayout && gd._fullLayout.scene && gd._fullLayout.scene.camera) || { eye:{x:1.4,y:1.4,z:-1.2}, center:{x:0,y:0,z:0} };
-  let dx = cur.eye.x - cur.center.x, dy = cur.eye.y - cur.center.y, dz = cur.eye.z - cur.center.z;
-  const dl = Math.hypot(dx, dy, dz) || 1; dx /= dl; dy /= dl; dz /= dl;
-  let c = { x:0, y:0, z:0 };
-  const w = WD[Math.max(0, curWell)];
-  if (mag > 1 && w){
-    let x0 = Infinity, x1 = -Infinity, y0 = Infinity, y1 = -Infinity, z1 = 0;
-    for (const p of w.trajectory){ x0 = Math.min(x0, p.x); x1 = Math.max(x1, p.x); y0 = Math.min(y0, p.y); y1 = Math.max(y1, p.y); z1 = Math.max(z1, p.tvd); }
-    const nx = ((x0 + x1) / 2 - (g3.xr[0] + g3.xr[1]) / 2) / (g3.xr[1] - g3.xr[0]) * g3.aspect.x;
-    const ny = ((y0 + y1) / 2 - (g3.yr[0] + g3.yr[1]) / 2) / (g3.yr[1] - g3.yr[0]) * g3.aspect.y;
-    const nz = (z1 / 2 - g3.zMax / 2) / g3.zMax * g3.aspect.z;
-    c = { x:nx, y:ny, z:nz };
-  }
-  const d = 2.2 / mag;
-  Plotly.relayout('p3d', { 'scene.camera': {
-    eye: { x:c.x + dx*d, y:c.y + dy*d, z:c.z + dz*d }, center: c, up: { x:0, y:0, z:-1 } } });
-}
-function setMagnifier(v){
-  mag = Math.pow(10, parseFloat(v));
-  document.getElementById('dsv').textContent = (mag < 10 ? mag.toFixed(1) : Math.round(mag)) + 'x';
-  if (curView === '3d') applyMag();
+let curWell = 0, curView = '3d', depthScale = 1, focus3d = false, shapeTrue = true;
+function toggleShape(){
+  shapeTrue = !shapeTrue;
+  document.getElementById('shb').classList.toggle('btna', shapeTrue);
+  document.getElementById('shb').textContent = 'TRUE-ANGLE SHAPES: ' + (shapeTrue ? 'ON' : 'OFF');
+  if (curView === '3d') render3D();
 }
 function toggleFocus(){
   focus3d = !focus3d;
   document.getElementById('fcb').classList.toggle('btna', focus3d);
+  if (curView === '3d') render3D();
+}
+function setDepthScale(v){
+  depthScale = Math.pow(2, parseFloat(v));
+  document.getElementById('dsv').textContent = depthScale.toFixed(depthScale < 1 ? 2 : 1) + 'x';
   if (curView === '3d') render3D();
 }
 const rendered = {};
@@ -629,7 +615,8 @@ function loadSampleSurface(){
 function refresh(){
   Object.keys(rendered).forEach(k => delete rendered[k]);
   focus3d = false; document.getElementById('fcb').classList.remove('btna');
-  mag = 1; document.getElementById('dsl').value = 0; document.getElementById('dsv').textContent = '1.0x';
+  shapeTrue = true; { const b = document.getElementById('shb'); b.classList.add('btna'); b.textContent = 'TRUE-ANGLE SHAPES: ON'; }
+  depthScale = 1; document.getElementById('dsl').value = 0; document.getElementById('dsv').textContent = '1.0x';
   curWell = 0; sCol = null; sAsc = true; visSet = new Set(WD.map((_, i) => i)); surfVisSet = new Set(SD.map((_, i) => i));
   ['ws','wl','sl'].forEach(id => document.getElementById(id).innerHTML = '');
   buildSelect(); buildWellsList(); buildSurfacesList(); updateStats(0); updateTable(0);
@@ -990,15 +977,46 @@ function render3D() {
     });
   }
 
-  // ── Box proportions: ALWAYS true scale (same metres per unit on X, Y and Z) ───────────────
-  // Ranges are set explicitly so the drawn box matches its aspect ratio exactly. Use the Magnifier to zoom in.
-  if (!isFinite(gx0)) { gx0 = -500; gx1 = 500; gy0 = -500; gy1 = 500; }
-  const pad = focus3d ? 0.1 : 0.05;
-  const xr = [gx0 - Math.max((gx1 - gx0) * pad, 200), gx1 + Math.max((gx1 - gx0) * pad, 200)];
-  const yr = [gy0 - Math.max((gy1 - gy0) * pad, 200), gy1 + Math.max((gy1 - gy0) * pad, 200)];
-  const SX = xr[1] - xr[0], SY = yr[1] - yr[0], SM = Math.max(SX, SY, zMax);
-  const aspect = { x: SX / SM, y: SY / SM, z: zMax / SM };
-  g3 = { xr, yr, zMax, aspect };
+  // ── Box proportions + true-angle factor ───────────────────────────────────
+  // Local wells keep 1:1:1.4. Georeferenced wells far apart: X:Y stay true to each other, TVD gets a minimum height.
+  // With wells hundreds of km apart their own horizontal drift is a few pixels, so every well looks vertical. When
+  // shapeTrue is on, each well's horizontal drift (relative to its own wellhead) is multiplied by K so that the drawn
+  // inclination equals the real one. Wellhead positions stay true; hover values and the other views stay true.
+  let K = 1, aspect = { x: 1, y: 1, z: 1.4 }, xr = null, yr = null;
+  const spanOf = k => {
+    let x0 = gx0, x1 = gx1, y0 = gy0, y1 = gy1;
+    if (!focus3d) { x0 = Infinity; x1 = -Infinity; y0 = Infinity; y1 = -Infinity; }
+    for (const w of ws) for (const p of w.trajectory) {
+      const X = w.utm ? w.utm.E + k * p.easting : p.x, Y = w.utm ? w.utm.N + k * p.northing : p.y;
+      if (X < x0) x0 = X; if (X > x1) x1 = X; if (Y < y0) y0 = Y; if (Y > y1) y1 = Y;
+    }
+    return { x0, x1, y0, y1 };
+  };
+  if (focus3d) {
+    // True scale for the selected well: equal metres per unit on all three axes, surfaces clipped to the well's neighbourhood
+    const spx = wellXMax - wellXMin, spy = wellYMax - wellYMin;
+    const px = Math.max(0.1 * spx, 200), py = Math.max(0.1 * spy, 200);
+    xr = [wellXMin - px, wellXMax + px]; yr = [wellYMin - py, wellYMax + py];
+    const sx = xr[1] - xr[0], sy = yr[1] - yr[0], m = Math.max(sx, sy, zMax);
+    aspect = { x: sx / m, y: sy / m, z: zMax / m };
+  } else if (GEO()) {
+    const box = k => {
+      const sp = spanOf(k);
+      const sx = Math.max(sp.x1 - sp.x0, 1), sy = Math.max(sp.y1 - sp.y0, 1), m = Math.max(sx, sy);
+      return { sx, sy, m, a: { x: Math.max(sx / m, 0.05), y: Math.max(sy / m, 0.05), z: Math.max(zMax / m, 0.5) } };
+    };
+    let b = box(1);
+    if (shapeTrue) {
+      for (let it = 0; it < 4; it++) {
+        // metres of vertical per metre of horizontal that the box currently draws
+        K = Math.min(300, Math.max(1, (b.a.z * depthScale / zMax) / (Math.max(b.a.x, b.a.y) / Math.max(b.sx, b.sy))));
+        b = box(K);
+      }
+    }
+    aspect = b.a;
+  }
+  const KX = w => p => w.utm ? w.utm.E + K * p.easting : p.x;
+  const KY = w => p => w.utm ? w.utm.N + K * p.northing : p.y;
 
   // ── Well traces ───────────────────────────────────────────────────────────
   for (const w of ws) {
@@ -1008,8 +1026,8 @@ function render3D() {
 
     tr.push({
       type: 'scatter3d', mode: 'lines', name: w.name,
-      x: t.map(p => p.x),
-      y: t.map(p => p.y),
+      x: t.map(KX(w)),
+      y: t.map(KY(w)),
       z: t.map(p => p.tvd),
       line: {
         color: dlsArr,
@@ -1031,7 +1049,7 @@ function render3D() {
 
     tr.push({
       type: 'scatter3d', mode: 'markers', showlegend: false,
-      x: [t[0].x], y: [t[0].y], z: [0],
+      x: [KX(w)(t[0])], y: [KY(w)(t[0])], z: [0],
       marker: { color: col, size: 10, symbol: 'circle', line: { color: '#222', width: 2 } },
       hovertemplate: '<b>' + w.name + ' — Surface</b><br>TVD: 0 m<extra></extra>'
     });
@@ -1039,7 +1057,7 @@ function render3D() {
     const L = t[t.length - 1];
     tr.push({
       type: 'scatter3d', mode: 'markers', showlegend: false,
-      x: [L.x], y: [L.y], z: [L.tvd],
+      x: [KX(w)(L)], y: [KY(w)(L)], z: [L.tvd],
       marker: { color: col, size: 9, symbol: 'diamond', line: { color: '#222', width: 1.5 } },
       hovertemplate: `<b>${w.name} — TD</b><br>MD: ${L.md.toFixed(1)} m  TVD: ${L.tvd.toFixed(1)} m<extra></extra>`
     });
@@ -1048,7 +1066,7 @@ function render3D() {
       const kp = t.find(p => p.md >= w.stats.kop) || t[0];
       tr.push({
         type: 'scatter3d', mode: 'markers+text', showlegend: false,
-        x: [kp.x], y: [kp.y], z: [kp.tvd],
+        x: [KX(w)(kp)], y: [KY(w)(kp)], z: [kp.tvd],
         text: ['KOP'], textposition: 'top center',
         textfont: { color: '#884400', size: 10 },
         marker: { color: '#b86000', size: 7, symbol: 'square', line: { color: '#222', width: 1 } },
@@ -1062,8 +1080,8 @@ function render3D() {
     uirevision: 'stable',
     margin: { t: 20, b: 10, l: 10, r: 10 },
     scene: {
-      xaxis: { ...ax3('Easting (m)'), range: xr, autorange: false },
-      yaxis: { ...ax3('Northing (m)'), range: yr, autorange: false },
+      xaxis: { ...ax3('Easting (m)'), ...(xr ? { range: xr, autorange: false } : {}) },
+      yaxis: { ...ax3('Northing (m)'), ...(yr ? { range: yr, autorange: false } : {}) },
       zaxis: {
         ...ax3('TVD (m)'),
         range: [0, zMax],
@@ -1077,7 +1095,7 @@ function render3D() {
         up:     { x: 0,   y: 0,   z: -1 }
       },
       aspectmode: 'manual',
-      aspectratio: aspect,
+      aspectratio: { x: aspect.x, y: aspect.y, z: aspect.z * depthScale },
       bgcolor: 'rgba(245,247,251,0.8)',
       dragmode: 'orbit'
     }
@@ -1089,7 +1107,7 @@ function render3D() {
     scrollZoom: true,
     modeBarButtonsToRemove: ['toImage'],
     editable: false
-  }).then(() => { if (mag !== 1) applyMag(); });
+  });
 }
 
 // ── PLAN VIEW ─────────────────────────────────────────────────────────────────
@@ -1206,7 +1224,6 @@ function renderDLS() {
 
 // ── Reset camera to default ───────────────────────────────────────────────────
 function resetCam() {
-  mag = 1; document.getElementById('dsl').value = 0; document.getElementById('dsv').textContent = '1.0x';
   Plotly.relayout('p3d', {
     'scene.camera': {
       eye:    { x: 1.4, y: 1.4, z: -1.2 },
