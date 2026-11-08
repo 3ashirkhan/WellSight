@@ -200,6 +200,7 @@ tr:hover td{background:#eef4ff;color:var(--txt);}
       <button class="vb"    onclick="switchView('vsec',this)">Vert. Section</button>
       <button class="vb"    onclick="switchView('dls',this)">DLS Profile</button>
       <div class="sp"></div>
+      <button class="btn" id="fcb" onclick="toggleFocus()" style="font-size:9px;padding:4px 10px;margin:4px 12px 4px 0;" title="3D view of only the well chosen in the STATS dropdown, at true 1:1:1 scale, TVD tick every 100 m">TRUE SCALE: SELECTED WELL</button>
       <label class="lbl" id="dsw" style="display:flex;align-items:center;gap:7px;padding-right:12px;" title="Stretch or squash the TVD axis in the 3D view (double-click to reset)">
         DEPTH SCALE
         <input type="range" id="dsl" min="-2" max="2" step="0.05" value="0" style="width:120px;accent-color:var(--acc);cursor:pointer;" ondblclick="this.value=0;setDepthScale(0)" oninput="setDepthScale(this.value)"/>
@@ -219,7 +220,7 @@ tr:hover td{background:#eef4ff;color:var(--txt);}
   <div class="dot"></div><span id="sb1">–</span>
   <span>Minimum Curvature</span><span>Metric (m · °/30m)</span>
   <div style="flex:1"></div>
-  <span>Well Trajectory 3D v2.3 (georef + depth scale)</span>
+  <span>Well Trajectory 3D v2.5 (georef, 100 m TVD ticks, true-scale well)</span>
 </div>
 
 <script>
@@ -238,7 +239,12 @@ const SURF_COLORSCALES = [
   'Earth', 'Hot', 'Viridis', 'Cividis', 'Plasma', 'Jet'
 ];
 
-let curWell = 0, curView = '3d', depthScale = 1;
+let curWell = 0, curView = '3d', depthScale = 1, focus3d = false;
+function toggleFocus(){
+  focus3d = !focus3d;
+  document.getElementById('fcb').classList.toggle('btna', focus3d);
+  if (curView === '3d') render3D();
+}
 function setDepthScale(v){
   depthScale = Math.pow(2, parseFloat(v));
   document.getElementById('dsv').textContent = depthScale.toFixed(depthScale < 1 ? 2 : 1) + 'x';
@@ -601,6 +607,7 @@ function loadSampleSurface(){
 }
 function refresh(){
   Object.keys(rendered).forEach(k => delete rendered[k]);
+  focus3d = false; document.getElementById('fcb').classList.remove('btna');
   depthScale = 1; document.getElementById('dsl').value = 0; document.getElementById('dsv').textContent = '1.0x';
   curWell = 0; sCol = null; sAsc = true; visSet = new Set(WD.map((_, i) => i)); surfVisSet = new Set(SD.map((_, i) => i));
   ['ws','wl','sl'].forEach(id => document.getElementById(id).innerHTML = '');
@@ -632,6 +639,7 @@ function buildSelect() {
   s.onchange = () => {
     const v = parseInt(s.value);
     curWell = v; updateStats(v); updateTable(v);
+    if (focus3d && curView === '3d') render3D();
   };
 }
 
@@ -874,7 +882,7 @@ function renderCurrent() {
 // system from the data ranges and apply an offset if needed.
 
 function render3D() {
-  const ws = getVisible();
+  const ws = focus3d ? [{ ...WD[Math.max(0, curWell)], ci: Math.max(0, curWell) }] : getVisible();
   const tr = [];
 
   // ── Compute global TVD / Z range ──
@@ -889,7 +897,7 @@ function render3D() {
       if (SD[si].zMax > maxTVD) { maxTVD = SD[si].zMax; }
     }
   }
-  const zMax = Math.ceil((maxTVD + 100) / 500) * 500;
+  const zMax = Math.ceil((maxTVD + 50) / 100) * 100;
 
   // ── Surface traces ────────────────────────────────────────────────────────
   // Surface coordinates are in absolute UTM (large numbers like 432000, 6477000).
@@ -928,8 +936,8 @@ function render3D() {
 
     const xs_shifted = surf.xs.map(x => x + dx);
     const ys_shifted = surf.ys.map(y => y + dy);
-    gx0 = Math.min(gx0, xs_shifted[0], xs_shifted[xs_shifted.length - 1]); gx1 = Math.max(gx1, xs_shifted[0], xs_shifted[xs_shifted.length - 1]);
-    gy0 = Math.min(gy0, ys_shifted[0], ys_shifted[ys_shifted.length - 1]); gy1 = Math.max(gy1, ys_shifted[0], ys_shifted[ys_shifted.length - 1]);
+    if (!focus3d) gx0 = Math.min(gx0, xs_shifted[0], xs_shifted[xs_shifted.length - 1]); gx1 = Math.max(gx1, xs_shifted[0], xs_shifted[xs_shifted.length - 1]);
+    if (!focus3d) gy0 = Math.min(gy0, ys_shifted[0], ys_shifted[ys_shifted.length - 1]); gy1 = Math.max(gy1, ys_shifted[0], ys_shifted[ys_shifted.length - 1]);
 
     const cs = SURF_COLORSCALES[si % SURF_COLORSCALES.length];
 
@@ -1021,10 +1029,17 @@ function render3D() {
   // Box proportions. Local wells keep the original 1:1:1.4. When wells are georeferenced and far apart, the
   // horizontal span can be 50-100x the depth, which flattens TVD to a sliver, so depth gets a minimum height
   // (vertical exaggeration) while X:Y stay true to each other.
-  let aspect = { x: 1, y: 1, z: 1.4 };
-  if (GEO()) {
+  let aspect = { x: 1, y: 1, z: 1.4 }, xr = null, yr = null;
+  if (focus3d) {
+    // True scale for the selected well: equal metres per unit on all three axes, surfaces clipped to the well's neighbourhood
+    const spx = wellXMax - wellXMin, spy = wellYMax - wellYMin;
+    const px = Math.max(0.1 * spx, 200), py = Math.max(0.1 * spy, 200);
+    xr = [wellXMin - px, wellXMax + px]; yr = [wellYMin - py, wellYMax + py];
+    const sx = xr[1] - xr[0], sy = yr[1] - yr[0], m = Math.max(sx, sy, zMax);
+    aspect = { x: sx / m, y: sy / m, z: zMax / m };
+  } else if (GEO()) {
     const sx = Math.max(gx1 - gx0, 1), sy = Math.max(gy1 - gy0, 1), m = Math.max(sx, sy);
-    aspect = { x: Math.max(sx / m, 0.05), y: Math.max(sy / m, 0.05), z: Math.max(zMax / m, 0.35) };
+    aspect = { x: Math.max(sx / m, 0.05), y: Math.max(sy / m, 0.05), z: Math.max(zMax / m, 0.5) };
   }
 
   const layout = {
@@ -1032,13 +1047,14 @@ function render3D() {
     uirevision: 'stable',
     margin: { t: 20, b: 10, l: 10, r: 10 },
     scene: {
-      xaxis: { ...ax3('Easting (m)') },
-      yaxis: { ...ax3('Northing (m)') },
+      xaxis: { ...ax3('Easting (m)'), ...(xr ? { range: xr, autorange: false } : {}) },
+      yaxis: { ...ax3('Northing (m)'), ...(yr ? { range: yr, autorange: false } : {}) },
       zaxis: {
         ...ax3('TVD (m)'),
         range: [0, zMax],
         autorange: false,
-        dtick: 500
+        dtick: 100,
+        tick0: 0
       },
       camera: {
         eye:    { x: 1.4, y: 1.4, z: -1.2 },
