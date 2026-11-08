@@ -263,7 +263,8 @@ function ax2(title) {
     tickfont: { color: '#111827', size: 10 },
     tickcolor: '#222222',
     mirror: true, showline: true, ticks: 'outside',
-    dtick: 500
+    dtick: GEO() ? undefined : 500,
+    exponentformat: 'none', separatethousands: false
   };
 }
 
@@ -279,7 +280,8 @@ function ax3(title, extra) {
     backgroundcolor: 'rgba(240,244,250,0.75)',
     showbackground: true, showgrid: true,
     ticks: 'outside',
-    dtick: 500
+    dtick: GEO() ? undefined : 500,
+    exponentformat: 'none', separatethousands: false
   }, extra || {});
 }
 
@@ -348,6 +350,8 @@ const MD_ALIASES  = ['md','measured depth','meas depth','measdepth','depth','dep
 const INC_ALIASES = ['inc','inclination','incl','inc (deg)','inc(deg)','inclination (deg)','inclination(deg)','dip','angle','hole angle','hole_angle','holeangle','deviation','dev','i','inc.','incl (deg)','incl(deg)','inc (°)','inclination (°)','vert angle'];
 const AZI_ALIASES = ['azi','azimuth','az','azi (deg)','azi(deg)','azimuth (deg)','azimuth(deg)','azm','azmth','direction','heading','bearing','a','azi.','azim','azi (°)','azimuth (°)','magnetic azimuth','true azimuth','grid azimuth'];
 const BS_ALIASES  = ['bs','bit size','bitsize','bit_size','bit size (in)','bs (in)','bit diameter','bit dia','hole size','holesize','hole_size','diameter','dia','size','bit size (mm)','bs (mm)','hole diameter'];
+const LAT_ALIASES = ['lat','latitude','lat (deg)','latitude (deg)','surface lat','surface latitude','surf lat','surf latitude','wellhead lat','wellhead latitude','lat.','y (lat)'];
+const LON_ALIASES = ['lon','long','lng','longitude','lon (deg)','longitude (deg)','surface lon','surface long','surface longitude','surf lon','surf longitude','wellhead lon','wellhead longitude','lon.','long.','x (lon)'];
 function matchAlias(cell, aliases){
   const c = cell.toLowerCase().trim();
   return aliases.some(a => c === a || c === a.replace(/\s/g,'_') || c === a.replace(/\s/g,''));
@@ -364,11 +368,78 @@ function findHeader(raw){
       else if (m.inc === undefined && matchAlias(cell, INC_ALIASES)) m.inc = c;
       else if (m.azi === undefined && matchAlias(cell, AZI_ALIASES)) m.azi = c;
       else if (m.bs === undefined && matchAlias(cell, BS_ALIASES)) m.bs = c;
+      else if (m.lat === undefined && matchAlias(cell, LAT_ALIASES)) m.lat = c;
+      else if (m.lon === undefined && matchAlias(cell, LON_ALIASES)) m.lon = c;
     }
     if (m.md !== undefined && m.inc !== undefined && m.azi !== undefined) return { hRow:r, colMap:m };
   }
   return { hRow:-1, colMap:{} };
 }
+// Decimal degrees (21.1234, -72.5), or DMS text such as 21°07'24.5"N / 72 30 10 W
+function parseCoord(v){
+  if (v === null || v === undefined || v === '') return null;
+  if (typeof v === 'number') return isNaN(v) ? null : v;
+  const t = String(v).trim(); if (!t) return null;
+  if (!isNaN(Number(t))) return Number(t);
+  const m = t.match(/^([+-]?\d+(?:\.\d+)?)\s*[°dD:\s]\s*(?:(\d+(?:\.\d+)?)\s*['′mM:\s]\s*)?(?:(\d+(?:\.\d+)?)\s*(?:["″sS]|'')?\s*)?([NSEWnsew])?$/);
+  if (!m) return null;
+  let d = Math.abs(parseFloat(m[1])) + (m[2] ? parseFloat(m[2])/60 : 0) + (m[3] ? parseFloat(m[3])/3600 : 0);
+  if (parseFloat(m[1]) < 0 || /^-/.test(t) || /[SsWw]/.test(m[4] || '')) d = -d;
+  return d;
+}
+// Surface lat/lon: either columns in the data table (first valid row) or label/value cells in the rows above the header
+function findLoc(raw, hRow, m){
+  let lat = null, lon = null;
+  if (m.lat !== undefined) for (const r of raw.slice(hRow+1)){ const v = parseCoord(r && r[m.lat]); if (v !== null){ lat = v; break; } }
+  if (m.lon !== undefined) for (const r of raw.slice(hRow+1)){ const v = parseCoord(r && r[m.lon]); if (v !== null){ lon = v; break; } }
+  for (let r = 0; r < hRow && (lat === null || lon === null); r++){
+    const row = raw[r] || [];
+    for (let c = 0; c < row.length; c++){
+      let cell = String(row[c] ?? '').toLowerCase().trim(); if (!cell) continue;
+      let inline = null;
+      const kv = cell.match(/^([a-z .()_]+?)\s*[:=]\s*(.+)$/);
+      if (kv){ cell = kv[1].trim(); inline = kv[2]; } else cell = cell.replace(/[:=]\s*$/, '').trim();
+      const isLat = matchAlias(cell, LAT_ALIASES), isLon = matchAlias(cell, LON_ALIASES);
+      if (!isLat && !isLon) continue;
+      let v = inline !== null ? parseCoord(inline) : null;
+      for (let k = c + 1; v === null && k < row.length; k++) v = parseCoord(row[k]);
+      if (v === null) continue;
+      if (isLat && lat === null) lat = v; else if (isLon && lon === null) lon = v;
+    }
+  }
+  if (lat === null || lon === null || Math.abs(lat) > 84 || Math.abs(lon) > 180) return null;
+  return { lat, lon };
+}
+// WGS84 lat/lon -> UTM (Krueger series), forced into a given zone so all wells share one grid
+function llToUTM(lat, lon, zone){
+  const a = 6378137, f = 1/298.257223563, k0 = 0.9996, n = f/(2-f);
+  const A = a/(1+n)*(1 + n*n/4 + n**4/64);
+  const al = [n/2 - 2*n*n/3 + 5*n**3/16, 13*n*n/48 - 3*n**3/5, 61*n**3/240];
+  const phi = lat*D2R, lam = (lon - (zone*6 - 183))*D2R, sp = Math.sin(phi), q = 2*Math.sqrt(n)/(1+n);
+  const t = Math.sinh(Math.atanh(sp) - q*Math.atanh(q*sp));
+  const xi0 = Math.atan2(t, Math.cos(lam)), eta0 = Math.atanh(Math.sin(lam)/Math.sqrt(1+t*t));
+  let xi = xi0, eta = eta0;
+  for (let j = 1; j <= 3; j++){
+    xi  += al[j-1]*Math.sin(2*j*xi0)*Math.cosh(2*j*eta0);
+    eta += al[j-1]*Math.cos(2*j*xi0)*Math.sinh(2*j*eta0);
+  }
+  return { E: 500000 + k0*A*eta, N: k0*A*xi + (lat < 0 ? 10000000 : 0) };
+}
+// Place wells that have surface lat/lon on a common UTM grid (x,y become absolute; easting/northing stay relative to the wellhead)
+function buildWells(list){
+  const W = list.map(d => ({ name:d.name, ...calculate(d.points), loc:d.loc || null }));
+  const located = W.filter(w => w.loc);
+  if (located.length){
+    const zone = Math.min(60, Math.max(1, Math.floor((located.reduce((a, w) => a + w.loc.lon, 0)/located.length + 180)/6) + 1));
+    for (const w of located){
+      const u = llToUTM(w.loc.lat, w.loc.lon, zone);
+      w.utm = { E:u.E, N:u.N, zone, south:w.loc.lat < 0 };
+      for (const p of w.trajectory){ p.x = u.E + p.easting; p.y = u.N + p.northing; }
+    }
+  }
+  return W;
+}
+const GEO = () => WD.some(w => w.utm);
 const toNum = v => { if (v === null || v === undefined || v === '') return null; const n = Number(v); return isNaN(n) ? null : n; };
 function extractPoints(rows, m){
   const pts = [];
@@ -395,7 +466,7 @@ async function readFile(file){
       if (hRow < 0) continue;
       const points = extractPoints(raw.slice(hRow+1), colMap);
       if (points.length < 2) continue;
-      out.push({ name: wb.SheetNames.length > 1 ? base + ' — ' + sn : base, points });
+      out.push({ name: wb.SheetNames.length > 1 ? base + ' — ' + sn : base, points, loc: findLoc(raw, hRow, colMap) });
     }
     return out;
   }
@@ -410,7 +481,7 @@ async function readFile(file){
     if (hRow < 0) throw new Error('Could not find MD, Inc, Azi columns. Check column headers.');
     const points = extractPoints(raw.slice(hRow+1), colMap);
     if (points.length < 2) throw new Error('Not enough data rows (need at least 2).');
-    return [{ name: base, points }];
+    return [{ name: base, points, loc: findLoc(raw, hRow, colMap) }];
   }
   throw new Error('Unsupported file type: .' + ext);
 }
@@ -463,7 +534,7 @@ async function scanFolder(files){
     try { all.push(...await readFile(f)); } catch (e) {}
   }
   if (!all.length){ setMsg('No deviation data files found in folder.'); return; }
-  WD = all.map(d => ({ name:d.name, ...calculate(d.points) })); refresh();
+  WD = buildWells(all); refresh();
   document.getElementById('sb1').textContent = 'Loaded ' + all.length + ' well(s) from folder.';
 }
 function pickSurfaces(){
@@ -480,7 +551,7 @@ async function loadFiles(files){
     const all = [], errs = [];
     for (const f of wf){ try { all.push(...await readFile(f)); } catch (e) { errs.push(f.name + ': ' + e.message); } }
     if (!all.length){ setMsg(errs[0] || 'No valid well data found. Files must contain MD, Inc, and Azi columns.'); }
-    else { WD = all.map(d => ({ name:d.name, ...calculate(d.points) })); refresh(); if (errs.length) setMsg('Skipped ' + errs.join(' | ')); }
+    else { WD = buildWells(all); refresh(); if (errs.length) setMsg('Skipped ' + errs.join(' | ')); }
   }
   if (sf.length) await loadSurfaceFiles(sf);
 }
@@ -527,6 +598,10 @@ function refresh(){
   switchView('3d', document.querySelector('.vb'));
   document.getElementById('sb1').textContent = WD.length + ' Well' + (WD.length > 1 ? 's' : '') + ' Loaded' +
     (SD.length ? ' \u00B7 ' + SD.length + ' Surface' + (SD.length > 1 ? 's' : '') : '');
+  if (GEO()){
+    const n = WD.filter(w => !w.utm).length, z = WD.find(w => w.utm).utm;
+    document.getElementById('sb1').textContent += ' \u00B7 UTM zone ' + z.zone + (z.south ? 'S' : 'N') + (n ? ' \u00B7 ' + n + ' well(s) without lat/lon at local origin' : '');
+  }
   document.getElementById('ld').classList.add('h');
 }
 document.getElementById('fi').onchange = e => { if (e.target.files.length) loadFiles([...e.target.files]); e.target.value = ''; };
@@ -572,6 +647,8 @@ function buildWellsList() {
         <span>E: <b>${s.totalEasting.toFixed(1)} m</b></span>
         <span>Closure: <b>${s.totalClosureDistance.toFixed(1)} m</b></span>
         <span>KOP: <b>${s.kop !== null ? s.kop.toFixed(0)+' m' : 'N/A'}</b></span>
+        ${w.utm ? `<span style="grid-column:1/-1">Surface: <b>${w.loc.lat.toFixed(6)}°, ${w.loc.lon.toFixed(6)}°</b></span>
+        <span style="grid-column:1/-1">UTM ${w.utm.zone}${w.utm.south?'S':'N'}: <b>E ${w.utm.E.toFixed(1)}  N ${w.utm.N.toFixed(1)}</b></span>` : ''}
       </div>
       <div style="margin-top:7px;">
         <button class="btn" style="font-size:9px;padding:3px 10px;"
@@ -666,6 +743,11 @@ function updateStats(idx) {
     { l:'Closure Dir.', v:s.totalClosureDirStr,             u:'' },
     { l:'Vert. Section',v:s.verticalSection.toFixed(2),    u:'m' },
     { l:'H. Reach',     v:s.projectedHorizontalReach.toFixed(2), u:'m' },
+    ...(w.utm ? [
+      { l:'Surface Lat',  v:w.loc.lat.toFixed(6),  u:'°' },
+      { l:'Surface Lon',  v:w.loc.lon.toFixed(6),  u:'°' },
+      { l:'Surface E (UTM '+w.utm.zone+(w.utm.south?'S':'N')+')', v:w.utm.E.toFixed(1), u:'m' },
+      { l:'Surface N (UTM)', v:w.utm.N.toFixed(1), u:'m' } ] : []),
   ];
   document.getElementById('sg').innerHTML = cells.map(c =>
     `<div class="sc ${c.cls||''}">
@@ -810,10 +892,10 @@ function render3D() {
   let wellYMin = Infinity, wellYMax = -Infinity;
   for (const w of ws) {
     for (const p of w.trajectory) {
-      if (p.easting  < wellXMin) wellXMin = p.easting;
-      if (p.easting  > wellXMax) wellXMax = p.easting;
-      if (p.northing < wellYMin) wellYMin = p.northing;
-      if (p.northing > wellYMax) wellYMax = p.northing;
+      if (p.x < wellXMin) wellXMin = p.x;
+      if (p.x > wellXMax) wellXMax = p.x;
+      if (p.y < wellYMin) wellYMin = p.y;
+      if (p.y > wellYMax) wellYMax = p.y;
     }
   }
 
@@ -938,7 +1020,7 @@ function render3D() {
         center: { x: 0,   y: 0,   z: 0 },
         up:     { x: 0,   y: 0,   z: -1 }
       },
-      aspectmode: 'manual',
+      aspectmode: GEO() ? 'data' : 'manual',
       aspectratio: { x: 1, y: 1, z: 1.4 },
       bgcolor: 'rgba(245,247,251,0.8)',
       dragmode: 'orbit'
@@ -961,7 +1043,7 @@ function renderPlan() {
     const t = w.trajectory, col = COLORS[w.ci % COLORS.length];
     tr.push({
       type: 'scatter', mode: 'lines+markers', name: w.name,
-      x: t.map(p => p.easting), y: t.map(p => p.northing),
+      x: t.map(p => p.x), y: t.map(p => p.y),
       line: { color: col, width: 2.5 },
       marker: {
         color: t.map(p => p.md), colorscale: 'Blues', size: 5,
@@ -975,7 +1057,7 @@ function renderPlan() {
     const L = t[t.length - 1];
     tr.push({
       type: 'scatter', mode: 'lines', showlegend: false,
-      x: [0, L.easting], y: [0, L.northing],
+      x: [t[0].x, L.x], y: [t[0].y, L.y],
       line: { color: col, width: 1, dash: 'dash' },
       hovertemplate: 'Closure: ' + L.closureDistance.toFixed(1) + ' m @ ' + L.closureDirStr + '<extra></extra>'
     });
