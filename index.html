@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
-<title>Well Trajectory 3D</title>
+<title>WellSight | 3D Well Trajectory &amp; Subsurface Visualizer</title>
 <script src="https://cdn.jsdelivr.net/npm/plotly.js-dist-min@2.32.0/plotly.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <style>
@@ -14,7 +14,7 @@
   --warn:#b86000;--danger:#bb0000;
   --txt:#111827;--txt2:#374151;--txt3:#6b7280;--txt4:#9ca3af;
   --pw:340px;--hh:56px;
-  --font:'Consolas','Courier New',monospace;
+  --font:'Segoe UI',system-ui,-apple-system,'Helvetica Neue',Arial,sans-serif;--mono:'Consolas','Courier New',monospace;
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 html,body{width:100%;height:100%;overflow:hidden;background:#fff;color:var(--txt);font-family:var(--font);font-size:12px;}
@@ -107,6 +107,85 @@ tr:hover td{background:#eef4ff;color:var(--txt);}
 #pa>div{position:absolute;inset:0;display:none;background:#fff;}
 #pa>div.on{display:block;}
 
+
+/* ===== PRO UI THEME ===== */
+html,body{-webkit-font-smoothing:antialiased;font-size:12px;}
+td,th,.sv,.su,#sb,.wcard,.scard{font-variant-numeric:tabular-nums;}
+#hdr{height:var(--hh);background:linear-gradient(#ffffff,#f3f6fb);border-bottom:1px solid var(--bdr);box-shadow:0 1px 3px rgba(16,32,64,.08);padding:0 14px;gap:10px;}
+.hb-brand{display:flex;align-items:center;gap:10px;}
+.hb-logo{width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,#0055bb,#0a8f4a);display:grid;place-items:center;box-shadow:0 2px 8px rgba(0,85,187,.3);flex-shrink:0;}
+#hdr h1{font-size:15px;font-weight:700;letter-spacing:.01em;color:#0b1730;line-height:1.1;}
+.sub{font-size:10.5px;color:var(--txt3);letter-spacing:.01em;text-transform:none;margin-top:1px;font-weight:500;}
+.hb-sep{width:1px;height:30px;background:var(--bdr);margin:0 4px;flex-shrink:0;}
+.hb-grp{display:flex;align-items:center;gap:6px;}
+.lbl{font-size:10px;color:var(--txt3);text-transform:uppercase;letter-spacing:.06em;font-weight:600;}
+select{border-radius:6px;padding:6px 9px;font-size:12px;min-width:150px;border:1px solid var(--bdr2);background:#fff;}
+select:focus{border-color:var(--acc);box-shadow:0 0 0 3px rgba(0,85,187,.12);}
+.rbtn{display:inline-flex;align-items:center;gap:7px;padding:6px 12px;height:34px;border-radius:6px;border:1px solid transparent;background:transparent;color:#1f2a44;font-family:var(--font);font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;transition:background .12s,border-color .12s,box-shadow .12s;}
+.rbtn .ri{color:var(--acc);flex-shrink:0;}
+.rbtn:hover{background:#eaf1fc;border-color:#b9cdee;}
+.rbtn:active{background:#dbe7f9;}
+.rbtn:focus-visible{outline:2px solid var(--acc);outline-offset:1px;}
+.rbtn-reset .ri{color:#b3261e;}
+.rbtn-reset:hover{background:#fdeceb;border-color:#f0b4b0;}
+.rbtn-acc{background:linear-gradient(#1a6bd0,#0055bb);color:#fff;border-color:#004a9f;box-shadow:0 1px 2px rgba(0,60,140,.3);}
+.rbtn-acc .ri{color:#fff;}
+.rbtn-acc:hover{background:linear-gradient(#2477da,#0a5fc8);border-color:#004a9f;}
+.btn{border-radius:5px;border:1px solid var(--bdr2);font-weight:600;}
+.tabs{background:var(--bg2);border-bottom:1px solid var(--bdr);padding:6px 6px 0;gap:2px;}
+.tb{flex:1;padding:7px 6px;font-size:11.5px;letter-spacing:.01em;text-transform:none;font-weight:600;border:1px solid transparent;border-bottom:none;border-radius:6px 6px 0 0;margin-bottom:-1px;}
+.tb.on{background:#fff;color:var(--acc);border-color:var(--bdr);border-bottom:2px solid var(--acc);}
+.tb:hover:not(.on){background:rgba(255,255,255,.6);}
+#vt{background:var(--bg2);border-bottom:1px solid var(--bdr);padding:6px 6px 0;gap:2px;align-items:flex-end;}
+.vb{padding:7px 16px;font-size:11.5px;letter-spacing:.01em;text-transform:none;font-weight:600;border:1px solid transparent;border-bottom:none;border-radius:6px 6px 0 0;margin-bottom:-1px;}
+.vb.on{background:#fff;color:var(--acc);border-color:var(--bdr);border-bottom:2px solid var(--acc);}
+.vb:hover:not(.on){background:rgba(255,255,255,.6);}
+#vt .btn,#vt label{margin-bottom:5px!important;}
+.sl{font-size:9.5px;letter-spacing:.06em;}.sv{font-size:14px;font-weight:600;}.su{font-size:9.5px;}
+.sc{padding:9px 12px;}
+th{font-size:9.5px;letter-spacing:.04em;background:var(--bg2);padding:7px 6px;}
+td{font-size:11px;padding:4px 6px;}
+tbody tr:nth-child(even) td{background:#fafbfd;}
+.shdr{font-size:10px;letter-spacing:.06em;}
+.wcard,.scard{border:1px solid var(--bdr);border-radius:8px;box-shadow:0 1px 2px rgba(16,32,64,.05);}
+.dlbar{font-size:10px;}
+#sb{font-size:10.5px;letter-spacing:.01em;background:#eef2f8;}
+#sb .dot{flex-shrink:0;}
+/* resizer */
+#rz{width:7px;flex-shrink:0;cursor:col-resize;position:relative;background:transparent;margin-left:-4px;margin-right:-3px;z-index:20;touch-action:none;}
+#rz::after{content:"";position:absolute;top:0;bottom:0;left:3px;width:1px;background:transparent;transition:background .12s,width .12s,left .12s;}
+#rz:hover::after,body.rzing #rz::after{background:var(--acc);width:3px;left:2px;}
+body.rzing{cursor:col-resize;user-select:none;}
+body.rzing #pa{pointer-events:none;}
+#lp{min-width:240px;}
+/* compass */
+#v3d{position:absolute;}
+#cmp{position:absolute;right:14px;bottom:14px;width:64px;height:64px;pointer-events:none;filter:drop-shadow(0 2px 6px rgba(16,32,64,.18));z-index:5;}
+
+#vmap{position:absolute;}
+.cmp2{position:absolute;top:46px;right:84px;pointer-events:none;z-index:5;background:rgba(255,255,255,.85);border-radius:6px;padding:2px 4px;}
+#mapTools{position:absolute;left:12px;bottom:10px;display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.92);border:1px solid var(--bdr);border-radius:6px;padding:4px 8px;font-size:10.5px;font-weight:600;color:var(--txt2);z-index:6;}
+#mapTools select{min-width:120px;padding:3px 6px;font-size:11px;}
+#mapTools2{position:absolute;right:12px;bottom:10px;display:flex;align-items:center;gap:5px;background:rgba(255,255,255,.92);border:1px solid var(--bdr);border-radius:6px;padding:4px 6px;z-index:6;}
+#mapTools2 .btn{font-size:10px;padding:3px 9px;}
+#mapTools2 select{font-size:10px;padding:3px 4px;border:1px solid var(--bdr);border-radius:4px;background:#fff;color:var(--txt);}
+#mapWellPop{display:none;position:absolute;right:12px;bottom:46px;min-width:190px;max-width:300px;max-height:55%;overflow:auto;background:#fff;border:1px solid var(--bdr2);border-radius:7px;box-shadow:0 4px 16px rgba(16,32,64,.18);padding:6px 8px;z-index:8;font-size:11px;}
+#mapWellPop.open{display:block;}
+#mapWellPop .wph{display:flex;align-items:center;gap:6px;padding-bottom:5px;margin-bottom:4px;border-bottom:1px solid var(--bdr);font-weight:700;color:var(--txt2);}
+#mapWellPop .wph .btn{font-size:9px;padding:2px 8px;}
+#mapWellPop label{display:flex;align-items:center;gap:7px;padding:3px 2px;cursor:pointer;color:var(--txt);}
+#mapWellPop label:hover{background:var(--bg1);}
+#mapWellPop .chip{width:14px;height:4px;border-radius:2px;flex-shrink:0;}
+#mapInfo{position:absolute;top:46px;left:86px;z-index:5;pointer-events:none;font:600 10.5px 'Segoe UI',Arial,sans-serif;color:#111827;background:rgba(255,255,255,.88);border-radius:6px;padding:3px 7px;line-height:1.5;max-width:46%;}
+#mapInfo .dim{font-weight:500;color:#4b5563;}
+#mapInfo .mres{color:#b00000;}
+#pmap.measuring .nsewdrag{cursor:crosshair !important;}
+#mapScale{position:absolute;left:50%;bottom:8px;transform:translateX(-50%);text-align:center;font:600 10.5px 'Segoe UI',Arial,sans-serif;color:#111827;pointer-events:none;user-select:none;}
+#mapScale .sbar{display:flex;border:1px solid #111;height:7px;margin:0 auto;box-sizing:content-box;}
+#mapScale .sbar i{display:block;height:100%;}
+#mapScale .slab{position:relative;height:14px;margin-top:2px;}
+#mapScale .slab span{position:absolute;transform:translateX(-50%);white-space:nowrap;}
+#mapScale .srat{margin-top:1px;font-weight:500;color:#374151;}
 /* STATUS BAR */
 #sb{position:fixed;bottom:0;left:0;right:0;height:22px;background:var(--bg2);
   border-top:1px solid var(--bdr);display:flex;align-items:center;padding:0 12px;
@@ -119,8 +198,91 @@ tr:hover td{background:#eef4ff;color:var(--txt);}
 ::-webkit-scrollbar-thumb{background:var(--bdr2);border-radius:3px;}
 
 /* LOADING */
-#ld{position:fixed;inset:0;background:#fff;display:flex;flex-direction:column;
-  align-items:center;justify-content:center;gap:14px;z-index:999;}
+#ld{position:fixed;inset:0;z-index:999;overflow:auto;color:var(--txt);
+  font-family:'Segoe UI',system-ui,-apple-system,'Helvetica Neue',Arial,sans-serif;
+  background:radial-gradient(900px 520px at 85% 8%,rgba(0,85,187,.10),transparent 60%),
+             radial-gradient(700px 480px at 5% 95%,rgba(0,102,34,.07),transparent 60%),
+             linear-gradient(#f7f9fd,#eef2f9);}
+#ld::before{content:"";position:absolute;inset:0;pointer-events:none;opacity:.55;
+  background-image:radial-gradient(rgba(0,45,110,.16) 1px,transparent 1.2px);background-size:26px 26px;
+  -webkit-mask-image:linear-gradient(115deg,#000 0%,transparent 70%);mask-image:linear-gradient(115deg,#000 0%,transparent 70%);}
+.wz-wrap{position:relative;min-height:100%;max-width:1180px;margin:0 auto;padding:0 40px;display:flex;flex-direction:column;}
+.wz-top{display:flex;align-items:center;justify-content:space-between;padding:26px 0;}
+.wz-brand{display:flex;align-items:center;gap:11px;font-weight:700;font-size:15px;letter-spacing:.01em;color:var(--txt);}
+.wz-logo{width:34px;height:34px;border-radius:9px;background:linear-gradient(135deg,#0055bb,#0a8f4a);display:grid;place-items:center;box-shadow:0 4px 14px rgba(0,85,187,.30);}
+.wz-brand small{display:block;font-weight:500;font-size:11px;color:var(--txt3);letter-spacing:.02em;margin-top:1px;}
+.wz-badge{font-size:11px;font-weight:600;color:var(--acc);background:#fff;border:1px solid var(--bdr);border-radius:999px;padding:5px 12px;}
+.wz-badge{text-decoration:none;cursor:pointer;font-family:inherit;transition:border-color .15s,background .15s;}
+.wz-badge:hover{border-color:var(--acc);background:#eef4ff;}
+.wz-about{margin-left:auto;}
+.abt-ov{position:fixed;inset:0;background:rgba(11,23,48,.45);display:none;align-items:center;justify-content:center;z-index:1000;padding:20px;}
+.abt-ov.on{display:flex;}
+.abt-box{position:relative;background:#fff;border-radius:16px;max-width:520px;width:100%;max-height:90vh;overflow:auto;padding:26px 28px;box-shadow:0 24px 60px rgba(16,32,64,.30);font-size:13px;line-height:1.6;color:var(--txt2);}
+.abt-box h3{font-size:18px;color:#0b1730;margin-bottom:12px;}
+.abt-box p{margin:0 0 9px;}.abt-box b{color:#0b1730;}.abt-box a{color:var(--acc);}
+.abt-x{position:absolute;top:10px;right:14px;border:none;background:none;font-size:24px;cursor:pointer;color:var(--txt3);}
+.abt-x:hover{color:var(--acc);}
+.wz-main{flex:1;display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);gap:36px;align-items:center;padding:10px 0 30px;}
+.wz-eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--acc);}
+.wz-eyebrow::before{content:"";width:22px;height:2px;border-radius:2px;background:var(--acc);}
+.wz-h1{font-size:44px;line-height:1.08;font-weight:800;letter-spacing:-.025em;margin:14px 0 16px;color:#0b1730;}
+.wz-h1 span{background:linear-gradient(90deg,#0055bb,#0a8f4a);-webkit-background-clip:text;background-clip:text;color:transparent;}
+.wz-lead{font-size:15.5px;line-height:1.6;color:var(--txt2);max-width:520px;margin:0 0 26px;}
+.wz-cards{display:grid;grid-template-columns:1fr 1fr;gap:14px;max-width:560px;}
+.wz-card{all:unset;box-sizing:border-box;cursor:pointer;background:rgba(255,255,255,.92);border:1px solid var(--bdr);border-radius:14px;padding:18px 18px 16px;
+  display:flex;flex-direction:column;gap:6px;box-shadow:0 1px 2px rgba(16,32,64,.05),0 8px 24px rgba(16,32,64,.06);transition:transform .15s,box-shadow .15s,border-color .15s;}
+.wz-card:hover,.wz-card:focus-visible{transform:translateY(-2px);border-color:var(--acc);box-shadow:0 2px 4px rgba(0,85,187,.08),0 14px 30px rgba(0,85,187,.14);}
+.wz-card:focus-visible{outline:2px solid var(--acc);outline-offset:2px;}
+.wz-ic{width:38px;height:38px;border-radius:10px;display:grid;place-items:center;margin-bottom:6px;}
+.wz-ic.w{background:#eaf1fc;color:#0055bb;}.wz-ic.s{background:#e7f5ec;color:#0a7a3f;}
+.wz-ct{font-size:15px;font-weight:700;color:#0b1730;}
+.wz-cd{font-size:12px;line-height:1.5;color:var(--txt3);}
+.wz-cf{margin-top:8px;font-size:11px;font-weight:600;color:var(--acc);display:flex;align-items:center;gap:6px;}
+.wz-card.sf .wz-cf{color:#0a7a3f;}
+.wz-sub{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-top:16px;font-size:12px;color:var(--txt3);}
+.wz-link{all:unset;cursor:pointer;color:var(--acc);font-weight:600;border-bottom:1px dashed rgba(0,85,187,.5);}
+.wz-link:hover{border-bottom-style:solid;}
+.wz-kbd{border:1px solid var(--bdr);border-bottom-width:2px;border-radius:5px;background:#fff;padding:1px 6px;font-size:11px;color:var(--txt2);}
+#lderr{color:var(--danger);font-size:12px;min-height:18px;margin-top:12px;max-width:560px;}
+.wz-artbox{position:relative;border-radius:20px;background:rgba(255,255,255,.62);border:1px solid rgba(197,205,224,.8);padding:18px;box-shadow:0 20px 50px rgba(16,32,64,.10);backdrop-filter:blur(2px);}
+.wz-art{width:100%;height:auto;display:block;}
+@media (prefers-reduced-motion:no-preference){
+.an-wa,.an-wb{stroke-dasharray:1 2;}
+.an-wa{animation:anWA 9s linear infinite;}
+.an-wb{animation:anWB 9s linear infinite;}
+.an-head,.an-lbl{animation:anHead 9s ease infinite;}
+.an-kop{animation:anKop 9s ease infinite;}
+.an-dash{animation:anKop 9s ease infinite;}
+.an-ta{animation:anTa 9s ease infinite;}
+.an-tb{animation:anTb 9s ease infinite;}
+.an-ra,.an-rb{opacity:0;}
+.an-ra{animation:anRa 9s ease-out infinite;}
+.an-rb{animation:anRb 9s ease-out infinite;}
+.an-fill{animation:anBreath 6s ease-in-out infinite;}
+.an-grid polyline{animation:anWave 3.2s ease-in-out infinite alternate;}
+.an-grid polyline:nth-child(2n){animation-delay:-.4s}.an-grid polyline:nth-child(3n){animation-delay:-1.1s}
+.an-grid polyline:nth-child(4n){animation-delay:-1.8s}.an-grid polyline:nth-child(5n){animation-delay:-2.5s}
+}
+@keyframes anWA{0%{stroke-dashoffset:1;opacity:1}40%{stroke-dashoffset:0}90%{stroke-dashoffset:0;opacity:1}97%{stroke-dashoffset:0;opacity:0}100%{stroke-dashoffset:1;opacity:0}}
+@keyframes anWB{0%,8%{stroke-dashoffset:1;opacity:1}50%{stroke-dashoffset:0}90%{stroke-dashoffset:0;opacity:1}97%{stroke-dashoffset:0;opacity:0}100%{stroke-dashoffset:1;opacity:0}}
+@keyframes anHead{0%{opacity:0}4%,90%{opacity:1}97%,100%{opacity:0}}
+@keyframes anKop{0%,15%{opacity:0}19%,90%{opacity:1}97%,100%{opacity:0}}
+@keyframes anTa{0%,39%{opacity:0}42%,90%{opacity:1}97%,100%{opacity:0}}
+@keyframes anTb{0%,49%{opacity:0}52%,90%{opacity:1}97%,100%{opacity:0}}
+@keyframes anRa{0%,40%{opacity:0;r:5.5px}42%{opacity:.8;r:5.5px}60%{opacity:0;r:16px}100%{opacity:0;r:16px}}
+@keyframes anRb{0%,50%{opacity:0;r:5.5px}52%{opacity:.8;r:5.5px}70%{opacity:0;r:16px}100%{opacity:0;r:16px}}
+@keyframes anBreath{0%,100%{opacity:.75}50%{opacity:1}}
+@keyframes anWave{from{stroke-opacity:1}to{stroke-opacity:.45}}
+
+.wz-chip{position:absolute;font-size:11px;font-weight:600;background:#fff;border:1px solid var(--bdr);border-radius:8px;padding:5px 9px;color:var(--txt2);box-shadow:0 4px 12px rgba(16,32,64,.10);}
+.wz-chip b{color:var(--acc);}
+.wz-feat{display:flex;flex-wrap:wrap;gap:8px 22px;padding:18px 0 26px;border-top:1px solid rgba(168,180,204,.45);font-size:12px;color:var(--txt2);}
+.wz-feat span{display:inline-flex;align-items:center;gap:7px;}
+.wz-feat i{width:6px;height:6px;border-radius:50%;background:var(--acc);display:inline-block;}
+.wz-feat em{margin-left:auto;font-style:normal;color:var(--txt3);}
+#ld.drag .wz-card{border-color:var(--acc);background:#fff;}
+@media (max-width:900px){.wz-main{grid-template-columns:1fr;}.wz-artbox{display:none;}.wz-h1{font-size:34px;}.wz-wrap{padding:0 22px;}}
+@media (max-width:520px){.wz-cards{grid-template-columns:1fr;}.wz-about{margin-left:0;}}
 #ld.h{opacity:0;pointer-events:none;transition:opacity .4s;}
 .spin{width:42px;height:42px;border:3px solid var(--bg3);border-top-color:var(--acc);
   border-radius:50%;animation:sp .8s linear infinite;}
@@ -130,33 +292,106 @@ tr:hover td{background:#eef4ff;color:var(--txt);}
 <body>
 
 <div id="ld">
-  <div style="font-size:20px;font-weight:800;color:var(--acc);letter-spacing:.06em;">&#9981; WELL TRAJECTORY 3D</div>
-  <div style="color:var(--txt3);font-size:11px;letter-spacing:.1em;">MINIMUM CURVATURE &middot; RUNS IN YOUR BROWSER</div>
-  <div style="display:flex;gap:10px;margin-top:6px;flex-wrap:wrap;justify-content:center;">
-    <button class="btn btna" onclick="pickFiles()">&#128194; Open deviation file(s)</button>
-    <button class="btn" onclick="loadSample()">Load sample wells</button>
-    <button class="btn" onclick="loadSampleSurface()">Wells + sample surface</button>
+  <div class="wz-wrap">
+    <header class="wz-top">
+      <div class="wz-brand"><div class="wz-logo"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3v8c0 4 3 7 10 7"/><path d="M3 21h18" opacity=".7"/></svg></div><div>WellSight<small>3D Well Trajectory &amp; Subsurface Visualizer</small></div></div>
+      <a class="wz-badge" id="tplLink" href="data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,UEsDBBQABgAIAAAAIQBIQULKcQEAALAGAAATAAgCW0NvbnRlbnRfVHlwZXNdLnhtbCCiBAIooAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADMlctuwjAQRfeV+g+Rt1VioA9VFYFFH8sWqfQD3HhCLBzb8hgKf9+JeaiqUhACqWxiJZ6592Tk3PSHi1onc/CorMlZN+uwBExhpTKTnH2MX9J7lmAQRgptDeRsCciGg8uL/njpABPqNpizKgT3wDkWFdQCM+vA0E5pfS0C3foJd6KYignwXqdzxwtrApiQhkaDDfpPUIqZDsnzgh6vSDxoZMnjqrDxyplwTqtCBCLlcyN/uaRrh4w6Yw1WyuEVYTDe6tDs/G2w7nuj0XglIRkJH15FTRh8ofmX9dNPa6fZbpEWSluWqgBpi1lNE8jQeRASK4BQ6yyuWS2U2XDv8I/FyOPSPTFI835R+ECO3plwXJ8Jx82ZcNz+E0egPAAer8cf0Siz50BiWGrAU3+WUXSfcyU8yPfgKTlPDvBTexcH5crIW4eUsB4On8ImQpvu1JEQ+KBgG6JtYbR1pHQ+euzQ5L8E2eLN4/9m8A0AAP//AwBQSwMEFAAGAAgAAAAhALVVMCP0AAAATAIAAAsACAJfcmVscy8ucmVscyCiBAIooAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACskk1PwzAMhu9I/IfI99XdkBBCS3dBSLshVH6ASdwPtY2jJBvdvyccEFQagwNHf71+/Mrb3TyN6sgh9uI0rIsSFDsjtnethpf6cXUHKiZylkZxrOHEEXbV9dX2mUdKeSh2vY8qq7iooUvJ3yNG0/FEsRDPLlcaCROlHIYWPZmBWsZNWd5i+K4B1UJT7a2GsLc3oOqTz5t/15am6Q0/iDlM7NKZFchzYmfZrnzIbCH1+RpVU2g5abBinnI6InlfZGzA80SbvxP9fC1OnMhSIjQS+DLPR8cloPV/WrQ08cudecQ3CcOryPDJgosfqN4BAAD//wMAUEsDBBQABgAIAAAAIQBWszxcxwIAAMQGAAAPAAAAeGwvd29ya2Jvb2sueG1spFVdb5swFH2ftP+A/E7BJGEpKp3yqUVap6jt2pdIlWOc4NVgZjtfqvrfdw0hJU0fuhYlNuYeHc6999hcfN9mwlkzpbnMY4TPfOSwnMqE58sY/b4du13kaEPyhAiZsxjtmEbfL79+udhI9TiX8tEBglzHKDWmiDxP05RlRJ/JguUQWUiVEQNLtfR0oRhJdMqYyYQX+H7oZYTnqGKI1Hs45GLBKRtKuspYbioSxQQxIF+nvNA1W0bfQ5cR9bgqXCqzAijmXHCzK0mRk9FossylInMBaW9xx9kq+IXwxz4MQf0mCJ28KuNUSS0X5gyovUr0Sf7Y9zA+KsH2tAbvY2p7iq257eFBlQo/qCo8cIUvZNj/NBsGa5VeiaB4H2TrHLQF6PJiwQW7q6zrkKL4RTLbKYEcQbQZJdywJEbfYCk37OiBWhX9FRcQbfmtIETe5cHOUwUL6H1PGKZyYthA5gastpf+WVuV3INUgomda/Z3xRWDvQMWgnRgJDQicz0lJnVWSsRoGM2mSv5h1OjZPRPCuVXErqTazW5IVgimZw0fklPT/4cTCbWF8CD5SmB1/7oQoFNFtdumRjlwPxn+hIrfkDXUH7qc7LfnBAqMWw85VRF+eOr44cDvjc/dtt8Zue1Wr+N2fdxzW8P+YNwLwwD3z58hGRVGVJKVSfettdQxakMfT0JXZFtHsB+tePIi48nfX66dXw117NkmbA+xO842+sUEduls73meyI1NoQtJ7eplG3c7yNmUwXuemBQQ7a6FVM9+ML5MQTHGwTkACTV8zW7JPEb2yFCB1RmjI33DSt8YLtcOR/q8hsDy8ASh5ezkpeGtL9whnNL2YLUlh22rIvsONUmwzfAEPWigQeIBHbyJ7jXQuIFuvYnuN9CQ8IG7/Rp9PeoNr0YNdKuB7pRWrNOlRNCpcuxkE/TLYP0BuvwHAAD//wMAUEsDBBQABgAIAAAAIQA9WIB6EAEAAO4EAAAaAAgBeGwvX3JlbHMvd29ya2Jvb2sueG1sLnJlbHMgogQBKKAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAC8lN1qhDAQhe8LfQfJfY26Py1l496Uwt622wcIOhpZTSQz/fHtOwitFZb0RrwJTIac8+UMyeH41bXRB3hsnFUijRMRgS1c2dhaibfz892DiJC0LXXrLCgxAIpjfntzeIFWEx9C0/QYsYpFJQxR/yglFgY6jbHrwXKncr7TxKWvZa+Li65BZkmyl/6vhshnmtGpVMKfSvY/Dz07/6/tqqop4MkV7x1YumIh0WgP5St5vh6ysPY1kBKz7ZiJhbwOs1kS5tP5CxoAmkB+t5BRubMJwdwvmgwNLY92imSsQ/bZyllkIZh0ZZg0BLNfEob4KcE0l7GU4xpk2K0cyC4UyHZlmO0PjJz9Uvk3AAAA//8DAFBLAwQUAAYACAAAACEAAXFRJHMgAACgtAAAGAAAAHhsL3dvcmtzaGVldHMvc2hlZXQxLnhtbJxdXW/dOJJ9X2D/g+H3XIuUdO9VkGTQdqax87DAYrEfz27nJjE6jrO2O+nBYv/7niJPyRKLdFTTmI90ipTOJanDYrEO+eYvf959Oft+eni8vf/69jzsuvOz09eb+w+3Xz+9Pf/P//j11fH87PHp+uuH6y/3X09vz/9+ejz/y7t//qc3P+4ffn/8fDo9neEJXx/fnn9+evr2+uLi8ebz6e76cXf/7fQVlo/3D3fXT/jXh08Xj98eTtcfUqW7Lxex6/YXd9e3X8/zE14/bHnG/cePtzen9/c3f9ydvj7lhzycvlw/Af/j59tvj/q0u5stj7u7fvj9j2+vbu7vvuERv91+uX36e3ro+dndzeu/ffp6/3D92xf87j/DcH1z9ucD/hPx315fk/7evOnu9ubh/vH+49MOT77ImO3Pny6mi+ub+Un29296TBguHk7fb6UDnx8V/zFIYZyfFZ8f1v+DD9vPD5Pmenj9x+2Ht+f/208hDN3w66v3v4zh1RAvj68u/zp0r65+6af4/urYHbvx/87fvflwix6WX3X2cPr49vyX8Pqqj+H84t2bNIL+6/b043Hx5zMZkL/d3/8uhr/hRR2e8Xj6crqRoXF2jf/7fro6ffny9vw9ftvj/6Sn4o944MX8xOWf9em/piH8bw9nH04fr//48vTv9z/+5XT76fMTvpcRP0xGxusPf39/erzBkMSLd3GUp97cf8Ej8L9nd7fybWFIXf/59hxVftx+ePr89jziY7v54/Hp/u6/81+kX3eR6yVI76+frt+9ebj/cYbBgQc8fruWTy28lgatvhcvlLK/SOFUBYAe0RLf33VvLr7j592wxCVKzLZwnI0XeNv8Smmoza+UwutXxuKVMQEJ026svw6/avvrpPD6dX3xuj697tDvxmn5z1B/+eB5uRRev/z5qakDLlFibt7Gz8VI2P5zpfD6jfvi56LE/MZD/TcePG+Uwhiki6c+j5L8G22JaY3pypYIz+NwNdRkntk81I7VEV3926vyb1dvnTxvnfLw7YofeZn/vvi+rsq/Xb034NN3fMzCZd/fhRh30/NYyn2AJ4ntsOvW/xz++qr4/K5YNBzC7hDqAyT4SCZkXH355eExiXJ2XTFkrmiJY9jFxiANLtZB6dQ2A9qm/CJo6yowcq04drup1RQuNgqZbMIIGKY1sg0wys+DtWIfwFGNHnHxUhhya+wB47AkvZL8czlAKnjrik+Iw7jrWi3jIi7MkamDDqZZsqHbhcJyxSoxdLtFrfUHtHd9QPuM4YhmKYk6ZBuaohg+V7SEIyasBoUHF6OidGqKCTDKuZE2tIb5ZHKtOBx2Y+uTcbFnyJQYuxoM0mUFBmvhk4nP4Ned4qLTkBkyhlqnkD13oeC7K63VH3Z9y2txkSu8MOmUWCNX2vCLnz+FRLtXWkta43ncrJ0nF5fCtU0wDJfSUMPAKvuwHE5rDD4PjqwoXFrO9THbajBYaz/surjgnMZYjS5eRenULGO/pKM89dEGSIXXMVcad/vGhxtdtIrSCYXQqnFqlUrtGGGtcY8JaEPDuGgVa4wE6VDrK2XWWLK71trvd/vGRxxdzIrSCUaNWWnrdn3JrFpr3+8WENcj18WskRxp5l4aut1QEolWSVPlwnd6nozWeFwUGzNZ9kKx5YRDGyCV8x4tEc3SQuFi2JhZtC8n2EsaAOH5IyWvkZTH425s0GvvoleUlgHSx8oHTBtglI4RLdISoeEY9S56RekEo698LrRVOoSWiM9l0Y2rcdG7GBalEwxh2JJIaAOM0gOgJcpQbS2dfWvnzKq9eKul09yrt2phKBdPIPrGCt5Fq30myB69vHhgJnfaukWsII9QGiJGaNj//LvtXayK0ql/hFVNwyirGiphLfHQWv5q72JVlE4wjrWGUX91LKc91pJFTWhMvr2LVVE6wRB/1bRGtlUohLViv9+1ULi4tM9cOgiXmhCPuqtj6aCxVuyPu771zbjItM/MOAT0SUnptFVmGVrigPVug8gGF5+itPTJIO5q2Rq0AUbhENEQwX4tp3lw0SlKJxRCpwaFLv6HcoCylix3GyNjcLEpSicUwqYGhfqrpi3orsZp1zcWuIOLTFE6oRAXteR02uAClRMtLbLsWARJVlPL4AtJZjIdamSKJwlEwDBdQh81drt9Yx0zuBgUpVNrCIOamKgy6KLhM6mzlrRGbLgdg4tBUTrBEL+0DJnRhtYoSYOWGEPTPR5cDIrSCcZUGxvKoL0ZovRmESlvBeoGF4WitMAYuxoMpdC+dMJYK4VhGjFzF4MOmUFHWfAvF4qmf3Txb0crvdM47g6toLqLTcfMpmMs6YMGjJHSSadFwhbHBouNLi5F6dQ5fcVDpg0wys6hJYZhGZxY8cfoIlOUTjBqi3/aAKOYWGiI3bQMGK1RuMh0zGQ6imc6LLy7coywXGVtSYv0T4tYRxexonRqmOR9vwRJSXYoaYVPiPGw2zfYbfRtBmUiHYVki5dd4kmZ6w/lMoKWtJppfT0ukh0zyY7iphoYDLkuQ6eZ61krHhCDaEzAo4tkUTp1kPEBaIDTY74eMuwxLNee63HrYtgxs+henNRyf4g2LGXLOAgtEQ0YWz3iotgxE+T+ZxTLcojYmUFCij2OS59l1TJ7F8WitPTOPsVXX/h8WG4wC+MrWuIRA6bx+exdjIvSCZJ4ry+RDMuNu2PpNtESj4jJtyC52Hef2Xcv7BsWscJy2aXldmM5lmiJx2NzZ23vomKUTq0kfm3pydF2sIFxWgTGuGzbRsBg76JilE6Qaj4ubViCl642LQKpRTh7F/2idIJR83Fpw6tKzqFFYBwb4b29i35ROsGo0S9t2LkyQ1cjtoDRoN+9i35ROsGoRQlow0ZeRL7X8z/lDMlyEVttraZx0fE+0/FB6Lh0HWgLSHYzI4V7XICxZStj7+JmlJZ2Ogg3m8+auQVhV/Ixa0nLbIF0cHEzSidIws3l0pU2oN2XzURT+sZbmSYuQj5kQj4IIZfdRRvCLiZYTZOw8BR+Hgo8uBgZpVPblFH6SxrgeI+lO0yTAFoECVeT58HFwSidQNRiC7SFcbktnF0smhKOBvEeXMSL0gmH+MCle0NbQLiv5BqaBMdiD2jdHi7mPWTmPQjzFqPykraAGaDc66FJcDRm64OLeVE6NYdEF0xzaK4BZoCXKI/PSIP3sGHw+nK3MicfJO5QeuYHzUJYRnw4btQtRhs20uQOLh5GaWmoo/BwyXm0IfK0SGsgDuXhI1yPRdu0xrKLhw+Za4/Cw6bzNCfBrHRZa2t3HV08jNKpmYSHS0i0SZyw9CjUhGG98DZWn9fRxcMonXDUdsloA45j+XmpSXBs2JI5ungYpRMm8YzLuYE27C2aOUpNQj2NwPvRRcUonXBIZKJMjqAtDsvdyjyU1QQcrXDE0UXFKJ1wCBWXUSvagGORTkYcDPRiEbVlrjy6aBmlEyah5dKPoA0hO5MgoSZgarmiRxcvo3TCUYv60gYcZcjkSk3AMW5I1Di6qBilEyZxj8spi7aI9xaBNbUA0rDBtTn60mczvU61BDA8SeAiVGW8YzUB0xZX9OhiZZSW907CyuYzJytX1nasFhGuOCyn28ZMMbloGaUTJhMdpiEe0TlFx82mcbmPv+LkycXJKJ1ACCeX44c2bGWZPDk1oWFaibaTi4dROuGo8TBtwLFY2WbeURNwhFanuHh4yjw8CQ+XA4W2vhIWpikeEWDa4G5NLk5G6dQ2wsmlm0MbMJXdd0WTYFqEc9ZjxcXDU+bhSXi4nBtok1Tj0k2nSXC00rEmFw+jdGoP4WGDg7kN2OlbbgLZxtE4BUA1YgKTi4hROoESIi7jWbTJN2YaR31iTO6Nxe7kYl+UFhxgddM0zBpDWLbcEmQl6aJWWvbkEzMw4tClUHGRHo5HCcR+2B1Ln5MmCVm3cpHwy3zqBsobuloYQh6WsGDeLpfbahMwy3l74Z+t85M7n7wBxXNP1eISgVakuZjwsNoSsFYWfefTOaB4BlPboAu0Iiu69CTUJFgO3SK03FgJh84nfEDxjKvmGMvDUu8hKF1+WGpLwJZihVaSe+eTQqB4BlbzlAOt/SoLJE9ZakvAGsvg0PlEECiewdSoWR4m1gHzlu0+JvpK9y1jqA1ODJ1PGYHiGVjNZ5aHJWDYJrPdpwSN1VdzLPn0ER1DE51wdLkQDrRi/JvND7VJl7XB+FQSHXkaH5Bd8QVaB6Tqli6g2l4G49NKdBogrtF1oHXAFFW4o2pKWDaszYNTmaaasqRNK5fF8rA0fOD7GZ0RbS82kleORr4OlXn8MlB6NuyXTg6/eJWlyfBpfVhOXZoK00ItOy3QioxRM6nRlDaFt9AiRGQeLaEq1ZJUzYihaB2QNWl7jPm/st/U4mjIx1xgyNFBONqCYUrbZLP3oSFPQyuCtjbNaiLVdiguVbUWapnAgVYk2pokabUJsEVS6toPgbLMBYYcHaocTZkaFJWj7TLlaORAjD8PpAannk0FbaEW3JCHydcPv8Dk96tNWqnl3Qfo1FytRL6u69ooesNGitlGkhcJ0ARmi4cEDZoLGLk7Kd3KJWugoG0crB5EbQJsoeFYjyU5RcAxsClcA19X1qqB1hHBCzOWVPIGMFuC8gHCNRcwkrckKVeUvEySA3kbmaZK55DMs2Vpj5/uA0bHOwqRG46iLm6sxMvkRXlcYVu3EYMOPjmcFE/uWqyFP9QKMJXuU/YGmEamb/Cp4qR4BlPTxakVYBZJrJxvVVAnXdbysKFVc40fetix6mFT+CaikdJDUk2cjOtGhCr4RHFSPDeMEHYZEFerSKyMt7/Q07XCZQHKNVfD0KmOQtJlyEEelkga2SDlUl9tm3kR+jUXMBJ2VSUXKIYbkfdQ5kSoLQFr5M0FaNxcYEjSvTjYtpWYujxVfEeK6QRMa5M7+DRzUjyNn15Iuty/VSvGTxkAvVKbgFms2NYzhk85FyiCC33Vq6YVYAZDzCqfEzAbNjHgtru6jLK40KekufKEA1oBrDNfmQrqpMsaxy5ABucZPlTNhaqkDk2XP7LVtjqpkLY0fFrLaGjeXGDIy/1aMJiFdWguBWNEKWpLzmurYXy0TG1c6GvJcmiujAW5I2WSkdoSltZH7pPVBSrkQi+8bKZyWiHXNrs6WlPAbNnixs/19Rg5Gkdg1c4PIUcjBGqiMKq2k3XQhg0w/HQfMHJ0Ut9ZJqKuBBmyZhmrAjwA2xSbhVLONcbJ14PwtQVGvoa7aGY1leTJGGh5ZT5NHs4zy3ydVHlmXNEqLqKhSFXmvQjG50hTZReGatSa1qpXpvo8WeC3vjifQg/BD7ZMTfGsVoAxUzwrShRky2Yzfq1r+FB+F4aaBFoeRqdoseVDvlbh3ktREJ9yL1CeF4YqX9OKiexo1mS0pVZqhWR8+j20CHusGvmgFV5ZMI60ivg2d5kvCkJxXhiqTjWtaKWD+eJV1gdgrS284NP1SfHkoQ3Vs3xora02aJIeGzbsQ+PX+sa18rXJUZIncVCbY0HUlvarWmsgyPc8BE21Xxhruu2gWkDEGc3ET5vsdW5R+OMNLmAU8IWkQyx36+VhqZWQUmzmWpX+IZdhkRW8dq592j+AyONorO59qjQQu2fma1MBILJxmoPapwBERJhgarJutcqy1fCQ6gA3ZpcFiPQ8Y4mavjDWkk/kYRzYpU+Hk8Q06oEpphX18MkBAYKtlDSK5bJD1YJYKZplh+oAUy5/w732CQEDNX1hrE4dtIKtzfkIWjNOK3F6MZh9DE1lX0i6RBPoVLUgkoQMQ6smcILwuhUP8okCAYLdVJ0uaN3XdlxVNghq37S1ABWfazCTokeZOoznOgsJrbogqFwQWd1b8hQDVH4uYHSpk4jRRK1UWoiDAsoIGk1xKy6fgBBzQO7JrGosPzjVF4aKR6LKwQkc2Vpb+6SDgco/bFjVVmqqLMRpH4YjVTMIMO1TDX0REGr+wr4amlGt4OroEXqxqhYEmCYv+uSCAMFuqsbJVU0YKhO+agYBpnnQok8oGKj5C3shaTOWVUdoJlWVCk4rzeeaFH1aQSBgs1TTUFRKWDujVAWDUzs9MPgUg1I8ua37Wqa2WjFdLA6H0wHDnUR8462Fhk82GFQbuK8SNK3AYo5b0popoN1ap0Ll5+E+FQXuqwEYWgHGJnvQJmCG5UHTTb7xkTL1fyFJGU1ogVbpMcPKqhzEnLopccgnHQSgPJSSntF8YbQCmFnZq3oQjsex1UhQ9nl6TzWCByFl00i0Chaz1lAJIcA0vWifbhAZA2yYJC8vpytaAeZgemyWD2LQN1vG5zmrSPBQJWVa5SOzLaOes5wE+PPTK4NPUCjFExMdhKCNF0SrACudjVlTiMD+Jly+ePWsIqxmpNAq4Q/bYJqod9i2bPVJDgP1giFpH41zTavsCdkPTpNAljKT9ZwGTaDre6NvfajG0SkwlJ074+jTJnqNLTKk4JMbSvE8qqo0TiuAmaW9ihGBaxGkLRrJx9xUDIYkfrSkxAg1Osx4IbPWsJ2Pj6e6eoxSwZBUjwYMrUY0Jm/JGQyY9Vs7ZT6JIRDkLjpWuZpWCXaa5fMsMwRjbAmd+XSGSK4isGr0g1aJL5qtjllriO3ElnPkExsGygbDUXjbBKloBRije9SaKWeotZT2KQ4Bgi1TPd2eVmkZ81mpIFHyPFp7LT6pYaBoMByr/jStAqacOGa1IbA0x7Iv4EHhYDhW3WlapZcMJ8+SQ0k62TC7+jSHAMQeE4I2kwWt0khmep2Fh0gTavkgPrVhoG4Q5+hXwcxh6UXkh4uOWXEIMM0u87EyBYMhiR+N30FrNcY5Sw0BpqXp8OkLASJ3U1X1qNbq+JllhnDutyQJ+zSHgepB5HXWohy0CkmbgT3rDhHJa40fn/AQINhKQsymy2itbo/N4kPkxm7xFSES9LhB1BSGqbq5Sat8ZWYqm9WI7YMm8VQfGJJ0VRgpD2OM3H5lswwRrdSKkUMi6GoZBj2maliaesPq9DVrEREoao4fH0tTjRiSLNL4PrQKGDOx0xYxfTUndp8IESA4mIWZTZ4ZrTKYzVxKm4Bprg59SsSgUsSp6i7TWh/AmjKNluk3zF8+cSJOQMt+Z1c7QF+tdWCsKV3WGD9QUXkGsxRPTnCSSpb8o1bpstKRn2u+kI0XfZpEKZ7B1NxntdbBsKakMC0Ppmns9yKN3tdKTHbuamkn8jBNMy1dDrWl3KrGLB99okQpnlupJr5Rq4yfcv6aa6KVtpxfF32iRCmegaW49POHU+C41IKCsaSl+SGCsb6NGH3yRCmeYdUyudVa8xfnmjLEN+R4Rp88UYpnYLWjTtUqw70Mps01X/z2fJeMUIAYuxSxfqnz5qTqygBTPTkWi81Pz3fZCLWIOIVXwp8v4Zp97QquhQim4QXgBT5K0NOUqtegULRY/wqVxSEP2qDIiT7VohRPowoyvNVR1OYrZEHBWIay5odgMLTuKIk+AaMUz7hq2SBqBRiTmjLXBJjWoPLpFyFWIpa0t/jCoGJBgVUsuednAFVLWhF98kUpnpuoFtBWq2Ax04zWTGA2XMfkkzLiIG4Cq6WFqFWYykw5s5Rxm34p+qSMUjy3WJXbVcpYHVQa0X7hgjGflDFSrBiTrrL0xdUq3Wd8Ka0Jx25LPjHe4OIqihVj0li+xKGqagRGO96V24Fxg9wSL/NhJEVjRVxsK8mT6F8ZtYPa0pEdjYhg9EkapXgaU/DdDBIGtq2yea4lx3W0HD2fnBGnyhLIQi2VdQ5qQjp/ufyea0mGYSOUgzsgXH2jIkToKssWoQmiShMHlLfkADtC/VsmOp92EWDYPOVVCpdqgu7UHL84V5P2aY0Y5z1+eicfVJSmfZi/NxgtfNRacjJRw9N13uSnykMIKA0OxkiQXWXYZxYsokWaSHwX+KnuENd6GSSUxWAyNxwzyxXbm0PReYefig4hnTRIsv8NcbnZrpa3zGO3tQ7xaRVxQwLHaxn+wHilT41ztMrQyFzthQOsok+cKMUzw1mupWlAPoFZdWg1+XK2LLJ9KkWcmJVRQTJpeiqbgGpxIn2Oo8/VhHhbQRGfRDHqDX3QS5ZIaMIZEnaVodXkHKvGVhmuh3Ixr6oMIZY0SDK74pQNE9uTt+joXQy21Y4vpOg+JGRbKCUNkmwCEqNmlbdkJO0j8qJPjijF0yMhjTRIsgnHoJg07rnaC5c/RJ8WUYpnJJZvacJN0+aSnbmaZLdvOLYm+q75k+IZleVemnCWjskWmqsB1QJyMWZ896fqpX3QR5qe4uFLmBfNfKTV5MjSDSckR58eUYrn9rE8TBMOPjLXmczVXjjvGxfy+b4p8jCUkaZ9sgkLQSOMkrfkb2rphhYd5QtmzDf5WerVqwER0bEdpZEMObx0w6rTpzyMqh+EDLJsHr0pEFO3iSDOskMkd7XcGd+NgLjhMLc4NJAGCWkYNy4YV3zWHErGx89PqIH76Bo+KiOEGNKgIiVX7viSt+Th087Eiz7FoRRPjxwsJdOEs+j2y7tfzJGY8zMgIFnopdfD2qc9jKoghBDSNFCmbsBaHdRZgUWOlyTK5mjyOceqJYQk0sDK3C0Xex6XLpYd5CR5JMA2A3S+WwWjKgkHy9Y04QRGc/bKXA1IWtcF4fJY38AmQ0MNaRoom4DEnJUjb0mjUJKCW/6XT3IY9ZpASCENkszCOCKzgoQMjZh10yf1SQ6jCgchOTRIMg33ckz02nY1V0Nq+wLm+qvyaQxxBW9uZmgMSyQ0AclxOXGXh8Fezc8QVU0rIO9TG0bVDEJtaGBljhZYZg7TahAitA4VwXLaNXxVMDhaXqYJSMyZk/KWPHxhbC05fdrCqApBaAtNm/DwUjiohQ29QzoXadEiXNg6ejb6RIZSPP1QXIRoUJGW0Rkmxq3VptVZA8VQ9jGx3hoIhaFBQiZGcqhZCGs1IGm3ic9VVpEg5IUGCQ+Vxhe8nBIqH5XKWLA43RJv84kOo0oHR8vKNGE3xbaVkjLW7s0v3ec2q1QQIkPTViRlzACGCvWqwm5142gxfnx+s4oDoSo0SEjKSGixI5k2IDluSDCJPk2hFE/fFzSFJSqacGC7RTXb2nlb0ScolOIZieXkWTFod9ZokqOzNo1j6P0c+VsISRKUpedZOWhFYlqt79qnlEefqlCK5+ax9DzLBu2tK1qt7xBTafk5PklhVG0gJIVmyKgDXInusFrfrZyg9SflkxRGFQbuLSXPmkF7hLxW6zssRedfUADxMTLlhBFyQtMkGhy2Keq4gDb1aY9bg1vnKOCRvgFLCoWY0CDRTTlzFdaVvEVGV48LCrcc6xR9qkIpngevZWE1yZVJpUNKmxxF19x+8d09GFUMCBmhaR9GKHB0fJkzr9V63L7XTFbx6Qajyv+gGyyRzKZKT9HW49q9LWrG6FMQSvHUU4dSt305myDbLjuKtfomxfikg9h/IQpLMWqCu2lQ5Fo9rovftDPuu4Iw6mWCh3JhgKYhOcNBNqDoOyOTZdNGiE8+GGcVYOjMKFLX2e77slaPi3ta+89Q+HkmyvlmwfKKaTQOww/2UHY19bIwbjCxTx2Iy7QZsCoFQcBBEw4cMp1EIl6cd7eeD3y6wDir+4xkaTbBcTIoSMLYMGptxvtkgFHVfFPlayYlYxvR4KBjjC3xZq/4fF8V8k3lTaHoFc1wrrAKTUXYrbmM8kkBo2r6JjtVqgkOedk4KiDEqqExYn06QKSx0wkoDxK7VBOu9TNcp+rB1uLfp/lDyjFBDIZGnu8WNANFlYI4O6PVFi4hCTJzCONgYWjY2LKZagSbl5riBC0XmVGtB2/IwiCp2nGhOu51UnnrkiIIf32QGGLAcb4lz6ueDxcRmcFK+QlExq0O8jm6lOv1OILHwJjp1RCbygMhCF9FJVos5xP54SpSOq/lRiW+IN2/M8cvqAnX5LamQJ+8D7dAZxjI3jNtQ7K1oyYbcHdxk018TEtxXh/L00LQFqRTxMvMOMkmwGgRvk/Qh8O02BalsPJSTbib04wTlQEu3aj1POyT70WK8PreXDGmJsAweagq+luaChi+KALld31fbouiNejpwpsvO0Xlfi2K94n0cChV7pJ+b0hNVXhmU1KFfYi8N/jDJ86LeglgXx59hpZQZq10CLkVi68WDB+b6h2Aw+I0LGZLqu6u1iFk0+bJP9F3O6AUT6vuoTx1BK1BNq0Nz2ySlP1Wa/hiBnrp31CePQ0YurtWGZ7ZJPfRt2D4QrWU2eF+llKoHfXWv6VDypQule4ho6sFw8egeuffWCbjoDU066zSGmRQqH/qMHqf2E6Kp7FhtxvUBLewJHI1Bez0tmC4ksp6vdzPxs/VhIVtuehVE2A0wviI13rcHymeWmNf3u96qaYInWPBoGpCOkGrMVzuKWYRojDRYDXhEveSx9WEo3JaKFzeKYLKRFGGqdAWDe9UDQEHqLZAuBgU8WSCKFMbAUJzyirDczY15hNEh33jggx6KC9pBgwyaDmpzYZm7AOBYR8IzTMoD6cFCA3HGmdHTdheaXaJiz97qt/6w+L2jTypqQn3a5fOzlwLhyO2RoaLPxHMziPjsC9pXE1VGKy1XOqufC4sxlydQsVafzDnoMmTcozTLCXVhAtfW5ThU7L1VLLhooVS464mtEa5up9riRiintpTtI2PTalU648mvIpQe26bsdI25GB4RttA+ciVsrT+aMIxiLorqHLJoKYeG96LpMJpkZtVtJSPaylJ6ycTnEEAvg2KDA1HcRsoH/dSqtZPJtaKdbmCMtOQ1lqGCYq28XEvhWj9VKp5LnvVqC3jDtlfU5OIKRt84xOsYc8h882yz0l7qmWrwWCtpnK892nSpLiQCu4HMbSn1+pB91R6KDShNTZ+6D4upjxt6MrEYHQRfdllA2gX0dT2m3zitJ7itAFXj64b4FJN8N5M26ikDYkzjZHik6b11JgNuMnJwFDBcQWG7ogZGBePn0+np/fXT9fv3ny7/nT61+uHT7dfH8++nD4+vT2HJ4jP+uH20+f5X57uv709h//92/3T0/1d+uPn0/WH04OURuGP9/dP+i8X795c/Lh/+D29493/AwAA//8DAFBLAwQUAAYACAAAACEAm8/qlxkEAABTEAAAGAAAAHhsL3dvcmtzaGVldHMvc2hlZXQyLnhtbJxYW4+bOBR+r7T/AfGegA25EIVUGaZVK3Wl1Wq3ffYQJ0EDmLVJMqOq/32PbUICBinuaC7knOPv87liz/rjW5E7Z8pFxsrYRVPfdWiZsl1WHmL3338+T5auI2pS7kjOShq771S4Hzd/fFhfGH8VR0prBxBKEbvHuq5WnifSIy2ImLKKlqDZM16QGj7ygycqTslOLSpyD/v+3CtIVroaYcUfwWD7fZbSZ5aeClrWGoTTnNSwf3HMKnFFK9JH4ArCX0/VJGVFBRAvWZ7V7wrUdYp09fVQMk5ecvD7DYUkdd44fGP4Ca40Sm4wFVnKmWD7egrInt6z6X7kRR5JWyTT/4dgUOhxes5kAm9Q+Pe2hGYtFr6BBb8JNm/BZLj46pTtYvcn+rT4hMJoOVkk2/kknAXRJAq30SRYPuEtmkWhv9j+cjfrXQYZll45nO5jd4tWCZ673matCuh7Ri/i7tmR9fjC2KtUfAUeHyAEzWkqK8Mh8OdME5rnsfsNg2/iP4UqnwHSazHvn6/4n1UN/8WdHd2TU17/zS5faHY41tAwM/BMlsZq9/5MRQo1CdRTPJOoKcsBAn47RSabC2qKvMUuLLlku/oYuxi6LT2JmhU/tACpzeh1akvPpCabNWcXB6oDAERFZK+hlYzoIC8QStutNFZLYEMCYnHe+GvvDO6ljcUTWLQ6tGyVHrC1lDJSD1NK4y4l7lFitRGMp+EwHXj1OJ007tIFPbpA0S3w1I/uv0bIQxtyadwlv6GqBDyBRRve2bC7UAmPuyuNu4zznrtg0TIuhhkXNozSGIr0DvVWJdpH0yLq7ikxLdCtDjulJl80D5facrCiB6VJX9phjWxYI12+s34naXlPmmgpWo74i6D5LdpZzrPzZuYbXawVfXJAl/bj7HbDBOlOMjxHWtHr8+QqvtttJ+rIaq6AtfLFN53Xml5ZJs0CjEb6DlnNGbBW9Nj0vtEY/FqO8VjqrUYNCjX/QO61Bhv8jRyP+W81eOAdp/xfmP5rTWDwazm+21g3/XOr0p/rthtIv9aENzfVWEpQsyIYi7/VGESL5q1l+q81Jn+zYpTfatYhPcCg/Ize1xqTv1kxym819VAz9gbyrzWhMXyaFWP88txjcazQoyww8w84sjLvaHT+GznGt7dR91RjNfywnnGB2f+N5u7w1PA3U3Gs/tUB9PFjlR5ygZl/wJH+99uvEWM8cgjAVuMPrFWQzfQ3mv7wv4rHpg+2mn5gLenDgexrjT/tt3+zZHT8wuncpvz0MAsH0q81/eoH+O5xu1t7VrMPbjzK+4Hca41B3hdrcn3B0beJihzon4QfslI4Od2rC8sCQsL1lcafyg81q9Rh84XVcD1Rj0e4vFO4WkDAXWfPWH39IC9Q7b8DNv8DAAD//wMAUEsDBBQABgAIAAAAIQCNY85H4gMAAO8OAAAYAAAAeGwvd29ya3NoZWV0cy9zaGVldDMueG1snFffj5s4EH6vdP8D8vsCJgmEKKRqs1ddHyqdrj/u2SFOYi1gznaSXZ36v3dsEwg4kUKjXQIzw3wz5vPHZPn+tSy8ExWS8SpD2A+RR6ucb1m1z9D3b5+e5siTilRbUvCKZuiNSvR+9ce75ZmLF3mgVHmQoZIZOihVL4JA5gdaEunzmlbg2XFREgWXYh/IWlCyNTeVRRCFYRyUhFXIZliIR3Lw3Y7l9Jnnx5JWyiYRtCAK6pcHVstLtjJ/JF1JxMuxfsp5WUOKDSuYejNJkVfmi8/7iguyKaDvVzwlufcq4C+C/8kFxtgdpJLlgku+Uz5kDmzNbvtpkAYkbzO5/T+UBk8DQU9MP8AuVfR7JeFZmyvqkk1+M1ncJtPLJRZHts3Q/2HzeYJvrA9hd7j4fqLVcsvgCeuuPEF3GfqAF+togoLV0hDoB6NneXXuKbL5SguaKwogGHmanxvOX3TgZzCFkFKaAJ2S5Iqd6JoWRYb+TIHi/xkQOAWAoEW4Pr+gfTKM/lt4W7ojx0L9w89/UbY/KICdQZ+aKIvt2zOVOTAUgP1oprPmvIAUcPRKprcaMIy8ZghuObOtOmQogr2XH6Xi5b/WgE0x9j5T0jNRZLUU/OwBVyCBrIneeXih1/cmLgDq2A862NwCBUlYidMqXAYnaC9vIj5CROvDrS8AsBYRKPE4og7uI0YDxMjUEYX+JExADC6fLqwHDi0+Dq6D++CTAfjEgCexj+f4Cnx6u/PpGHAd3Afvspqn8REi2rWe3UYEWjzerg7uI8aDdiGiRUxuIyZjEHUwMPYq63yA6Eak/Yi1G4E7UvaevX4HPUz1+U1637Suh9YeqpaFh1FTg4pnw21l7QPremjt4WLQgRE7WwvbaTUJnQ1tHUNoyN7f/n3scaqCTa6Zi20dkd+x2zB/ja0jTq48/QJGiQy2GpI4y944BqRcN+b0Ds/wKJGBaL2SGIRrqKWNx4G39vR6XfrdjxIaPLUFgH4NC7CeyUBy180d6R2Z0++vEcybWfipC289U6d/a0/vaB6OR8HHFj524a0ndshn7Wknjv3FH6WAOLHwcxfeehKne2tP47vcH6Vz2IqXfnkNn771zDuhbzaftad3XgB4lOBBtGZ/dIN81nO1yRr4xn537+sBaMSAYYUscukHeXRpTgEXe+J3j6Y/4IxSv6gROZeAjcctwN6R3oMfN2A185NLwMh6XPjGfg9+lPrBLN68d4b0azwufKN+Q3g7btvZtiZ7+oWIPaukV9CdGZ8TUCVhB+zQ1xeK12ba2XAFw7I5PcAPSwqDbuiDf8e5ulzocb79qbr6BQAA//8DAFBLAwQUAAYACAAAACEAAjKYk5kEAAAwFgAAGAAAAHhsL3dvcmtzaGVldHMvc2hlZXQ0LnhtbJxYXY+jNhR9r7T/AfE+AQP5VJLVLuyq+1CpqtruM0OcBA3gFEgyo6r/vdfcS2bG9kb2RjP5ONc+nAu+PrbXH5/ryrvwtitFs/HZJPQ93hRiVzaHjf/Xn18fFr7X9XmzyyvR8I3/wjv/4/bDL+uraJ+6I+e9BwxNt/GPfX9aBUFXHHmddxNx4g1E9qKt8x5+toegO7U83w2d6iqIwnAW1HnZ+Miwam04xH5fFjwTxbnmTY8kLa/yHvR3x/LUjWx1YUNX5+3T+fRQiPoEFI9lVfYvA6nv1cXq26ERbf5YQd7PLMkL77mFvwj+4/EyA65dqS6LVnRi30+AOUDNevrLYBnkxY1Jz9+KhiVByy+lfICvVNHPSWLTG1f0Shb/JNnsRiZvV7s6l7uN/29Irwf4ZPItfAiZfHvz+s/frnclPGGZldfy/cb/xFZfosQPtuthAP1d8mv35rsnx+OjEE8y8A2uEwJFxyteyJHh5fBx4SmvKmCaw5D+B0nnkjC4Mb79PrJ/HUbw76234/v8XPV/iOuvvDwceyiXKeQlB8Zq95LxroARCReeRFPJWogKKODdq0tZWjCi8ueND12u5a4/bvwIaq04d72ovyPABjHYb5CU5X2+Xbfi6sHYAILulMtKY6sfXhcuKNt+ko3hCr4Hgjq4E5ftYh1cIL2CWnzWWyzft0j1Fix83yTTm0TvW3zRW8S3FgFkdksPtNqnFw0pKWo+G9HUiGaIRtEkZkyRjKF5PGGL6Zsx+ZrZO90wtO11x4NumPmUh4G4gqZGNCMOk3IM2SpPXJQng/JEU464qtyIZoga7zmGbJXD8Le/59NB+UxTjriqHNFYHegIG6VjyFb6zEX6DCtXk474VKlXRDXpCBulY8hWupw2rSeg+SAd5nV1qFNAmSdShGMlpwxho3gM2YqXyxhr8QsUr9cpBiJVPMKJOmjG1oY5BkO24pcu4pcoXi9VDMSqeIQTBc4QNt55DNmKZ2BzDsYlffuyZXq9Ao+MqHc5HfFE9SZsb8yA+lin4Oa9DFNYaGOfYSRRK/cHeEa4OQXksk7ByV8Z2aNevhTRU8AeKp6NTCa7oph1Ck5Wy0af1J8CRvQUzHh2YzLUMcWsU3DyXEaGqZcyRfQUyKbVaXRkMj4FN++Va16HcibjNJQzRvQUCJ+p5XzHgkGTnBqsn4KTCTMyUEM5YyR5XdEOi++UeiRaCnesmPpYp+Bkxozc1VDOGNEnVcK1FO4YMl3FOgUnS2bomLHuyWNEm1TJlbVauGPLxGWdgpMxMzJgQzmT2Sp7tJR6JJq13TFn6mObgtyEOuy70FNjvZyBR5ZgpK6nCVdrJBvbGzdgyGWdgpM7R+ibsV7OFGHqAolwbYVEuHkP6ebOkdvul7xWL2fgkU9BLQWCtQUq4eYM3LbBkZM5Q+thLadXM0WUPXlKcKxUSEa4OQO37TAcLrlUAjmtXszAI3PTCsG8J6bW5gQsnRnPr/Cw6JQf+G95eyibzqv4fjiPmoNlt3hiFU7kj16chvOkR9HD6dPw9QgnsxxOjsIJxPdC9OMPeT52O+vd/g8AAP//AwBQSwMEFAAGAAgAAAAhAHZZnNUxAgAAFAYAABgAAAB4bC93b3Jrc2hlZXRzL3NoZWV0NS54bWyclNuOmzAQhu8r9R0s3wcDOXURsIoUrboXlaqqh2vHGLCCMbKdk6q+e8dmE6qGC7JRABv/fDPD/CZ9PssGHbk2QrUZjoIQI94yVYi2yvCP7y+zTxgZS9uCNqrlGb5wg5/zjx/Sk9J7U3NuERBak+Ha2i4hxLCaS2oC1fEWVkqlJbUw1RUxnea08A/JhsRhuCKSihb3hERPYaiyFIxvFTtI3toeonlDLeRvatGZK02yKThJ9f7QzZiSHSB2ohH24qEYSZa8Vq3SdNdA3edoQRk6a/jHcMyvYfz9u0hSMK2MKm0AZNLnfF/+E3kilN1I9/VPwkQLovlRuAYOqPh9KUXLGyseYPN3wlY3mHtdOjmIIsO/w7ffDK6RO4WzELzgR9e1PzhPCwEddlUhzcsMb6Jks8YkT71/fgp+Mv+MkbPjTqm9W3iFMKGTkjvti7fjV40KXtJDY7+p02cuqtqC95eQpOtyUly23DCwF2CCeOlITDUQDs5ICrdPwB707K8nUdgaRgvYOexgrJK/3u74DPoHfR5bammeanVC0GkgmI66fRMlMB4PDBGddgMCyMXASznmUZSSI5TG4ADWDQj9mg4E8QCMx4HQs+lAEA/A+Thw8QgQxANwMQ6Ehk3PEMQDcDkOXD0CBPEAXI0D148AQTwA1/8Beyv3Fupoxb9QXYnWoIaX3qZrqE/3Rg4DN7Gq8y7bKQue9MMavr4c/BQGsF4qZa8Tt1Vu3/P8LwAAAP//AwBQSwMEFAAGAAgAAAAhAOmmJbhmBgAAUxsAABMAAAB4bC90aGVtZS90aGVtZTEueG1s7FnNbhs3EL4X6DsQe08s2ZJiGZEDS5biNnFi2EqKHKldapcRd7kgKTu6FcmxQIGiadFLgd56KNoGSIBe0qdxm6JNgbxCh+RKWlpUbCcG+hcdbC334/zPcIa6eu1BytAhEZLyrBVUL1cCRLKQRzSLW8Gdfu/SeoCkwlmEGc9IK5gQGVzbfP+9q3hDJSQlCPZncgO3gkSpfGNlRYawjOVlnpMM3g25SLGCRxGvRAIfAd2UraxWKo2VFNMsQBlOgezt4ZCGBPU1yWBzSrzL4DFTUi+ETBxo0sTZYbDRqKoRciI7TKBDzFoB8In4UZ88UAFiWCp40Qoq5hOsbF5dwRvFJqaW7C3t65lPsa/YEI1WDU8RD2ZMq71a88r2jL4BMLWI63a7nW51Rs8AcBiCplaWMs1ab73antIsgezXRdqdSr1Sc/El+msLMjfb7Xa9WchiiRqQ/VpbwK9XGrWtVQdvQBZfX8DX2ludTsPBG5DFNxbwvSvNRs3FG1DCaDZaQGuH9noF9RlkyNmOF74O8PVKAZ+jIBpm0aVZDHmmlsVaiu9z0QOABjKsaIbUJCdDHEIUd3A6EBRrBniD4NIbuxTKhSXNC8lQ0Fy1gg9zDBkxp/fq+fevnj9Fr54/OX747PjhT8ePHh0//NHScjbu4Cwub3z57Wd/fv0x+uPpNy8ff+HHyzL+1x8++eXnz/1AyKC5RC++fPLbsycvvvr09+8ee+BbAg/K8D5NiUS3yBHa5ynoZgzjSk4G4nw7+gmmzg6cAG0P6a5KHOCtCWY+XJu4xrsroHj4gNfH9x1ZDxIxVtTD+UaSOsBdzlmbC68BbmheJQv3x1nsZy7GZdw+xoc+3h2cOa7tjnOomtOgdGzfSYgj5h7DmcIxyYhC+h0fEeLR7h6ljl13aSi45EOF7lHUxtRrkj4dOIE037RDU/DLxKczuNqxze5d1ObMp/U2OXSRkBCYeYTvE+aY8ToeK5z6SPZxysoGv4lV4hPyYCLCMq4rFXg6JoyjbkSk9O25LUDfktNvYKhXXrfvsknqIoWiIx/Nm5jzMnKbjzoJTnOvzDRLytgP5AhCFKM9rnzwXe5miH4GP+BsqbvvUuK4+/RCcIfGjkjzANFvxqKo2k79TWn2umLMKFTjd8V4ejptwdHkS4mdEyV4Ge5fWHi38TjbIxDriwfPu7r7ru4G//m6uyyXz1pt5wUWmuR5X2y65HRpkzykjB2oCSM3pemTJRwWUQ8WTQNvprjZ0JQn8LUo7g4uFtjsQYKrj6hKDhKcQ49dNSNfLAvSsUQ5lzDbmWUzfJITtM04SaHNNpNhXc8Mth5IrHZ5ZJfXyrPhjIyZFGMzf04ZrWkCZ2W2duXtmFWtVEvN5qpWNaKZUueoNlMZfLioGizOrAldCILeBazcgBFdyw6zCWYk0na3c/PULZr1hbpIJjgihY+03os+qhonTWNlGkYeH+k57xQflbg1Ndm34HYWJ5XZ1Zawm3rvbbw0HW7nXtJ5eyIdWVZOTpaho1bQrK/WAxTivBUMYayFr2kOXpe68cMshruhUAkb9qcmswnXuTeb/rCswk2FtfuCwk4dyIVU21gmNjTMqyIEWGaGcCP/ah3MelEK2Eh/AynW1iEY/jYpwI6ua8lwSEJVdnZpxdxRGEBRSvlYEXGQREdowMZiH4P7daiCPhGVcDthKoJ+gKs0bW3zyi3ORdKVL7AMzq5jlie4KLc6RaeZbOEmj2cymCcrrREPdPPKbpQ7vyom5S9IlXIY/89U0ecJXBesRdoDIdzkCox0vrYCLlTCoQrlCQ17Ai65TO2AaIHrWHgNQQX3yea/IIf6v805S8OkNUx9ap/GSFA4j1QiCNmDsmSi7xRi1eLssiRZQchEVElcmVuxB+SQsL6ugQ19tgcogVA31aQoAwZ3Mv7c5yKDBrFucv6pnY9N5vO2B7o7sC2W3X/GXqRWKvqlo6DpPftMTzUrB6852M951NqKtaDxav3MR20Olz5I/4Hzj4qQ2R8n9IHa5/tQWxH81mDbKwRRfck2HkgXSFseB9A42UUbTJqUbViK7vbC2yi4kS463RlfyNI36XTPaexZc+ayc3Lx9d3n+YxdWNixdbnT9ZgakvZkiur2aDrIGMeYX7XKPzzxwX1w9DZc8Y+ZkvZq/wFc8cGUYX8kgOS3zjVbN/8CAAD//wMAUEsDBBQABgAIAAAAIQB/n6JC9wIAAJIHAAANAAAAeGwvc3R5bGVzLnhtbKRV227bMAx9H7B/EPTu+pI4SwLbxXIxUKAbBrQD9irbciJUF0NWMmfD/n2U7SQO2m5Z9xJJNHV0yEMy0W0jONpTXTMlY+zfeBhRmauCyU2Mvz6mzhSj2hBZEK4kjfGB1vg2ef8uqs2B04ctpQYBhKxjvDWmmrtunW+pIPWNqqiEL6XSghg46o1bV5qSoraXBHcDz5u4gjCJO4S5yK8BEUQ/7SonV6IihmWMM3NosTAS+fxuI5UmGQeqjT8mOWr8iQ5Qo4+PtNZn7wiWa1Wr0twArqvKkuX0Od2ZO3NJfkYC5Lch+aHrBRexN/qNSGNX0z2z8uEkKpU0NcrVTpoYB0DUpmD+JNV3mdpPoHDvlUT1D7QnHCw+dpMoV1xpZEA6yFxrkUTQzmNJOMs0s24lEYwfOnNgDa3avZ9gkHtrdC2Pjk0SZdbr4q3rkHuQdqkBjHF+Cm1kowBDEkENGKplCgfU7x8PFcQgoVw7Lq3fX7w3mhz8ILz+Qq04KyyLzbLNnN5kMU7T1Wo9STuYATObkZZFu0AwmdIF9NxRKStKZ0oiTksDGdNss7WrURX8ZsoYqMskKhjZKEm4TfLxRr8B2Jxy/mD78lt5gd2USO5EKsxdEWPocCvPcQu8+m2H1x0s/hCtwx7AWgX+HRY15Qn/tds+8HuZ1Ok2IlXFD7ai+1q9Agu6YRjgK1g9MrzfI7dZgLgHyb1I7SlJyFZ1jD/bcceh8/pAUbZj3DD5QloBs2jOQnm2+IwdXa2Ep1dAr4KWZMfN4+ljjM/7T7RgOzE7eX1he2VaiBif9/e2nvyJfYM25r6G9oQV7TSL8c/14sNstU4DZ+otps54RENnFi5WTjheLlardOYF3vLXYID+x/hs5z2Ujj+e1xyGrO6D7UN8ONtiPDh09Nv2BNpD7rNg4n0Mfc9JR57vjCdk6kwno9BJQz9YTcaLdZiGA+7hG8es5/p+N7At+XBumKCcyaNWR4WGVhAJjn8Iwj0q4Z7/TJPfAAAA//8DAFBLAwQUAAYACAAAACEAwA/5dfECAACNBQAAFAAAAHhsL3NoYXJlZFN0cmluZ3MueG1sbFTbbhoxEH2v1H8Y7UsXKewCTRMaAVEScpMKqYA0z2Z32LXitanHC0m+qt/QL+vYJEGFPMHOjD1nzjme3ulTpWCFlqTR/aidtCJAnZlc6qIf3c+umt0IyAmdC2U09qNnpOh08PlTj8gBn9XUj0rnlidpSlmJlaDELFFzZmFsJRx/2iKlpUWRU4noKpV2Wq2jtBJSR5CZWrt+dPgtglrL3zVebALt79GgR3LQc4MHVArGosJe6ga91Ae3iebZbnRa24XIEH4IJ12d7516zxtdfFhwYYzl8YVDoGdyWO31vZ52DyHHTFZC8W9hEWm36OxFVrUrweICLTO6h+PayhzGxnJNfD8bNXYvGA13I7c6+6DLbuhSZCUEpqEPLBmsPX/xJqKZRphjZiokcOVrMkTXJepNyNjHuTGPUAoCQvYGTxmOUyPZ7fazdrDLOKTb0BvJcHk7u7mcgNSQMR4CMTcrDP1Gw5QnS5kwcGKuEGIl5qh8qYfvyw9gJVSNPuRBa3xyDbibAAN0a8MmUnWl6S39estCWrboQiqFOVizBklQE+b7Qwz/l/IAHoLCMSZFAp1O8rV1zJY9gOOvSbvb5r+NBMZYsMF4hD5MeeCHBIajKThGBlSzAgyt0/n7p9390jmKxr63UGRAZBkuHeZ7RI6GHn6FziIlwIQAvznwpHD41WNJ+K5qHmuOW2fl4AxcT26HML6bzG4gNpYpsRYzbgT8DPlLs4yFtyFjZecq729+8Q1gTN4gBBxCqJehXmgnm8yqkn4t7GE9Y0NtDgUsTGqQhby5cuHqCuLAINM0Y7lWEtf4BsKxZEwDEC8Y1pqdDy9B5tIQG3BhTRUuE953BQJvnc0zBbN4dyztQboKYlNtV/gcxKbS1Cr3PHnHcCIsBd5kfmyImW4W1NPcChzMfg3TcXrpV511INx7q5L31l63u6W/RagTOJfsf/nCNg0ehPh82vBik2Pfcdvlkl/4B3L7pda82L6mlNfp4B8AAAD//wMAUEsDBBQABgAIAAAAIQCPYMfhTAEAAGcCAAARAAgBZG9jUHJvcHMvY29yZS54bWwgogQBKKAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACMkl9LwzAUxd8Fv0PJe5umxTFC2+Ef9qIDwYniW0ju1mCThiTa9dubtrNu6INvSc65P865pFgdVBN9gnWy1SUiSYoi0LwVUu9L9Lxdx0sUOc+0YE2roUQ9OLSqLi8KbihvLTza1oD1ElwUSNpRbkpUe28oxo7XoJhLgkMHcddaxXy42j02jL+zPeAsTRdYgWeCeYYHYGxmIjoiBZ+R5sM2I0BwDA0o0N5hkhD84/VglftzYFROnEr63oROx7inbMEncXYfnJyNXdclXT7GCPkJft08PI1VY6mHXXFAVSE45RaYb2019Df9oSnwyeOwwIY5vwm73kkQN30VjtG1q6WN7mumC/zbEahjiQkNIgqx6FTiW3nJb++2a1RlabaICYnT5ZYQmhKaX70NAc7mh5jTgzrG+CcxowGa5yfEb0A15j7/GtUXAAAA//8DAFBLAwQUAAYACAAAACEAxHrfdJcBAABqAwAAEAAIAWRvY1Byb3BzL2FwcC54bWwgogQBKKAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACck01P8zAMx++PxHeoct9SXvVoSoPGNsQBxMQGnEPqrhFZUsWm2vj0pC2MjpcLN9t/66+f7UScb9Y2qSGg8S5jh8OUJeC0z41bZex+eTn4zxIk5XJlvYOMbQHZuTz4J+bBVxDIACbRwmHGSqJqxDnqEtYKh1F2USl8WCuKaVhxXxRGw9TrlzU44kdpesZhQ+ByyAfVzpB1jqOa/mqae93w4cNyW0VgKcZVZY1WFKeUN0YHj76gZLbRYAXviyLSLUC/BENbmQreT8VCKwuTaCwLZREE/yyIK1DN0ubKBJSiplENmnxI0LzGtR2x5EkhNDgZq1UwylHEatq6pI1thRTkow/PWAIQCh4bumIb9nv7sTmRp21DDPYbG4MOJAr7iEtDFvC2mKtAPxCf9olbho73nRGsHUz7fDvSx0aa/C6Nf5cufpTuZuPpzezbLtr1xqm+zHFt3DPeV0s/VQQfd9ovikWpAuTxtLs77griKp4o2MZkUiq3gvyj57vQvKqH7uvIw7NhepzGB9OrCf75SeQbAAAA//8DAFBLAQItABQABgAIAAAAIQBIQULKcQEAALAGAAATAAAAAAAAAAAAAAAAAAAAAABbQ29udGVudF9UeXBlc10ueG1sUEsBAi0AFAAGAAgAAAAhALVVMCP0AAAATAIAAAsAAAAAAAAAAAAAAAAAqgMAAF9yZWxzLy5yZWxzUEsBAi0AFAAGAAgAAAAhAFazPFzHAgAAxAYAAA8AAAAAAAAAAAAAAAAAzwYAAHhsL3dvcmtib29rLnhtbFBLAQItABQABgAIAAAAIQA9WIB6EAEAAO4EAAAaAAAAAAAAAAAAAAAAAMMJAAB4bC9fcmVscy93b3JrYm9vay54bWwucmVsc1BLAQItABQABgAIAAAAIQABcVEkcyAAAKC0AAAYAAAAAAAAAAAAAAAAABMMAAB4bC93b3Jrc2hlZXRzL3NoZWV0MS54bWxQSwECLQAUAAYACAAAACEAm8/qlxkEAABTEAAAGAAAAAAAAAAAAAAAAAC8LAAAeGwvd29ya3NoZWV0cy9zaGVldDIueG1sUEsBAi0AFAAGAAgAAAAhAI1jzkfiAwAA7w4AABgAAAAAAAAAAAAAAAAACzEAAHhsL3dvcmtzaGVldHMvc2hlZXQzLnhtbFBLAQItABQABgAIAAAAIQACMpiTmQQAADAWAAAYAAAAAAAAAAAAAAAAACM1AAB4bC93b3Jrc2hlZXRzL3NoZWV0NC54bWxQSwECLQAUAAYACAAAACEAdlmc1TECAAAUBgAAGAAAAAAAAAAAAAAAAADyOQAAeGwvd29ya3NoZWV0cy9zaGVldDUueG1sUEsBAi0AFAAGAAgAAAAhAOmmJbhmBgAAUxsAABMAAAAAAAAAAAAAAAAAWTwAAHhsL3RoZW1lL3RoZW1lMS54bWxQSwECLQAUAAYACAAAACEAf5+iQvcCAACSBwAADQAAAAAAAAAAAAAAAADwQgAAeGwvc3R5bGVzLnhtbFBLAQItABQABgAIAAAAIQDAD/l18QIAAI0FAAAUAAAAAAAAAAAAAAAAABJGAAB4bC9zaGFyZWRTdHJpbmdzLnhtbFBLAQItABQABgAIAAAAIQCPYMfhTAEAAGcCAAARAAAAAAAAAAAAAAAAADVJAABkb2NQcm9wcy9jb3JlLnhtbFBLAQItABQABgAIAAAAIQDEet90lwEAAGoDAAAQAAAAAAAAAAAAAAAAALhLAABkb2NQcm9wcy9hcHAueG1sUEsFBgAAAAAOAA4AmAMAAIVOAAAAAA==" download="Well_Deviation_Template.xlsx">&#8595; Download Excel Template</a>
+    </header>
+    <main class="wz-main">
+      <section>
+        <div class="wz-eyebrow">Well planning &amp; review</div>
+        <h1 class="wz-h1">Analyze <span>Wells and Subsurfaces</span> in a 3D Environment</h1>
+        <p class="wz-lead">Upload deviation surveys and subsurface structural grids to enable simultaneous 3D visualization of multiple wells, dynamic anti-collision analysis, Planned vs. Actual trajectory tracking, optimized well placement, and accurate landing of wells within target pay zones.</p>
+        <div class="wz-cards">
+          <button class="wz-card" onclick="pickFiles()" type="button">
+            <div class="wz-ic w"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3v9c0 4 3 6 8 6h5"/><circle cx="6" cy="3" r="1.4" fill="currentColor"/><path d="M16 14l4 4-4 4"/></svg></div>
+            <div class="wz-ct">Load wells</div>
+            <div class="wz-cd">.xls, .csv, .txt files with Well coordinates, MD, Inc., and Azi.</div>
+            <div class="wz-cf">.xlsx &middot; .xls &middot; .csv &middot; .txt <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+          </button>
+          <button class="wz-card sf" onclick="pickSurfaces()" type="button">
+            <div class="wz-ic s"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-5 9 5-9 5-9-5z"/><path d="M3 14l9 5 9-5"/></svg></div>
+            <div class="wz-ct">Load surfaces</div>
+            <div class="wz-cd">Gridded Horizons (i, j, x, y, z) for formation tops and bases in .dat format</div>
+            <div class="wz-cf">.dat <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+          </button>
+        </div>
+        <div id="lderr"></div>
+        <div class="wz-sub"><span>or drop files anywhere in this window</span><span>&middot;</span><button class="wz-link" type="button" onclick="loadSample()">Explore with sample wells</button></div>
+      </section>
+      <aside class="wz-artbox">
+        <svg class="wz-art" viewBox="0 0 460 360" role="img" aria-label="Illustration of well trajectories above a subsurface surface">
+  <defs>
+    <linearGradient id="wzg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0055bb" stop-opacity=".16"/><stop offset="1" stop-color="#006622" stop-opacity=".10"/></linearGradient>
+    <linearGradient id="wzw" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0055bb"/><stop offset=".55" stop-color="#0a8f4a"/><stop offset="1" stop-color="#bb3300"/></linearGradient>
+  </defs>
+  <polygon class="an-fill" points="230.0,142.2 424.9,281.1 230.0,359.9 35.2,268.1" fill="url(#wzg)"/>
+  <g class="an-grid" fill="none" stroke="#0055bb" stroke-width="1" stroke-linejoin="round"><polyline points="230.0,142.2 219.2,147.0 208.3,152.1 197.5,157.5 186.7,163.4 175.9,169.6 165.1,176.3 154.2,183.2 143.4,190.5 132.6,198.0 121.8,205.8 110.9,213.7 100.1,221.7 89.3,229.6 78.4,237.6 67.6,245.5 56.8,253.2 46.0,260.7 35.2,268.1" opacity="0.28"/><polyline points="251.7,143.9 240.8,148.9 230.0,154.7 219.2,161.2 208.3,168.4 197.5,176.3 186.7,184.7 175.9,193.7 165.1,203.0 154.2,212.6 143.4,222.3 132.6,232.0 121.8,241.6 110.9,250.9 100.1,259.9 89.3,268.4 78.4,276.4 67.6,283.9 56.8,290.7" opacity="0.34"/><polyline points="273.3,149.3 262.5,154.7 251.7,161.1 240.8,168.4 230.0,176.7 219.2,185.7 208.3,195.5 197.5,205.8 186.7,216.5 175.9,227.4 165.1,238.4 154.2,249.3 143.4,259.8 132.6,269.9 121.8,279.5 110.9,288.3 100.1,296.4 89.3,303.6 78.4,310.0" opacity="0.39"/><polyline points="294.9,159.7 284.1,165.6 273.3,172.5 262.5,180.3 251.7,189.1 240.8,198.6 230.0,208.9 219.2,219.7 208.3,230.8 197.5,242.2 186.7,253.5 175.9,264.6 165.1,275.3 154.2,285.6 143.4,295.1 132.6,303.9 121.8,311.8 110.9,318.8 100.1,324.9" opacity="0.45"/><polyline points="316.6,175.4 305.8,181.7 294.9,188.9 284.1,196.8 273.3,205.6 262.5,214.9 251.7,224.9 240.8,235.2 230.0,245.9 219.2,256.6 208.3,267.3 197.5,277.7 186.7,287.9 175.9,297.5 165.1,306.5 154.2,314.8 143.4,322.4 132.6,329.2 121.8,335.1" opacity="0.50"/><polyline points="338.2,195.5 327.4,202.2 316.6,209.4 305.8,217.1 294.9,225.4 284.1,234.0 273.3,242.9 262.5,252.0 251.7,261.3 240.8,270.6 230.0,279.8 219.2,288.9 208.3,297.7 197.5,306.2 186.7,314.2 175.9,321.8 165.1,328.8 154.2,335.3 143.4,341.3" opacity="0.56"/><polyline points="359.9,218.2 349.1,225.2 338.2,232.4 327.4,239.7 316.6,247.0 305.8,254.5 294.9,261.9 284.1,269.4 273.3,276.8 262.5,284.2 251.7,291.6 240.8,298.8 230.0,305.9 219.2,312.8 208.3,319.6 197.5,326.2 186.7,332.7 175.9,338.9 165.1,345.0" opacity="0.61"/><polyline points="381.6,241.4 370.7,248.7 359.9,255.7 349.1,262.4 338.2,268.9 327.4,275.0 316.6,280.9 305.8,286.7 294.9,292.2 284.1,297.6 273.3,302.9 262.5,308.2 251.7,313.6 240.8,319.0 230.0,324.5 219.2,330.1 208.3,336.0 197.5,342.0 186.7,348.1" opacity="0.67"/><polyline points="403.2,263.0 392.4,270.4 381.6,277.2 370.7,283.5 359.9,289.1 349.1,294.2 338.2,298.9 327.4,303.1 316.6,307.1 305.8,310.8 294.9,314.5 284.1,318.2 273.3,322.1 262.5,326.2 251.7,330.6 240.8,335.4 230.0,340.6 219.2,346.4 208.3,352.6" opacity="0.72"/><polyline points="424.9,281.1 414.0,288.6 403.2,295.3 392.4,301.3 381.6,306.4 370.7,310.9 359.9,314.8 349.1,318.2 338.2,321.2 327.4,324.0 316.6,326.7 305.8,329.4 294.9,332.3 284.1,335.6 273.3,339.3 262.5,343.5 251.7,348.3 240.8,353.8 230.0,359.9" opacity="0.78"/><polyline points="230.0,142.2 240.8,142.7 251.7,143.9 262.5,146.0 273.3,149.3 284.1,153.9 294.9,159.7 305.8,167.0 316.6,175.4 327.4,185.0 338.2,195.5 349.1,206.6 359.9,218.2 370.7,229.9 381.6,241.4 392.4,252.5 403.2,263.0 414.0,272.5 424.9,281.1" opacity="0.28"/><polyline points="208.3,152.1 219.2,153.0 230.0,154.7 240.8,157.3 251.7,161.1 262.5,166.1 273.3,172.5 284.1,180.1 294.9,188.9 305.8,198.7 316.6,209.4 327.4,220.7 338.2,232.4 349.1,244.1 359.9,255.7 370.7,266.8 381.6,277.2 392.4,286.8 403.2,295.3" opacity="0.34"/><polyline points="186.7,163.4 197.5,165.5 208.3,168.4 219.2,172.0 230.0,176.7 240.8,182.3 251.7,189.1 262.5,196.8 273.3,205.6 284.1,215.1 294.9,225.4 305.8,236.1 316.6,247.0 327.4,258.0 338.2,268.9 349.1,279.3 359.9,289.1 370.7,298.2 381.6,306.4" opacity="0.39"/><polyline points="165.1,176.3 175.9,180.2 186.7,184.7 197.5,189.8 208.3,195.5 219.2,201.8 230.0,208.9 240.8,216.6 251.7,224.9 262.5,233.7 273.3,242.9 284.1,252.3 294.9,261.9 305.8,271.5 316.6,280.9 327.4,290.1 338.2,298.9 349.1,307.1 359.9,314.8" opacity="0.45"/><polyline points="143.4,190.5 154.2,196.6 165.1,203.0 175.9,209.6 186.7,216.5 197.5,223.6 208.3,230.8 219.2,238.3 230.0,245.9 240.8,253.5 251.7,261.3 262.5,269.1 273.3,276.8 284.1,284.6 294.9,292.2 305.8,299.7 316.6,307.1 327.4,314.2 338.2,321.2" opacity="0.50"/><polyline points="121.8,205.8 132.6,214.1 143.4,222.3 154.2,230.4 165.1,238.4 175.9,246.1 186.7,253.5 197.5,260.5 208.3,267.3 219.2,273.7 230.0,279.8 240.8,285.8 251.7,291.6 262.5,297.2 273.3,302.9 284.1,308.7 294.9,314.5 305.8,320.5 316.6,326.7" opacity="0.56"/><polyline points="100.1,221.7 110.9,231.8 121.8,241.6 132.6,251.0 143.4,259.8 154.2,268.0 165.1,275.3 175.9,282.0 186.7,287.9 197.5,293.1 208.3,297.7 219.2,301.9 230.0,305.9 240.8,309.7 251.7,313.6 262.5,317.6 273.3,322.1 284.1,326.9 294.9,332.3" opacity="0.61"/><polyline points="78.4,237.6 89.3,249.0 100.1,259.9 110.9,270.1 121.8,279.5 132.6,287.8 143.4,295.1 154.2,301.3 165.1,306.5 175.9,310.7 186.7,314.2 197.5,317.1 208.3,319.6 219.2,322.0 230.0,324.5 240.8,327.3 251.7,330.6 262.5,334.5 273.3,339.3" opacity="0.67"/><polyline points="56.8,253.2 67.6,265.1 78.4,276.4 89.3,286.9 100.1,296.4 110.9,304.7 121.8,311.8 132.6,317.7 143.4,322.4 154.2,326.1 165.1,328.8 175.9,331.0 186.7,332.7 197.5,334.3 208.3,336.0 219.2,338.0 230.0,340.6 240.8,344.0 251.7,348.3" opacity="0.72"/><polyline points="35.2,268.1 46.0,279.7 56.8,290.7 67.6,300.9 78.4,310.0 89.3,318.1 100.1,324.9 110.9,330.6 121.8,335.1 132.6,338.6 143.4,341.3 154.2,343.4 165.1,345.0 175.9,346.5 186.7,348.1 197.5,350.1 208.3,352.6 219.2,355.8 230.0,359.9" opacity="0.78"/></g>
+  <g fill="none" stroke-linecap="round">
+    <path class="an-wa" pathLength="1" d="M150 18 L150 110 C150 176 196 214 292 226" stroke="url(#wzw)" stroke-width="3.2"/>
+    <path class="an-wb" pathLength="1" d="M318 40 L318 96 C318 140 288 168 236 188" stroke="url(#wzw)" stroke-width="3.2"/>
+    <path class="an-dash" d="M150 110 L150 258" stroke="#6b7280" stroke-width="1" stroke-dasharray="3 4" opacity=".55"/>
+  </g>
+  <g stroke="#fff" stroke-width="1.6">
+    <circle class="an-head" cx="150" cy="18" r="5" fill="#0055bb"/><circle class="an-head" cx="318" cy="40" r="5" fill="#0055bb"/>
+    <rect class="an-kop" x="145.5" y="105.5" width="9" height="9" fill="#b86000" transform="rotate(45 150 110)"/>
+    <circle class="an-ta" cx="292" cy="226" r="5.5" fill="#bb3300"/><circle class="an-tb" cx="236" cy="188" r="5.5" fill="#bb3300"/>
+  </g>
+  <g class="an-lbl" font-family="Consolas,'Courier New',monospace" font-size="10" fill="#374151">
+    <text x="160" y="22">Well-A</text><text x="328" y="44">Well-B</text><text x="160" y="104">KOP</text>
+  </g>
+  <g fill="none" stroke="#bb3300" stroke-width="1.4"><circle class="an-ra" cx="292" cy="226" r="5.5"/><circle class="an-rb" cx="236" cy="188" r="5.5"/></g>
+</svg>
+      </aside>
+    </main>
+    <footer class="wz-feat">
+      <span><i></i>3D Environment</span>
+      <span><i></i>Multi-well and surface toggling</span>
+      <span><i></i>UTM georeferenced</span>
+      <span><i></i>Plan &amp; Profile View</span>
+      <span><i></i>Master data export (.xlsx)</span>
+      <button class="wz-badge wz-about" type="button" onclick="openAbout()">About Author</button>
+    </footer>
+    <div id="abt" class="abt-ov" onclick="if(event.target===this)closeAbout()">
+      <div class="abt-box" role="dialog" aria-modal="true" aria-labelledby="abtT">
+        <button class="abt-x" type="button" onclick="closeAbout()" aria-label="Close">&times;</button>
+        <h3 id="abtT">About Author</h3>
+        <p><b>Author:</b> Mohd Ashir Khan (Sr. Geologist)</p>
+        <p><b>Company:</b> ONGC Ltd.</p>
+        <p><b>Email:</b> <a href="mailto:khan_ashir@ongc.co.in">khan_ashir@ongc.co.in</a></p>
+        <p><b>About:</b> This tool is developed for 3D visualization of well trajectories/ surfaces and is intended for educational and research use only. The author shall not be held liable for any damages or losses arising from the use or misuse of this tool. Unauthorized copying, reproduction, modification, distribution, or use of this software, in whole or in part, without explicit written permission from the author is strictly prohibited.</p>
+        <p><b>Date:</b> December 2026</p>
+      </div>
+    </div>
   </div>
-  <div style="color:var(--txt3);font-size:11px;text-align:center;">Drop files anywhere: deviation .xlsx .xls .csv .txt (MD, Inc, Azi) and formation surfaces .dat</div>
-  <div id="lderr" style="color:var(--danger);font-size:12px;min-height:16px;"></div>
 </div>
 
 <div id="hdr">
-  <div>
-    <h1>WELL TRAJECTORY 3D</h1>
-    <div class="sub">Interactive Window</div>
+  <div class="hb-brand">
+    <div class="hb-logo"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3v8c0 4 3 7 10 7"/><path d="M3 21h18" opacity=".7"/></svg></div>
+    <div><h1>WellSight</h1><div class="sub">3D Well Trajectory &amp; Subsurface Visualizer</div></div>
+  </div>
+  <div class="hb-sep"></div>
+  <div class="hb-grp">
+    <span class="lbl">Active well</span>
+    <select id="ws"></select>
+  </div>
+  <div class="hb-sep"></div>
+  <div class="hb-grp">
+    <button class="rbtn" onclick="pickFiles()" title="Load well deviation surveys"><svg class="ri" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3v9c0 4 3 6 8 6h5"/><circle cx="6" cy="3" r="1.4" fill="currentColor"/><path d="M16 14l4 4-4 4"/></svg><span>Load Wells</span></button>
+    <button class="rbtn" onclick="pickSurfaces()" title="Load gridded surfaces (.dat)"><svg class="ri" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l9 5-9 5-9-5 9-5z"/><path d="M3 13l9 5 9-5"/><path d="M3 17.5l9 5 9-5" opacity=".55"/></svg><span>Load Surfaces</span></button>
+  </div>
+  <div class="hb-sep"></div>
+  <div class="hb-grp">
+    <button class="rbtn rbtn-acc" onclick="doExport()" title="Download master data of all loaded wells (.xlsx, one sheet per well)"><svg class="ri" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M7 11l5 5 5-5"/><path d="M4 20h16"/></svg><span>Master Data Download</span></button>
+    <button class="rbtn" onclick="resetCam()" title="Reset 3D camera"><svg class="ri" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg><span>Reset View</span></button>
   </div>
   <div class="sp"></div>
-  <span class="lbl">STATS:</span>
-  <select id="ws"></select>
-  <button class="btn" onclick="pickFiles()">&#128194; Open files</button>
-  <button class="btn" onclick="pickSurfaces()">&#9968; Load surfaces (.dat)</button>
-  <button class="btn" onclick="pickFolder()">&#128193; Scan folder</button>
+  <div class="hb-grp">
+    <button class="rbtn rbtn-reset" onclick="resetAll()" title="Unload all wells and surfaces and start afresh"><svg class="ri" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg><span>Reset to Default</span></button>
+  </div>
   <input type="file" id="fi" accept=".xlsx,.xls,.csv,.txt" multiple hidden/>
   <input type="file" id="fs" accept=".dat" multiple hidden/>
-  <input type="file" id="fd" webkitdirectory multiple hidden/>
-  <button class="btn btna" onclick="doExport()">⬇ CSV</button>
-  <button class="btn" onclick="resetCam()">⟳ Reset View</button>
 </div>
 
 <div id="app">
@@ -174,10 +409,6 @@ tr:hover td{background:#eef4ff;color:var(--txt);}
       </div>
     </div>
     <div id="tc-tbl" class="tc">
-      <div class="ttb">
-        <input type="search" placeholder="Filter rows…" oninput="filterTbl(this.value)"/>
-        <button class="btn" onclick="doExport()" title="Export CSV">⬇</button>
-      </div>
       <div class="tw"><table><thead id="thead"></thead><tbody id="tbody"></tbody></table></div>
     </div>
     <div id="tc-wls" class="tc">
@@ -188,20 +419,23 @@ tr:hover td{background:#eef4ff;color:var(--txt);}
       <div class="shdr">Toggle formation surfaces (3D view only)</div>
       <div class="wl" id="sl"></div>
       <div id="no-surfs" style="padding:18px 14px;font-size:10px;color:var(--txt3);display:none;">
-        No surfaces loaded. Use <b>Load surfaces (.dat)</b> in the header, or drop .dat files onto the page.
+        No surfaces loaded. Use <b>Load Surfaces</b> in the header, or drop .dat files onto the page.
       </div>
     </div>
   </div>
 
+  <div id="rz" title="Drag to resize panel (double-click to reset)"></div>
   <div id="rc">
     <div id="vt">
       <button class="vb on" onclick="switchView('3d',this)">3D View</button>
       <button class="vb"    onclick="switchView('plan',this)">Plan View</button>
-      <button class="vb"    onclick="switchView('vsec',this)">Vert. Section</button>
+      <button class="vb"    onclick="switchView('vsec',this)">Profile View</button>
+      <button class="vb"    onclick="switchView('map',this)">Map View</button>
       <button class="vb"    onclick="switchView('dls',this)">DLS Profile</button>
       <div class="sp"></div>
+      <button class="btn btna" id="tib" onclick="toggleTie()" style="font-size:9px;padding:4px 10px;margin:4px 8px 4px 0;" title="ON: the first survey station is tied in vertically above, so its TVD = its MD (when it is not 0). OFF: TVD is forced to 0 at the first station.">TIE-IN TVD = 1ST MD: ON</button>
       <button class="btn btna" id="shb" onclick="toggleShape()" style="font-size:9px;padding:4px 10px;margin:4px 8px 4px 0;" title="Far-apart wells: multiply each well's horizontal drift so its drawn inclination matches reality. Wellhead positions stay true; hover values and Plan/Vert.Section are always true. Switch off for a strictly to-scale picture.">TRUE-ANGLE SHAPES: ON</button>
-      <button class="btn" id="fcb" onclick="toggleFocus()" style="font-size:9px;padding:4px 10px;margin:4px 12px 4px 0;" title="3D view of only the well chosen in the STATS dropdown, at true 1:1:1 scale, TVD tick every 100 m">TRUE SCALE: SELECTED WELL</button>
+      <button class="btn" id="fcb" onclick="toggleFocus()" style="font-size:9px;padding:4px 10px;margin:4px 12px 4px 0;" title="3D view of only the well chosen in the STATS dropdown, at true 1:1:1 scale, TVD tick every 250 m">TRUE SCALE: SELECTED WELL</button>
       <label class="lbl" id="dsw" style="display:flex;align-items:center;gap:7px;padding-right:12px;" title="Stretch or squash the TVD axis in the 3D view (double-click to reset)">
         DEPTH SCALE
         <input type="range" id="dsl" min="-2" max="2" step="0.05" value="0" style="width:120px;accent-color:var(--acc);cursor:pointer;" ondblclick="this.value=0;setDepthScale(0)" oninput="setDepthScale(this.value)"/>
@@ -209,9 +443,43 @@ tr:hover td{background:#eef4ff;color:var(--txt);}
       </label>
     </div>
     <div id="pa">
-      <div id="v3d"  class="on"><div id="p3d"   style="width:100%;height:100%;"></div></div>
+      <div id="v3d"  class="on"><div id="p3d"   style="width:100%;height:100%;"></div>
+        <div id="cmp" title="North indicator (follows 3D camera)">
+          <svg viewBox="-32 -32 64 64" width="64" height="64">
+            <circle r="29" fill="rgba(255,255,255,.88)" stroke="#a8b4cc" stroke-width="1"/>
+            <circle r="23" fill="none" stroke="#c5cde0" stroke-width=".8"/>
+            <g id="cmpRot">
+              <path d="M0 -21 L5.2 0 L0 -3.5 L-5.2 0 Z" fill="#111827"/>
+              <path d="M0 21 L5.2 0 L0 3.5 L-5.2 0 Z" fill="#c5cde0" stroke="#8b97b0" stroke-width=".6"/>
+              <circle r="1.7" fill="#fff" stroke="#111827" stroke-width=".8"/>
+              <text id="cmpN" y="-24.5" text-anchor="middle" font-size="9.5" font-weight="700" fill="#bb0000" font-family="Segoe UI,Arial,sans-serif" stroke="#fff" stroke-width="2.4" paint-order="stroke">N</text>
+            </g>
+          </svg>
+        </div></div>
       <div id="vplan"         ><div id="pplan" style="width:100%;height:100%;"></div></div>
       <div id="vvsec"         ><div id="pvsec" style="width:100%;height:100%;"></div></div>
+      <div id="vmap"          ><div id="pmap" style="width:100%;height:100%;"></div>
+        <div id="mapScale"></div>
+        <div id="mapTools"><label for="mapSel">Zoom to</label><select id="mapSel" onchange="mapPick(this.value)"></select></div>
+        <div id="mapInfo"></div>
+        <div id="mapWellPop"></div>
+        <div id="mapTools2">
+          <button class="btn" id="mapWellBtn" onclick="mapWellPopToggle(event)" title="Show / hide individual wells on the map">Wells &#9662;</button>
+          <select id="mapModeSel" onchange="mapModeSet(this.value)" title="Drawing tool: Line = distance + azimuth between 2 points; Polygon = join many points (distance + azimuth per segment, close it to fill and get the area); Circle = centre point + radius">
+            <option value="line">Line</option><option value="poly">Polygon</option><option value="circle">Circle</option>
+          </select>
+          <button class="btn" id="mapMeasBtn" onclick="mapMeasToggle()" title="Turn the drawing tool on / off. Wellheads, TDs and trajectory points snap automatically">Measure</button>
+          <button class="btn" id="mapCloseBtn" style="display:none" onclick="mapPolyClose()" title="Close the polygon (joins last point to first), fills it and shows the area. Or click the first point again.">Close</button>
+          <button class="btn" onclick="mapUndo()" title="Undo last point / shape (Backspace)">Undo</button>
+          <button class="btn" onclick="mapMeasClear()" title="Clear all measurements and shapes">Clear</button>
+        </div>
+        <div class="cmp2" title="North is up">
+          <svg viewBox="-20 -30 40 60" width="34" height="50">
+            <path d="M0 -20 L7 8 L0 3 L-7 8 Z" fill="#111827"/>
+            <path d="M0 -20 L0 3 L-7 8 Z" fill="#fff" stroke="#111827" stroke-width=".8" stroke-linejoin="round"/>
+            <text y="-23" text-anchor="middle" font-size="11" font-weight="700" fill="#111827" font-family="Segoe UI,Arial,sans-serif">N</text>
+          </svg>
+        </div></div>
       <div id="vdls"          ><div id="pdls"  style="width:100%;height:100%;"></div></div>
     </div>
   </div>
@@ -221,7 +489,6 @@ tr:hover td{background:#eef4ff;color:var(--txt);}
   <div class="dot"></div><span id="sb1">–</span>
   <span>Minimum Curvature</span><span>Metric (m · °/30m)</span>
   <div style="flex:1"></div>
-  <span>Well Trajectory 3D v2.6 (georef, 100 m TVD ticks, true-angle shapes)</span>
 </div>
 
 <script>
@@ -240,6 +507,9 @@ const SURF_COLORSCALES = [
   'Earth', 'Hot', 'Viridis', 'Cividis', 'Plasma', 'Jet'
 ];
 
+let mapMeas = { a:null, b:null }, mapMeasOn = false;
+let mapMode = 'line', mapItems = [], mapCur = null, mapCursor = null;   // map drawing tools: finished shapes, shape in progress, live cursor point
+let mapFocus = null;   // Map View zoom target: null = auto, 'all', or a well index
 let curWell = 0, curView = '3d', depthScale = 1, focus3d = false, shapeTrue = true;
 function toggleShape(){
   shapeTrue = !shapeTrue;
@@ -248,6 +518,7 @@ function toggleShape(){
   if (curView === '3d') render3D();
 }
 function toggleFocus(){
+  if (!WD.length) return;
   focus3d = !focus3d;
   document.getElementById('fcb').classList.toggle('btna', focus3d);
   if (curView === '3d') render3D();
@@ -266,14 +537,14 @@ let surfVisSet = new Set();
 const LB = {
   paper_bgcolor: '#ffffff',
   plot_bgcolor:  '#ffffff',
-  font: { color: '#374151', family: 'Consolas,monospace', size: 11 },
+  font: { color: '#374151', family: 'Segoe UI,Arial,sans-serif', size: 11 },
   legend: {
     bgcolor: 'rgba(255,255,255,0.97)', bordercolor: '#c5cde0', borderwidth: 1.5,
     font: { color: '#111827', size: 11 }
   },
   hoverlabel: {
     bgcolor: '#ffffff', bordercolor: '#0055bb',
-    font: { color: '#111827', size: 11, family: 'Consolas,monospace' }
+    font: { color: '#111827', size: 11, family: 'Segoe UI,Arial,sans-serif' }
   }
 };
 
@@ -295,7 +566,7 @@ function ax2(title) {
 // Black axis style for 3D scene
 function ax3(title, extra) {
   return Object.assign({
-    title: { text: title, font: { color: '#111827', size: 11, family: 'Consolas,monospace' } },
+    title: { text: title, font: { color: '#111827', size: 11, family: 'Segoe UI,Arial,sans-serif' } },
     gridcolor: '#9aaabf', gridwidth: 1,
     zerolinecolor: '#222222', zerolinewidth: 2,
     linecolor: '#222222', linewidth: 2,
@@ -311,6 +582,9 @@ function ax3(title, extra) {
 
 // ── Calculations (port of wellCalculations.ts) ───────────────────────────────
 const D2R = Math.PI / 180, R2D = 180 / Math.PI;
+// Global calculation settings: VS_AZI = vertical-section plane azimuth (null = auto, each well's TD closure direction);
+// TIE_VERT = first survey station is tied in vertically above (TVD = its MD) instead of being forced to TVD 0.
+let VS_AZI = null, TIE_VERT = true;
 function wrapAzi(d){ while(d>180) d-=360; while(d<-180) d+=360; return d; }
 function formatDir(deg){
   const d = ((deg % 360) + 360) % 360;
@@ -323,21 +597,52 @@ function formatDir(deg){
   if (d < 270) return 'S ' + (d-180).toFixed(1) + '° W';
   return 'N ' + (360-d).toFixed(1) + '° W';
 }
-function calculate(points){
+// Fill in the path between widely spaced survey stations (~every 10 m) so hover works along the whole well, like a densely
+// surveyed one. Stations are joined by minimum-curvature arcs, so the interpolated directions lie on the very same arc the
+// calculation uses: TVD / N / E / DLS at the original stations are unchanged.
+function densify(s, step){
+  if (s.length < 2) return s;
+  const vec = (inc, azi) => [Math.sin(inc*D2R)*Math.cos(azi*D2R), Math.sin(inc*D2R)*Math.sin(azi*D2R), Math.cos(inc*D2R)];
+  const out = [s[0]];
+  for (let k = 1; k < s.length; k++){
+    const a = s[k-1], b = s[k], dMD = b.md - a.md;
+    if (dMD > step * 1.25){
+      const n = Math.ceil(dMD / step), v1 = vec(a.inc, a.azi), v2 = vec(b.inc, b.azi);
+      const cx = v1[1]*v2[2]-v1[2]*v2[1], cy = v1[2]*v2[0]-v1[0]*v2[2], cz = v1[0]*v2[1]-v1[1]*v2[0];
+      const om = Math.atan2(Math.hypot(cx, cy, cz), v1[0]*v2[0] + v1[1]*v2[1] + v1[2]*v2[2]);
+      for (let q = 1; q < n; q++){
+        const t = q / n;
+        let v;
+        if (om < 1e-9) v = v1;
+        else { const so = Math.sin(om), w1 = Math.sin((1-t)*om)/so, w2 = Math.sin(t*om)/so; v = [0,1,2].map(i => w1*v1[i] + w2*v2[i]); }
+        const hor = Math.hypot(v[0], v[1]);
+        const inc = Math.acos(Math.max(-1, Math.min(1, v[2]))) * R2D;
+        const azi = hor > 1e-9 ? ((Math.atan2(v[1], v[0]) * R2D) % 360 + 360) % 360 : (a.inc < 1e-9 ? b.azi : a.azi);
+        out.push({ md: a.md + dMD * t, inc, azi, bitSize: a.bitSize });
+      }
+    }
+    out.push(b);
+  }
+  return out;
+}
+function calculate(points, opt){
+  opt = opt || { vsAzi:VS_AZI, tieVert:TIE_VERT };
   if (points.length < 1) return { trajectory:[], stats:{ maxMD:0, maxTVD:0, maxInclination:0, maxDLS:0, maxDLSatMD:0, kop:null,
     totalNorthing:0, totalEasting:0, totalClosureDistance:0, totalClosureDirection:0, totalClosureDirStr:'N',
-    verticalSection:0, projectedHorizontalReach:0, wellType:'Unknown' } };
-  const s = [...points].sort((a,b) => a.md - b.md), p0 = s[0];
-  const traj = [{ md:p0.md, inc:p0.inc, azi:p0.azi, bitSize:p0.bitSize ?? null, tvd:0, northing:0, easting:0, vertSec:0,
+    verticalSection:0, vsAzimuth:0, vsAuto:true, tieInTvd:0, projectedHorizontalReach:0, wellType:'Unknown' } };
+  const s = densify([...points].sort((a,b) => a.md - b.md), 10), p0 = s[0];
+  const tvd0 = (opt.tieVert && p0.md > 0) ? p0.md : 0;   // vertical-above tie-in
+  const traj = [{ md:p0.md, inc:p0.inc, azi:p0.azi, bitSize:p0.bitSize ?? null, tvd:tvd0, northing:0, easting:0, vertSec:0,
     deltaMd:0, deltaInc:0, deltaAzi:0, doglegDeg:0, dls:0, dlsPer100ft:0, buildRate:0, turnRate:0,
-    closureDistance:0, closureDirection:0, closureDirStr:'N', rf:1, x:0, y:0, z:0 }];
-  let tvd=0, northing=0, easting=0;
+    closureDistance:0, closureDirection:0, closureDirStr:'N', rf:1, x:0, y:0, z:-tvd0 }];
+  let tvd=tvd0, northing=0, easting=0;
   for (let i=1;i<s.length;i++){
     const pv=s[i-1], c=s[i], dMD=c.md-pv.md;
     const i1=pv.inc*D2R, i2=c.inc*D2R, a1=pv.azi*D2R, a2=c.azi*D2R;
-    const cosDL = Math.cos(i2-i1) - Math.sin(i1)*Math.sin(i2)*(1-Math.cos(a2-a1));
-    const dlRad = Math.acos(Math.max(-1, Math.min(1, cosDL))), dlDeg = dlRad*R2D;
-    const rf = dlRad < 1e-6 ? 1 : (2/dlRad)*Math.tan(dlRad/2);
+    // Dogleg via the haversine form (same as cos β = cos ΔI − sin I1 sin I2 (1 − cos ΔA), but accurate for tiny doglegs)
+    const hv = Math.sin((i2-i1)/2)**2 + Math.sin(i1)*Math.sin(i2)*Math.sin((a2-a1)/2)**2;
+    const dlRad = 2*Math.asin(Math.min(1, Math.sqrt(Math.max(0, hv)))), dlDeg = dlRad*R2D;
+    const rf = dlRad < 1e-4 ? 1 + dlRad*dlRad/12 + dlRad**4/120 : (2/dlRad)*Math.tan(dlRad/2);
     tvd      += (dMD/2)*(Math.cos(i1)+Math.cos(i2))*rf;
     northing += (dMD/2)*(Math.sin(i1)*Math.cos(a1)+Math.sin(i2)*Math.cos(a2))*rf;
     easting  += (dMD/2)*(Math.sin(i1)*Math.sin(a1)+Math.sin(i2)*Math.sin(a2))*rf;
@@ -351,7 +656,10 @@ function calculate(points){
       buildRate: dMD>0 ? (dInc/dMD)*30 : 0, turnRate: dMD>0 ? (dAzi/dMD)*30 : 0,
       closureDistance:cd, closureDirection:cdir, closureDirStr:formatDir(cdir), rf, x:easting, y:northing, z:-tvd });
   }
-  const fa = traj[traj.length-1].closureDirection*D2R;
+  // Vertical section: VS = N·cos(θ) + E·sin(θ), N/E relative to the wellhead, θ = VS plane azimuth (user value, else TD closure direction)
+  const vsUser = opt.vsAzi !== null && opt.vsAzi !== undefined && isFinite(opt.vsAzi);
+  const vsAzi = vsUser ? ((opt.vsAzi % 360) + 360) % 360 : traj[traj.length-1].closureDirection;
+  const fa = vsAzi*D2R;
   for (const pt of traj) pt.vertSec = pt.northing*Math.cos(fa) + pt.easting*Math.sin(fa);
   const last = traj[traj.length-1];
   let maxDLS=0, maxDLSatMD=0, maxInc=0, kop=null;
@@ -366,7 +674,7 @@ function calculate(points){
   return { trajectory:traj, stats:{ maxMD:last.md, maxTVD:last.tvd, maxInclination:maxInc, maxDLS, maxDLSatMD, kop,
     totalNorthing:last.northing, totalEasting:last.easting, totalClosureDistance:last.closureDistance,
     totalClosureDirection:last.closureDirection, totalClosureDirStr:last.closureDirStr,
-    verticalSection:last.vertSec, projectedHorizontalReach:last.closureDistance, wellType } };
+    verticalSection:last.vertSec, vsAzimuth:vsAzi, vsAuto:!vsUser, tieInTvd:tvd0, projectedHorizontalReach:last.closureDistance, wellType } };
 }
 
 // ── File reader (port of wellDataReader.ts) ──────────────────────────────────
@@ -451,7 +759,8 @@ function llToUTM(lat, lon, zone){
 }
 // Place wells that have surface lat/lon on a common UTM grid (x,y become absolute; easting/northing stay relative to the wellhead)
 function buildWells(list){
-  const W = list.map(d => ({ name:d.name, ...calculate(d.points), loc:d.loc || null }));
+  const W = list.map(d => ({ name:d.name, points:d.points, ...calculate(d.points), loc:d.loc || null }));
+  { const seen = {}; for (const w of W){ const n = w.name; seen[n] = (seen[n] || 0) + 1; if (seen[n] > 1) w.name = n + ' (' + seen[n] + ')'; } }
   const located = W.filter(w => w.loc);
   if (located.length){
     const zone = Math.min(60, Math.max(1, Math.floor((located.reduce((a, w) => a + w.loc.lon, 0)/located.length + 180)/6) + 1));
@@ -490,7 +799,7 @@ async function readFile(file){
       if (hRow < 0) continue;
       const points = extractPoints(raw.slice(hRow+1), colMap);
       if (points.length < 2) continue;
-      out.push({ name: wb.SheetNames.length > 1 ? base + ' — ' + sn : base, points, loc: findLoc(raw, hRow, colMap) });
+      out.push({ name: sn, points, loc: findLoc(raw, hRow, colMap) });
     }
     return out;
   }
@@ -515,56 +824,69 @@ function readSurfaceText(text, name){
   const lines = text.split(/\r?\n/).filter(l => l.trim().length > 0);
   const delim = lines.length && lines[0].includes(',') ? ',' : null;
   const parse = l => (delim ? l.split(delim) : l.trim().split(/\s+/)).map(v => parseFloat(v.trim())).filter(v => !isNaN(v));
-  const I = new Set(), J = new Set(), rows = [];
+  // rows: [i, j, x, y, z]. Works for rotated grids (x AND y change along both i and j) as well as axis-aligned ones.
+  // Plain "x y z" rows are put on a grid by the rank of their x and y values.
+  let rows = [];
   for (const l of lines){
     const v = parse(l);
-    if (v.length >= 5){ const [i,j,x,y,z] = v; I.add(i); J.add(j); rows.push([i,j,x,y,z]); }
-    else if (v.length === 3){ const [x,y,z] = v; I.add(rows.length); J.add(0); rows.push([rows.length,0,x,y,z]); }
+    if (v.length >= 5) rows.push([v[0], v[1], v[2], v[3], v[4]]);
+    else if (v.length === 3) rows.push([null, null, v[0], v[1], v[2]]);
   }
   if (!rows.length) throw new Error('No valid surface data found in .dat file.');
-  const is = [...I].sort((a,b)=>a-b), js = [...J].sort((a,b)=>a-b);
-  const im = new Map(is.map((v,k)=>[v,k])), jm = new Map(js.map((v,k)=>[v,k]));
-  const xs = new Array(is.length).fill(0), ys = new Array(js.length).fill(0);
-  const sx = new Set(), sy = new Set();
-  const z = Array.from({length:js.length}, () => new Array(is.length).fill(null));
-  let zMin = Infinity, zMax = -Infinity;
-  for (const [i,j,x,y,zv] of rows){
-    const a = im.get(i), b = jm.get(j);
-    z[b][a] = zv;
-    if (!sx.has(a)){ xs[a] = x; sx.add(a); }
-    if (!sy.has(b)){ ys[b] = y; sy.add(b); }
-    if (zv < zMin) zMin = zv; if (zv > zMax) zMax = zv;
+  if (rows.some(r => r[0] === null)){
+    const ux = [...new Set(rows.map(r => r[2]))].sort((a,b)=>a-b), uy = [...new Set(rows.map(r => r[3]))].sort((a,b)=>a-b);
+    const mx = new Map(ux.map((v,k)=>[v,k])), my = new Map(uy.map((v,k)=>[v,k]));
+    rows = rows.map(r => [mx.get(r[2]), my.get(r[3]), r[2], r[3], r[4]]);
   }
-  return { name, xs, ys, z, zMin, zMax };
+  let i0 = Infinity, i1 = -Infinity, j0 = Infinity, j1 = -Infinity;
+  for (const r of rows){ if (r[0] < i0) i0 = r[0]; if (r[0] > i1) i1 = r[0]; if (r[1] < j0) j0 = r[1]; if (r[1] > j1) j1 = r[1]; }
+  const integral = rows.every(r => Number.isInteger(r[0]) && Number.isInteger(r[1]));
+  let ci, cj, ni, nj;
+  if (integral && (i1 - i0 + 1) * (j1 - j0 + 1) <= 4e6){ ni = i1 - i0 + 1; nj = j1 - j0 + 1; ci = v => v - i0; cj = v => v - j0; }
+  else {
+    const is = [...new Set(rows.map(r => r[0]))].sort((a,b)=>a-b), js = [...new Set(rows.map(r => r[1]))].sort((a,b)=>a-b);
+    const im = new Map(is.map((v,k)=>[v,k])), jm = new Map(js.map((v,k)=>[v,k]));
+    ni = is.length; nj = js.length; ci = v => im.get(v); cj = v => jm.get(v);
+  }
+  const mk = () => Array.from({length:nj}, () => new Array(ni).fill(null));
+  const X = mk(), Y = mk(), Z = mk();
+  let zMin = Infinity, zMax = -Infinity, x0 = Infinity, x1 = -Infinity, y0 = Infinity, y1 = -Infinity;
+  // least-squares plane fits  x = a + b*i + c*j  (and y) are used to place the cells that have no data
+  let n = 0, Si = 0, Sj = 0, Sii = 0, Sjj = 0, Sij = 0, Sx = 0, Six = 0, Sjx = 0, Sy = 0, Siy = 0, Sjy = 0;
+  for (const [ri, rj, x, y, zv] of rows){
+    const a = ci(ri), b = cj(rj);
+    X[b][a] = x; Y[b][a] = y; Z[b][a] = zv;
+    if (zv < zMin) zMin = zv; if (zv > zMax) zMax = zv;
+    if (x < x0) x0 = x; if (x > x1) x1 = x; if (y < y0) y0 = y; if (y > y1) y1 = y;
+    n++; Si += a; Sj += b; Sii += a*a; Sjj += b*b; Sij += a*b; Sx += x; Six += a*x; Sjx += b*x; Sy += y; Siy += a*y; Sjy += b*y;
+  }
+  const solve = (T, Ti, Tj) => {
+    const M = [[n, Si, Sj, T], [Si, Sii, Sij, Ti], [Sj, Sij, Sjj, Tj]];
+    for (let c = 0; c < 3; c++){
+      let p = c; for (let r = c + 1; r < 3; r++) if (Math.abs(M[r][c]) > Math.abs(M[p][c])) p = r;
+      [M[c], M[p]] = [M[p], M[c]];
+      if (Math.abs(M[c][c]) < 1e-12) return [T / n, 0, 0];
+      for (let r = 0; r < 3; r++) if (r !== c){ const f = M[r][c] / M[c][c]; for (let k = c; k < 4; k++) M[r][k] -= f * M[c][k]; }
+    }
+    return [M[0][3] / M[0][0], M[1][3] / M[1][1], M[2][3] / M[2][2]];
+  };
+  const fx = solve(Sx, Six, Sjx), fy = solve(Sy, Siy, Sjy);
+  for (let b = 0; b < nj; b++) for (let a = 0; a < ni; a++) if (X[b][a] === null){
+    X[b][a] = fx[0] + fx[1]*a + fx[2]*b; Y[b][a] = fy[0] + fy[1]*a + fy[2]*b;
+  }
+  return { name, xs: X, ys: Y, z: Z, zMin, zMax, ni, nj, sb: { x0, x1, y0, y1 } };
 }
 function decimate(s){
-  const MAXG = 200, sx = Math.max(1, Math.ceil(s.xs.length/MAXG)), sy = Math.max(1, Math.ceil(s.ys.length/MAXG));
-  const z = [];
-  for (let r=0; r<s.ys.length; r+=sy){ const row = []; for (let c=0; c<s.xs.length; c+=sx) row.push(s.z[r][c]); z.push(row); }
-  return { name:s.name, xs:s.xs.filter((_,i)=>i%sx===0), ys:s.ys.filter((_,i)=>i%sy===0), z, zMin:s.zMin, zMax:s.zMax };
+  const MAXG = 250, nj = s.z.length, ni = s.z[0].length;
+  const sx = Math.max(1, Math.ceil(ni / MAXG)), sy = Math.max(1, Math.ceil(nj / MAXG));
+  const pick = A => { const o = []; for (let r = 0; r < nj; r += sy){ const row = []; for (let c = 0; c < ni; c += sx) row.push(A[r][c]); o.push(row); } return o; };
+  return { name:s.name, xs:pick(s.xs), ys:pick(s.ys), z:pick(s.z), zMin:s.zMin, zMax:s.zMax, ni:s.ni, nj:s.nj, sb:s.sb };
 }
 
 // ── Loading / init ───────────────────────────────────────────────────────────
 const fext = f => f.name.split('.').pop().toLowerCase();
 function pickFiles(){ document.getElementById('fi').click(); }
-function pickFolder(){ document.getElementById('fd').click(); }
-// Port of scanWorkspace: recurse folder, skip dot-entries / node_modules / dist, read .xlsx .xls .csv .txt, silently skip failures
-async function scanFolder(files){
-  const ok = ['xlsx','xls','csv','txt'], all = [];
-  for (const f of files){
-    const parts = (f.webkitRelativePath || f.name).split('/');
-    if (parts.slice(1).some(p => p.startsWith('.') || p === 'node_modules' || p === 'dist')) continue;
-    if (f.name.startsWith('.') || !ok.includes(fext(f))) continue;
-    try { all.push(...await readFile(f)); } catch (e) {}
-  }
-  if (!all.length){ setMsg('No deviation data files found in folder.'); return; }
-  WD = buildWells(all); refresh();
-  document.getElementById('sb1').textContent = 'Loaded ' + all.length + ' well(s) from folder.';
-}
-function pickSurfaces(){
-  if (!WD.length){ setMsg('Open the viewer first: load deviation file(s), then load surfaces.'); return; }
-  document.getElementById('fs').click();
-}
+function pickSurfaces(){ document.getElementById('fs').click(); }
 function setMsg(t){
   const e = document.getElementById('lderr'); if (e) e.textContent = t;
   document.getElementById('sb1').textContent = t;
@@ -580,15 +902,16 @@ async function loadFiles(files){
   if (sf.length) await loadSurfaceFiles(sf);
 }
 async function loadSurfaceFiles(files){
-  if (!WD.length){ setMsg('Open the viewer first: load deviation file(s), then load surfaces.'); return; }
   const got = [], errs = [];
   for (const f of files){
     try { got.push(decimate(readSurfaceText(await f.text(), f.name.replace(/\.[^.]+$/, '')))); }
     catch (e) { errs.push(f.name + ': ' + e.message); }
   }
   if (!got.length){ setMsg('No valid surface data found. ' + (errs[0] || '')); return; }
-  SD.push(...got); refresh();
-  setMsg('Loaded ' + got.length + ' surface(s): ' + got.map(s => s.name).join(', ') + (errs.length ? ' | Skipped ' + errs.join(' | ') : ''));
+  SD.push(...got);
+  const hadWells = WD.length > 0;
+  refresh();
+  setMsg('Loaded ' + got.length + ' surface(s): ' + got.map(s => s.name).join(', ') + (hadWells ? '' : ' \u00B7 no wells yet (use Load Wells to add them)') + (errs.length ? ' | Skipped ' + errs.join(' | ') : ''));
 }
 function loadSample(){
   const mk = (name, kopMd, rate, maxInc, azi, td) => {
@@ -597,7 +920,7 @@ function loadSample(){
       const inc = md < kopMd ? 0 : Math.min(maxInc, (md-kopMd)*rate);
       pts.push({ md, inc, azi: azi + Math.min(25, Math.max(0, (md-kopMd)*0.02)) });
     }
-    return { name, ...calculate(pts) };
+    return { name, points:pts, ...calculate(pts) };
   };
   WD = [mk('Sample-H1 (horizontal)', 800, 0.1, 90, 60, 3600), mk('Sample-D2 (deviated)', 500, 0.04, 35, 200, 2400)];
   refresh();
@@ -617,13 +940,13 @@ function refresh(){
   focus3d = false; document.getElementById('fcb').classList.remove('btna');
   shapeTrue = true; { const b = document.getElementById('shb'); b.classList.add('btna'); b.textContent = 'TRUE-ANGLE SHAPES: ON'; }
   depthScale = 1; document.getElementById('dsl').value = 0; document.getElementById('dsv').textContent = '1.0x';
-  curWell = 0; sCol = null; sAsc = true; visSet = new Set(WD.map((_, i) => i)); surfVisSet = new Set(SD.map((_, i) => i));
+  mapFocus = null; mapMeas = { a:null, b:null }; mapItems = []; mapCur = null; mapCursor = null; curWell = 0; sCol = null; sAsc = true; visSet = new Set(WD.map((_, i) => i)); surfVisSet = new Set(SD.map((_, i) => i));
   ['ws','wl','sl'].forEach(id => document.getElementById(id).innerHTML = '');
   buildSelect(); buildWellsList(); buildSurfacesList(); updateStats(0); updateTable(0);
   const q = document.querySelector('input[type=search]'); if (q) q.value = '';
   switchTab('stats', document.querySelector('.tb'));
   switchView('3d', document.querySelector('.vb'));
-  document.getElementById('sb1').textContent = WD.length + ' Well' + (WD.length > 1 ? 's' : '') + ' Loaded' +
+  document.getElementById('sb1').textContent = (WD.length ? WD.length + ' Well' + (WD.length > 1 ? 's' : '') + ' Loaded' : 'No wells loaded') +
     (SD.length ? ' \u00B7 ' + SD.length + ' Surface' + (SD.length > 1 ? 's' : '') : '');
   if (GEO()){
     const n = WD.filter(w => !w.utm).length, z = WD.find(w => w.utm).utm;
@@ -631,11 +954,37 @@ function refresh(){
   }
   document.getElementById('ld').classList.add('h');
 }
+function resetAll(){
+  if ((WD.length || SD.length) && !confirm('Unload all wells and surfaces and reset the application?\nThis cannot be undone.')) return;
+  WD = []; SD = []; visSet = new Set(); surfVisSet = new Set();
+  mapFocus = null; mapMeas = { a:null, b:null }; mapItems = []; mapCur = null; mapCursor = null; curWell = 0; sCol = null; sAsc = true; allRows = [];
+  Object.keys(rendered).forEach(k => delete rendered[k]);
+  ['p3d','pplan','pvsec','pmap','pdls'].forEach(id => { const el = document.getElementById(id); try { if (el) Plotly.purge(el); } catch (e) {} });
+  { const m = document.getElementById('pmap'); m._mapBound = false; m._mapSyncing = false; document.getElementById('mapScale').innerHTML = ''; document.getElementById('mapSel').innerHTML = ''; }
+  focus3d = false; document.getElementById('fcb').classList.remove('btna');
+  shapeTrue = true; { const b = document.getElementById('shb'); b.classList.add('btna'); b.textContent = 'TRUE-ANGLE SHAPES: ON'; }
+  TIE_VERT = true; VS_AZI = null; { const b = document.getElementById('tib'); b.classList.add('btna'); b.textContent = 'TIE-IN TVD = 1ST MD: ON'; }
+  depthScale = 1; document.getElementById('dsl').value = 0; document.getElementById('dsv').textContent = '1.0x';
+  ['ws','wl','sl'].forEach(id => document.getElementById(id).innerHTML = '');
+  document.getElementById('no-surfs').style.display = 'block';
+  updateStats(0); updateTable(0);
+  switchTab('stats', document.querySelector('.tb'));
+  curView = '3d';
+  document.querySelectorAll('.vb').forEach((b, i) => b.classList.toggle('on', i === 0));
+  document.querySelectorAll('#pa>div').forEach((d, i) => d.classList.toggle('on', i === 0));
+  document.getElementById('sb1').textContent = '\u2013';
+  const le = document.getElementById('lderr'); if (le) le.textContent = '';
+  ['fi','fs'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('ld').classList.remove('h','drag');
+}
 document.getElementById('fi').onchange = e => { if (e.target.files.length) loadFiles([...e.target.files]); e.target.value = ''; };
-document.getElementById('fd').onchange = e => { if (e.target.files.length) scanFolder([...e.target.files]); e.target.value = ''; };
 document.getElementById('fs').onchange = e => { if (e.target.files.length) loadSurfaceFiles([...e.target.files]); e.target.value = ''; };
-addEventListener('dragover', e => e.preventDefault());
-addEventListener('drop', e => { e.preventDefault(); if (e.dataTransfer.files.length) loadFiles([...e.dataTransfer.files]); });
+function openAbout(){document.getElementById('abt').classList.add('on');}
+function closeAbout(){document.getElementById('abt').classList.remove('on');}
+addEventListener('keydown',e=>{if(e.key==='Escape')closeAbout();});
+addEventListener('dragover', e => { e.preventDefault(); document.getElementById('ld').classList.add('drag'); });
+addEventListener('dragleave', e => { if (!e.relatedTarget) document.getElementById('ld').classList.remove('drag'); });
+addEventListener('drop', e => { e.preventDefault(); document.getElementById('ld').classList.remove('drag'); if (e.dataTransfer.files.length) loadFiles([...e.dataTransfer.files]); });
 
 // ── Well selector (Stats / Table) ─────────────────────────────────────────────
 function buildSelect() {
@@ -654,6 +1003,7 @@ function buildSelect() {
 // ── Wells list with per-well visibility checkboxes ───────────────────────────
 function buildWellsList() {
   const c = document.getElementById('wl');
+  if (!WD.length) { c.innerHTML = '<div style="padding:10px;font-size:10px;color:var(--txt3);">No wells loaded.</div>'; return; }
   WD.forEach((w, i) => {
     const s = w.stats, col = COLORS[i % COLORS.length];
     const div = document.createElement('div');
@@ -733,9 +1083,9 @@ function buildSurfacesList() {
         <span style="font-size:9px;color:var(--txt3);">${cs}</span>
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:3px;font-size:9px;color:var(--txt2);">
-        <span>Grid: <b>${surf.xs.length}×${surf.ys.length}</b></span>
+        <span>Grid: <b>${surf.ni}×${surf.nj}</b></span>
         <span>Z min: <b>${surf.zMin.toFixed(1)} m</b></span>
-        <span>X: ${surf.xs[0].toFixed(0)}…${surf.xs[surf.xs.length-1].toFixed(0)}</span>
+        <span>X: ${surf.sb.x0.toFixed(0)}…${surf.sb.x1.toFixed(0)}</span>
         <span>Z max: <b>${surf.zMax.toFixed(1)} m</b></span>
       </div>
     `;
@@ -755,6 +1105,7 @@ function toggleSurfVis(idx) {
 
 // ── Stats ─────────────────────────────────────────────────────────────────────
 function updateStats(idx) {
+  if (!WD.length) { document.getElementById('sg').innerHTML = '<div style="padding:14px;font-size:11px;color:var(--txt3);">No wells loaded. Click <b>Load Wells</b> to add trajectories.</div>'; return; }
   const w = WD[Math.max(0, idx)], s = w.stats, col = COLORS[idx % COLORS.length];
   const cells = [
     { l:'Well Name',    v:w.name,                          u:'',       cls:'w', st:`color:${col};font-size:12px;font-weight:800;` },
@@ -770,6 +1121,7 @@ function updateStats(idx) {
     { l:'Closure Dist.',v:s.totalClosureDistance.toFixed(2),u:'m' },
     { l:'Closure Dir.', v:s.totalClosureDirStr,             u:'' },
     { l:'Vert. Section',v:s.verticalSection.toFixed(2),    u:'m' },
+    { l:'VS Azimuth',   v:(s.vsAzimuth ?? 0).toFixed(2) + (s.vsAuto ? ' (auto)' : ''), u:'°' },
     { l:'H. Reach',     v:s.projectedHorizontalReach.toFixed(2), u:'m' },
     ...(w.utm ? [
       { l:'Surface Lat',  v:w.loc.lat.toFixed(6),  u:'°' },
@@ -809,6 +1161,7 @@ const COLS = [
 let allRows = [];
 
 function updateTable(idx) {
+  if (!WD.length) { allRows = []; document.getElementById('thead').innerHTML = ''; document.getElementById('tbody').innerHTML = ''; return; }
   const w = WD[Math.max(0, idx)]; allRows = w.trajectory;
   document.getElementById('thead').innerHTML =
     '<tr>' + COLS.map(c => `<th onclick="sortTbl('${c.k}')">${c.l}</th>`).join('') + '</tr>';
@@ -832,27 +1185,28 @@ function sortTbl(k) {
     return sAsc ? (av > bv ? 1 : -1) : (av < bv ? 1 : -1);
   }));
 }
-function filterTbl(q) {
-  if (!q.trim()) { renderRows(allRows); return; }
-  const ql = q.toLowerCase();
-  renderRows(allRows.filter(p => COLS.some(c => String(c.f(p[c.k])).toLowerCase().includes(ql))));
-}
-
 // ── Export CSV ────────────────────────────────────────────────────────────────
 function doExport() {
-  const w = WD[Math.max(0, curWell)];
-  const csv = [
-    COLS.map(c => c.l).join(','),
-    ...w.trajectory.map(p => COLS.map(c => { const v = p[c.k]; return v != null ? c.f(v) : ''; }).join(','))
-  ].join('\n');
-  try {
-    acquireVsCodeApi().postMessage({ command: 'exportCSV', data: csv, filename: w.name + '_trajectory.csv' });
-  } catch {
-    const b = new Blob([csv], { type: 'text/csv' });
-    const u = URL.createObjectURL(b);
-    const a = document.createElement('a'); a.href = u; a.download = w.name + '_trajectory.csv'; a.click();
-    URL.revokeObjectURL(u);
-  }
+  if (!WD.length) return;
+  if (typeof XLSX === 'undefined') { alert('Excel library could not be loaded (check internet connection).'); return; }
+  const wb = XLSX.utils.book_new(), used = new Set();
+  const sheetName = (n, i) => {
+    let b = String(n || 'Well ' + (i + 1)).replace(/[\[\]:*?\/\\]/g, '_').trim().slice(0, 31) || 'Well ' + (i + 1), nm = b, k = 2;
+    while (used.has(nm.toLowerCase())) { const suf = ' (' + k++ + ')'; nm = b.slice(0, 31 - suf.length) + suf; }
+    used.add(nm.toLowerCase()); return nm;
+  };
+  WD.forEach((w, i) => {
+    const rows = [COLS.map(c => c.l)];
+    for (const p of w.trajectory) rows.push(COLS.map(c => {
+      const v = p[c.k]; if (v == null) return '';
+      const f = c.f(v), n = Number(f); return (typeof f === 'string' && f !== '' && isFinite(n)) ? n : f;
+    }));
+    const ws = XLSX.utils.aoa_to_sheet(rows);
+    ws['!cols'] = COLS.map(c => ({ wch: Math.max(10, c.l.length + 2) }));
+    ws['!freeze'] = { xSplit: 0, ySplit: 1 };
+    XLSX.utils.book_append_sheet(wb, ws, sheetName(w.name, i));
+  });
+  XLSX.writeFile(wb, 'WellSight_Master_Data.xlsx');
 }
 
 // ── Tab / View switching ──────────────────────────────────────────────────────
@@ -870,15 +1224,37 @@ function switchView(v, btn) {
   document.getElementById('v' + v).classList.add('on');
   if (!rendered[v]) { renderCurrent(); rendered[v] = true; }
   setTimeout(() => {
-    const ids = { '3d':'p3d', plan:'pplan', vsec:'pvsec', dls:'pdls' };
+    const ids = { '3d':'p3d', plan:'pplan', vsec:'pvsec', map:'pmap', dls:'pdls' };
     const el = document.getElementById(ids[v]);
     if (el && el.data) Plotly.Plots.resize(el);
   }, 60);
+}
+// ── Calculation settings (VS azimuth, tie-in) ─────────────────────────────────
+function recalcAll() {
+  if (!WD.length) return;
+  for (const w of WD) {
+    if (!w.points) continue;
+    const r = calculate(w.points);
+    w.trajectory = r.trajectory; w.stats = r.stats;
+    if (w.utm) for (const p of w.trajectory) { p.x = w.utm.E + p.easting; p.y = w.utm.N + p.northing; }
+  }
+  document.getElementById('wl').innerHTML = ''; buildWellsList();
+  WD.forEach((_, i) => { if (!visSet.has(i)) { document.getElementById('cb-' + i).checked = false; document.getElementById('wcard-' + i).classList.add('hidden-well'); } });
+  Object.keys(rendered).forEach(k => delete rendered[k]);
+  updateStats(curWell); updateTable(curWell);
+  renderCurrent(); rendered[curView] = true;
+}
+function toggleTie() {
+  TIE_VERT = !TIE_VERT;
+  const b = document.getElementById('tib');
+  b.classList.toggle('btna', TIE_VERT); b.textContent = 'TIE-IN TVD = 1ST MD: ' + (TIE_VERT ? 'ON' : 'OFF');
+  recalcAll();
 }
 function renderCurrent() {
   if      (curView === '3d')   render3D();
   else if (curView === 'plan') renderPlan();
   else if (curView === 'vsec') renderVSec();
+  else if (curView === 'map')  renderMap();
   else if (curView === 'dls')  renderDLS();
 }
 
@@ -889,9 +1265,73 @@ function renderCurrent() {
 // use relative coordinates (offset from wellhead). We detect the coordinate
 // system from the data ranges and apply an offset if needed.
 
+// Shared well hover: every view shows the same survey parameters at any point along the well
+const wellHoverData = p => [p.md, p.inc, p.azi, p.northing, p.easting, p.dls, p.closureDistance, p.closureDirStr, p.closureDirection, p.tvd, p.vertSec];
+const wellHover = (name, head) => '<b>' + name + '</b><br>' + (head || '') +
+  'MD: %{customdata[0]:.1f} m<br>' +
+  'TVD: %{customdata[9]:.1f} m<br>' +
+  'Inc: %{customdata[1]:.2f}°  Azi: %{customdata[2]:.2f}°<br>' +
+  'N: %{customdata[3]:.1f} m   E: %{customdata[4]:.1f} m<br>' +
+  'DLS: %{customdata[5]:.3f} °/30m<br>' +
+  'V.Sec: %{customdata[10]:.1f} m<br>' +
+  'Closure: %{customdata[6]:.1f} m<br>' +
+  'Closure Dir: %{customdata[7]} (%{customdata[8]:.2f}°)<extra></extra>';
+
+// ── Surface sheet helpers (georeferenced wells vs a surface from another coordinate system) ──
+// Fill null cells by repeated neighbour averaging so the sheet has no holes under the wells
+function fillHoles(z){
+  const nj = z.length, ni = z[0].length; let o = z.map(r => r.slice()), left = 1, guard = 0;
+  while (left > 0 && guard++ < 3000){
+    left = 0; const nx = o.map(r => r.slice());
+    for (let j = 0; j < nj; j++) for (let i = 0; i < ni; i++) if (o[j][i] === null){
+      let s = 0, c = 0, v;
+      if (j > 0      && (v = o[j-1][i]) !== null){ s += v; c++; }
+      if (j < nj - 1 && (v = o[j+1][i]) !== null){ s += v; c++; }
+      if (i > 0      && (v = o[j][i-1]) !== null){ s += v; c++; }
+      if (i < ni - 1 && (v = o[j][i+1]) !== null){ s += v; c++; }
+      if (c) nx[j][i] = s / c; else left++;
+    }
+    o = nx;
+  }
+  return o;
+}
+// Axis-aligned sheet over [X0,X1]x[Y0,Y1]: surface centre sits at the rectangle centre, horizontal scale sf,
+// depth untouched. Outside the file's footprint the edge values continue (clamped), so the sheet always covers the area.
+function makeSheet(surf, X0, X1, Y0, Y1, sf, n){
+  if (!surf.zf) surf.zf = fillHoles(surf.z);
+  const zf = surf.zf, nj = zf.length, ni = zf[0].length, xs = surf.xs, ys = surf.ys;
+  const x00 = xs[0][0], y00 = ys[0][0];
+  const dxa = ni > 1 ? (xs[0][ni-1] - x00) / (ni - 1) : 1, dya = ni > 1 ? (ys[0][ni-1] - y00) / (ni - 1) : 0;
+  const dxb = nj > 1 ? (xs[nj-1][0] - x00) / (nj - 1) : 0, dyb = nj > 1 ? (ys[nj-1][0] - y00) / (nj - 1) : 1;
+  const det = dxa * dyb - dxb * dya || 1;
+  const sCx = (surf.sb.x0 + surf.sb.x1) / 2, sCy = (surf.sb.y0 + surf.sb.y1) / 2;
+  const cx = (X0 + X1) / 2, cy = (Y0 + Y1) / 2;
+  const clamp = (v, hi) => Math.max(0, Math.min(hi, v));
+  const toFile = (X, Y) => [sCx + (X - cx) / sf, sCy + (Y - cy) / sf];
+  const zAt = (X, Y) => {
+    const [fx, fy] = toFile(X, Y), rx = fx - x00, ry = fy - y00;
+    const a = clamp((rx * dyb - ry * dxb) / det, ni - 1), b = clamp((ry * dxa - rx * dya) / det, nj - 1);
+    const a0 = Math.floor(a), b0 = Math.floor(b), a1 = Math.min(ni - 1, a0 + 1), b1 = Math.min(nj - 1, b0 + 1), ta = a - a0, tb = b - b0;
+    return (zf[b0][a0] * (1 - ta) + zf[b0][a1] * ta) * (1 - tb) + (zf[b1][a0] * (1 - ta) + zf[b1][a1] * ta) * tb;
+  };
+  const gx = [], gy = [], gz = [], tx = [];
+  for (let i = 0; i < n; i++) gx.push(X0 + (X1 - X0) * i / (n - 1));
+  for (let j = 0; j < n; j++){
+    const Y = Y0 + (Y1 - Y0) * j / (n - 1), row = [], trow = [];
+    gy.push(Y);
+    for (let i = 0; i < n; i++){
+      const z = zAt(gx[i], Y), f = toFile(gx[i], Y);
+      row.push(z); trow.push('TVD: ' + z.toFixed(1) + ' m<br>E: ' + f[0].toFixed(1) + '<br>N: ' + f[1].toFixed(1));
+    }
+    gz.push(row); tx.push(trow);
+  }
+  return { x: gx, y: gy, z: gz, text: tx, zAt };
+}
+
 function render3D() {
   const ws = focus3d ? [{ ...WD[Math.max(0, curWell)], ci: Math.max(0, curWell) }] : getVisible();
   const tr = [];
+  const geoOn = GEO() && ws.length > 0;   // no visible wells -> surfaces are drawn on their own, at their own coordinates
 
   // ── Compute global TVD / Z range ──
   let maxTVD = 0;
@@ -918,7 +1358,8 @@ function render3D() {
 
   let wellXMin = Infinity, wellXMax = -Infinity;
   let wellYMin = Infinity, wellYMax = -Infinity;
-  for (const w of ws) {
+  const bw = geoOn && ws.some(w => w.utm) ? ws.filter(w => w.utm) : ws;
+  for (const w of bw) {
     for (const p of w.trajectory) {
       if (p.x < wellXMin) wellXMin = p.x;
       if (p.x > wellXMax) wellXMax = p.x;
@@ -929,23 +1370,42 @@ function render3D() {
 
   // Horizontal extent of everything drawn (wells + surfaces), used to size the 3D box
   let gx0 = wellXMin, gx1 = wellXMax, gy0 = wellYMin, gy1 = wellYMax;
+  let sbx0 = Infinity, sbx1 = -Infinity, sby0 = Infinity, sby1 = -Infinity;   // extent of the drawn surfaces
+  // Placement of the surfaces (one common transform so Top/Base surfaces stay aligned with each other):
+  //  - surface overlaps the wells (same coordinate system): drawn exactly where it is
+  //  - otherwise (different coordinate system / region): centred under the wells and, if it is smaller than the area the
+  //    wells cover, enlarged horizontally (same factor in X and Y) so it forms a sheet under all of them; depth is untouched
+  let ux0 = Infinity, ux1 = -Infinity, uy0 = Infinity, uy1 = -Infinity;
+  for (let si = 0; si < SD.length; si++) if (surfVisSet.has(si)) {
+    const b = SD[si].sb;
+    ux0 = Math.min(ux0, b.x0); ux1 = Math.max(ux1, b.x1); uy0 = Math.min(uy0, b.y0); uy1 = Math.max(uy1, b.y1);
+  }
+  let sdx = 0, sdy = 0, sf = 1, sCx = 0, sCy = 0, surfMoved = false;
+  if (isFinite(ux0)) {
+    const pad = 2000;
+    const wCx = (wellXMin + wellXMax) / 2, wCy = (wellYMin + wellYMax) / 2;
+    sCx = (ux0 + ux1) / 2; sCy = (uy0 + uy1) / 2;
+    const overlaps = ux0 < wellXMax + pad && ux1 > wellXMin - pad && uy0 < wellYMax + pad && uy1 > wellYMin - pad;
+    surfMoved = geoOn ? !overlaps : (Math.abs(sCx - wCx) > 1000 || Math.abs(sCy - wCy) > 1000);
+    if (surfMoved) {
+      sdx = wCx; sdy = wCy;
+      const wSpan = Math.max(wellXMax - wellXMin, wellYMax - wellYMin), sSpan = Math.max(ux1 - ux0, uy1 - uy0, 1);
+      if (geoOn && !focus3d) sf = Math.max(1, 1.3 * wSpan / sSpan);
+    }
+  }
+  const sheet = surfMoved && geoOn;   // surface is in another coordinate system than the georeferenced wells -> drawn as a covering sheet
+  const mapX = x => surfMoved ? sdx + sf * (x - sCx) : x;
+  const mapY = y => surfMoved ? sdy + sf * (y - sCy) : y;
   for (let si = 0; si < SD.length; si++) {
-    if (!surfVisSet.has(si)) { continue; }
-    const surf = SD[si];
+    if (!surfVisSet.has(si) || sheet) { continue; }
+    const surf = SD[si], sb = surf.sb;
 
-    // Decide on coordinate offset: if surface X range >> well X range, we centre
-    const surfXMid = (surf.xs[0] + surf.xs[surf.xs.length - 1]) / 2;
-    const surfYMid = (surf.ys[0] + surf.ys[surf.ys.length - 1]) / 2;
-    const wellXMid = (wellXMin + wellXMax) / 2;
-    const wellYMid = (wellYMin + wellYMax) / 2;
-    const absOffset = Math.abs(surfXMid - wellXMid) > 1000 || Math.abs(surfYMid - wellYMid) > 1000;
-    const dx = absOffset ? wellXMid - surfXMid : 0;
-    const dy = absOffset ? wellYMid - surfYMid : 0;
-
-    const xs_shifted = surf.xs.map(x => x + dx);
-    const ys_shifted = surf.ys.map(y => y + dy);
-    if (!focus3d) gx0 = Math.min(gx0, xs_shifted[0], xs_shifted[xs_shifted.length - 1]); gx1 = Math.max(gx1, xs_shifted[0], xs_shifted[xs_shifted.length - 1]);
-    if (!focus3d) gy0 = Math.min(gy0, ys_shifted[0], ys_shifted[ys_shifted.length - 1]); gy1 = Math.max(gy1, ys_shifted[0], ys_shifted[ys_shifted.length - 1]);
+    const xs_shifted = surfMoved ? surf.xs.map(r => r.map(mapX)) : surf.xs;
+    const ys_shifted = surfMoved ? surf.ys.map(r => r.map(mapY)) : surf.ys;
+    const bx0 = mapX(sb.x0), bx1 = mapX(sb.x1), by0 = mapY(sb.y0), by1 = mapY(sb.y1);
+    sbx0 = Math.min(sbx0, bx0); sbx1 = Math.max(sbx1, bx1);
+    sby0 = Math.min(sby0, by0); sby1 = Math.max(sby1, by1);
+    if (!focus3d) { gx0 = Math.min(gx0, bx0); gx1 = Math.max(gx1, bx1); gy0 = Math.min(gy0, by0); gy1 = Math.max(gy1, by1); }
 
     const cs = SURF_COLORSCALES[si % SURF_COLORSCALES.length];
 
@@ -967,10 +1427,10 @@ function render3D() {
         outlinecolor: '#c5cde0',
         outlinewidth: 1
       },
-      hovertemplate:
-        '<b>' + surf.name + '</b><br>' +
-        'E: %{x:.0f}  N: %{y:.0f}<br>' +
-        'Depth: %{z:.1f} m<extra></extra>',
+      // hover: TVD and the surface's own (file) coordinates, nothing else
+      hoverinfo: 'text',
+      text: surf.z.map((r, jj) => r.map((zv, ii) => zv === null ? '' :
+        'TVD: ' + zv.toFixed(1) + ' m<br>E: ' + surf.xs[jj][ii].toFixed(1) + '<br>N: ' + surf.ys[jj][ii].toFixed(1))),
       contours: {
         z: { show: false }
       }
@@ -985,11 +1445,12 @@ function render3D() {
   let K = 1, aspect = { x: 1, y: 1, z: 1.4 }, xr = null, yr = null;
   const spanOf = k => {
     let x0 = gx0, x1 = gx1, y0 = gy0, y1 = gy1;
-    if (!focus3d) { x0 = Infinity; x1 = -Infinity; y0 = Infinity; y1 = -Infinity; }
+    if (!focus3d) { x0 = sbx0; x1 = sbx1; y0 = sby0; y1 = sby1; }
     for (const w of ws) for (const p of w.trajectory) {
       const X = w.utm ? w.utm.E + k * p.easting : p.x, Y = w.utm ? w.utm.N + k * p.northing : p.y;
       if (X < x0) x0 = X; if (X > x1) x1 = X; if (Y < y0) y0 = Y; if (Y > y1) y1 = Y;
     }
+    if (sheet && !focus3d) { const pd = 0.12 * Math.max(x1 - x0, y1 - y0, 1); x0 -= pd; x1 += pd; y0 -= pd; y1 += pd; }
     return { x0, x1, y0, y1 };
   };
   if (focus3d) {
@@ -999,7 +1460,7 @@ function render3D() {
     xr = [wellXMin - px, wellXMax + px]; yr = [wellYMin - py, wellYMax + py];
     const sx = xr[1] - xr[0], sy = yr[1] - yr[0], m = Math.max(sx, sy, zMax);
     aspect = { x: sx / m, y: sy / m, z: zMax / m };
-  } else if (GEO()) {
+  } else if (geoOn) {
     const box = k => {
       const sp = spanOf(k);
       const sx = Math.max(sp.x1 - sp.x0, 1), sy = Math.max(sp.y1 - sp.y0, 1), m = Math.max(sx, sy);
@@ -1015,8 +1476,44 @@ function render3D() {
     }
     aspect = b.a;
   }
+  if (!ws.length && isFinite(sbx0)) {   // surfaces only: box follows the surface extent, depth gets a sensible height
+    const sx = Math.max(sbx1 - sbx0, 1), sy = Math.max(sby1 - sby0, 1), m = Math.max(sx, sy);
+    aspect = { x: Math.max(sx / m, 0.1), y: Math.max(sy / m, 0.1), z: Math.min(1.4, Math.max(0.35, zMax / m)) };
+  }
   const KX = w => p => w.utm ? w.utm.E + K * p.easting : p.x;
   const KY = w => p => w.utm ? w.utm.N + K * p.northing : p.y;
+
+  // ── Surface sheet (georeferenced wells): covers the final (exaggerated) extent of every drawn well ──
+  let pierceMsg = '';
+  if (sheet && isFinite(ux0)) {
+    const R = focus3d ? { x0: xr[0], x1: xr[1], y0: yr[0], y1: yr[1] } : spanOf(K);
+    const sSpan = Math.max(ux1 - ux0, uy1 - uy0, 1), rSpan = Math.max(R.x1 - R.x0, R.y1 - R.y0, 1);
+    const sfS = focus3d ? 1 : Math.max(1, 1.3 * rSpan / sSpan);
+    const sheets = [], hits = [];
+    for (let si = 0; si < SD.length; si++) if (surfVisSet.has(si)) {
+      const surf = SD[si], cs = SURF_COLORSCALES[si % SURF_COLORSCALES.length];
+      const sh = makeSheet(surf, R.x0, R.x1, R.y0, R.y1, sfS, focus3d ? 120 : 110);
+      sheets.push(sh);
+      tr.splice(sheets.length - 1, 0, {
+        type: 'surface', name: surf.name, x: sh.x, y: sh.y, z: sh.z, colorscale: cs, opacity: 0.55, showscale: true,
+        colorbar: { title: { text: surf.name + ' (m TVD)', side: 'right', font: { color: '#374151', size: 10 } }, thickness: 10, len: 0.5,
+          x: 1.02 + si * 0.07, tickfont: { color: '#374151', size: 9 }, outlinecolor: '#c5cde0', outlinewidth: 1 },
+        hoverinfo: 'text', text: sh.text, contours: { z: { show: false } }
+      });
+    }
+    if (sheets.length) {   // does each well actually reach / cross the first visible surface?
+      const sh = sheets[0], sn = SD.find((_, i) => surfVisSet.has(i)).name, parts = [];
+      for (const w of ws) {
+        const t = w.trajectory, fx = KX(w), fy = KY(w);
+        let hit = null;
+        for (const p of t) if (p.tvd >= sh.zAt(fx(p), fy(p))) { hit = p; break; }
+        const L = t[t.length - 1];
+        parts.push(hit ? w.name + ' crosses at ' + hit.tvd.toFixed(0) + ' m TVD'
+                       : w.name + ' stops above it (TD ' + L.tvd.toFixed(0) + ' m vs ' + sh.zAt(fx(L), fy(L)).toFixed(0) + ' m)');
+      }
+      pierceMsg = ' \u00B7 ' + sn + ': ' + parts.join('; ');
+    }
+  }
 
   // ── Well traces ───────────────────────────────────────────────────────────
   for (const w of ws) {
@@ -1025,7 +1522,7 @@ function render3D() {
     const mxDLS  = Math.max(...dlsArr, 0.01);
 
     tr.push({
-      type: 'scatter3d', mode: 'lines', name: w.name,
+      type: 'scatter3d', mode: 'lines', name: w.name, legendgroup: w.name,
       x: t.map(KX(w)),
       y: t.map(KY(w)),
       z: t.map(p => p.tvd),
@@ -1035,45 +1532,42 @@ function render3D() {
         width: 6,
         cmin: 0, cmax: Math.max(mxDLS, 3)
       },
-      hovertemplate:
-        '<b>' + w.name + '</b><br>' +
-        'MD: %{customdata[0]:.1f} m<br>' +
-        'TVD: %{z:.1f} m<br>' +
-        'Inc: %{customdata[1]:.2f}°  Azi: %{customdata[2]:.2f}°<br>' +
-        'N: %{customdata[3]:.1f} m   E: %{customdata[4]:.1f} m<br>' +
-        'DLS: %{customdata[5]:.3f} °/30m<br>' +
-        'Closure: %{customdata[6]:.1f} m' +
-        '<extra></extra>',
-      customdata: t.map(p => [p.md, p.inc, p.azi, p.northing, p.easting, p.dls, p.closureDistance])
+      hovertemplate: wellHover(w.name),
+      customdata: t.map(wellHoverData)
     });
 
     tr.push({
-      type: 'scatter3d', mode: 'markers', showlegend: false,
+      type: 'scatter3d', mode: 'markers+text', showlegend: false, legendgroup: w.name,
       x: [KX(w)(t[0])], y: [KY(w)(t[0])], z: [0],
-      marker: { color: col, size: 10, symbol: 'circle', line: { color: '#222', width: 2 } },
+      text: [w.name], textposition: 'top center',
+      textfont: { color: '#884400', size: 10 },
+      marker: { color: col, size: 3.3, symbol: 'circle', line: { color: '#222', width: 0.7 } },
       hovertemplate: '<b>' + w.name + ' — Surface</b><br>TVD: 0 m<extra></extra>'
     });
 
     const L = t[t.length - 1];
     tr.push({
-      type: 'scatter3d', mode: 'markers', showlegend: false,
+      type: 'scatter3d', mode: 'markers', showlegend: false, legendgroup: w.name,
       x: [KX(w)(L)], y: [KY(w)(L)], z: [L.tvd],
-      marker: { color: col, size: 9, symbol: 'diamond', line: { color: '#222', width: 1.5 } },
+      marker: { color: col, size: 3, symbol: 'diamond', line: { color: '#222', width: 0.5 } },
       hovertemplate: `<b>${w.name} — TD</b><br>MD: ${L.md.toFixed(1)} m  TVD: ${L.tvd.toFixed(1)} m<extra></extra>`
     });
 
     if (w.stats.kop !== null) {
       const kp = t.find(p => p.md >= w.stats.kop) || t[0];
       tr.push({
-        type: 'scatter3d', mode: 'markers+text', showlegend: false,
+        type: 'scatter3d', mode: 'markers+text', showlegend: false, legendgroup: w.name,
         x: [KX(w)(kp)], y: [KY(w)(kp)], z: [kp.tvd],
         text: ['KOP'], textposition: 'top center',
         textfont: { color: '#884400', size: 10 },
-        marker: { color: '#b86000', size: 7, symbol: 'square', line: { color: '#222', width: 1 } },
+        marker: { color: '#b86000', size: 2.3, symbol: 'square', line: { color: '#222', width: 0.4 } },
         hovertemplate: `<b>KOP — ${w.name}</b><br>MD: ${kp.md.toFixed(1)} m  TVD: ${kp.tvd.toFixed(1)} m<extra></extra>`
       });
     }
   }
+
+  { const e = document.getElementById('sb1'), tag = ' \u00B7 Surfaces re-positioned under wells (coordinates differ)';
+    setTimeout(() => { if (e){ e.textContent = e.textContent.split(tag).join('').replace(/ \u00B7 [^\u00B7]*(crosses at|stops above it)[^\u00B7]*$/, ''); if (surfMoved) e.textContent += tag; if (pierceMsg) e.textContent += pierceMsg; } }, 0); }
 
   const layout = {
     ...LB,
@@ -1086,7 +1580,7 @@ function render3D() {
         ...ax3('TVD (m)'),
         range: [0, zMax],
         autorange: false,
-        dtick: 100,
+        dtick: 250,
         tick0: 0
       },
       camera: {
@@ -1111,37 +1605,536 @@ function render3D() {
 }
 
 // ── PLAN VIEW ─────────────────────────────────────────────────────────────────
+// 2D top-down view: every well is drawn relative to its own wellhead (0,0), north up, equal scale on both axes.
 function renderPlan() {
   const ws = getVisible(); const tr = [];
-  for (const w of ws) {
+  let mdMax = 0;
+  for (const w of ws) for (const p of w.trajectory) if (p.md > mdMax) mdMax = p.md;
+  let x0 = 0, x1 = 0, y0 = 0, y1 = 0;
+  ws.forEach((w, k) => {
     const t = w.trajectory, col = COLORS[w.ci % COLORS.length];
-    tr.push({
-      type: 'scatter', mode: 'lines+markers', name: w.name,
-      x: t.map(p => p.x), y: t.map(p => p.y),
-      line: { color: col, width: 2.5 },
-      marker: {
-        color: t.map(p => p.md), colorscale: 'Blues', size: 5,
-        colorbar: { title: { text: 'MD (m)', side: 'right' }, thickness: 12, len: 0.65,
-          tickfont: { color: '#111827' }, titlefont: { color: '#374151' } }
-      },
-      hovertemplate:
-        '<b>' + w.name + '</b><br>N: %{y:.1f} m  E: %{x:.1f} m<br>MD: %{customdata:.1f} m<extra></extra>',
-      customdata: t.map(p => p.md)
-    });
+    const X = t.map(p => p.easting), Y = t.map(p => p.northing);
+    for (const v of X) { if (v < x0) x0 = v; if (v > x1) x1 = v; }
+    for (const v of Y) { if (v < y0) y0 = v; if (v > y1) y1 = v; }
     const L = t[t.length - 1];
     tr.push({
-      type: 'scatter', mode: 'lines', showlegend: false,
-      x: [t[0].x, L.x], y: [t[0].y, L.y],
+      type: 'scatter', mode: 'lines+markers', name: w.name, legendgroup: w.name,
+      x: X, y: Y,
+      line: { color: col, width: 2.5 },
+      marker: {
+        color: t.map(p => p.md), colorscale: 'Blues', cmin: 0, cmax: mdMax, size: 5,
+        showscale: k === 0,
+        colorbar: { title: { text: 'MD (m)', side: 'right' }, thickness: 12, len: 0.5, y: 0.3,
+          tickfont: { color: '#111827' } }
+      },
+      hovertemplate: wellHover(w.name),
+      customdata: t.map(wellHoverData)
+    });
+    tr.push({
+      type: 'scatter', mode: 'lines', showlegend: false, legendgroup: w.name,
+      x: [0, L.easting], y: [0, L.northing],
       line: { color: col, width: 1, dash: 'dash' },
       hovertemplate: 'Closure: ' + L.closureDistance.toFixed(1) + ' m @ ' + L.closureDirStr + '<extra></extra>'
     });
-  }
+    // well name at the TD end of the track, same label style as KOP
+    tr.push({
+      type: 'scatter', mode: 'markers+text', showlegend: false, legendgroup: w.name,
+      x: [L.easting], y: [L.northing], text: [w.name], textposition: 'top center',
+      textfont: { color: '#884400', size: 10 },
+      marker: { color: col, size: 7, symbol: 'diamond', line: { color: '#222', width: 1 } },
+      hovertemplate: '<b>' + w.name + ' — TD</b><br>MD: ' + L.md.toFixed(1) + ' m<extra></extra>'
+    });
+  });
+  const padX = Math.max(0.1 * (x1 - x0), 100), padY = Math.max(0.1 * (y1 - y0), 100);
+  const flat = { tickangle: 0, nticks: 10, tickformat: 'd' };
   Plotly.react('pplan', tr, {
     ...LB,
+    dragmode: 'pan',
     title: { text: 'Plan View (Top Down)', font: { color: '#374151', size: 13 } },
-    xaxis: { ...ax2('Easting (m)'), zeroline: true },
-    yaxis: { ...ax2('Northing (m)'), zeroline: true, scaleanchor: 'x' }
-  }, { responsive: true, displaylogo: false });
+    xaxis: { ...ax2('Easting (m)'), ...flat, zeroline: true, range: [x0 - padX, x1 + padX], autorange: false },
+    yaxis: { ...ax2('Northing (m)'), ...flat, zeroline: true, scaleanchor: 'x', scaleratio: 1, range: [y0 - padY, y1 + padY], autorange: false },
+    annotations: [
+      { xref: 'paper', yref: 'paper', x: 0.035, y: 0.90, ax: 0, ay: 40, axref: 'pixel', ayref: 'pixel',
+        showarrow: true, arrowhead: 2, arrowsize: 1.3, arrowwidth: 3, arrowcolor: '#111827', text: '' },
+      { xref: 'paper', yref: 'paper', x: 0.035, y: 0.90, yshift: 24, showarrow: false,
+        text: '<b>N</b>', font: { color: '#111827', size: 15 } }
+    ]
+  }, { responsive: true, displaylogo: false, scrollZoom: true });
+}
+
+// ── MAP VIEW (survey-map style, UTM when georeferenced) ───────────────────────
+function aziLerp(a, b, t){ const d = ((b - a + 540) % 360) - 180; return (a + d * t + 360) % 360; }
+function mapDensify(t){
+  const out = [], L = (a, b, k, u) => (a[k] != null && b[k] != null) ? a[k] + (b[k] - a[k]) * u : null;
+  for (let i = 0; i < t.length; i++){
+    out.push(t[i]);
+    const a = t[i], b = t[i + 1]; if (!b) break;
+    const n = Math.min(40, Math.max(1, Math.ceil((b.md - a.md) / 5)));
+    for (let k = 1; k < n; k++){
+      const u = k / n, q = { ...b };
+      ['md','inc','tvd','northing','easting','vertSec','closureDistance','x','y'].forEach(key => { q[key] = L(a, b, key, u); });
+      q.azi = aziLerp(a.azi, b.azi, u);
+      q.closureDirStr = u < 0.5 ? a.closureDirStr : b.closureDirStr;
+      out.push(q);
+    }
+  }
+  return out;
+}
+function mapPick(v){ mapFocus = (v === 'all') ? 'all' : +v; renderMap(); }
+// ── Lat/Lon (deg-min-sec) edge labels ─────────────────────────────────────────
+// Inverse of llToUTM (Krueger series): UTM easting/northing -> WGS84 lat/lon
+function utmToLL(E, N, zone, south){
+  const a = 6378137, f = 1/298.257223563, k0 = 0.9996, n = f/(2-f);
+  const A = a/(1+n)*(1 + n*n/4 + n**4/64);
+  const be = [n/2 - 2*n*n/3 + 37*n**3/96, n*n/48 + n**3/15, 17*n**3/480];
+  const de = [2*n - 2*n*n/3 - 2*n**3, 7*n*n/3 - 8*n**3/5, 56*n**3/15];
+  const xi = (south ? N - 1e7 : N)/(k0*A), eta = (E - 500000)/(k0*A);
+  let xi0 = xi, eta0 = eta;
+  for (let j = 1; j <= 3; j++){
+    xi0  -= be[j-1]*Math.sin(2*j*xi)*Math.cosh(2*j*eta);
+    eta0 -= be[j-1]*Math.cos(2*j*xi)*Math.sinh(2*j*eta);
+  }
+  const chi = Math.asin(Math.sin(xi0)/Math.cosh(eta0));
+  let phi = chi; for (let j = 1; j <= 3; j++) phi += de[j-1]*Math.sin(2*j*chi);
+  return { lat: phi*R2D, lon: (zone*6 - 183) + Math.atan2(Math.sinh(eta0), Math.cos(xi0))*R2D };
+}
+const DMS_STEPS = [0.1,0.2,0.5,1,2,5,10,15,30,60,120,300,600,900,1800,3600,7200,18000,36000,72000,180000];   // arc-seconds
+function dmsStep(spanSec, n){ const raw = spanSec/Math.max(2, n); for (const s of DMS_STEPS) if (s >= raw) return s; return DMS_STEPS[DMS_STEPS.length - 1]; }
+function dmsMinor(step){ return step === 0.1 ? 0 : (step === 2 || step === 0.2 || step === 0.5) ? step/2 : step/5; }
+function fmtDMS(sec, isLat, step){
+  const hem = isLat ? (sec < 0 ? 'S' : 'N') : (sec < 0 ? 'W' : 'E');
+  const dec = step < 1 ? 1 : 0, p = Math.pow(10, dec);
+  let t = Math.round(Math.abs(sec)*p)/p;
+  const d = Math.floor(t/3600 + 1e-9); t -= d*3600;
+  const m = Math.floor(t/60 + 1e-9), s = Math.max(0, t - m*60);
+  return d + '\u00B0' + String(m).padStart(2, '0') + "'" + (s < 10 ? '0' : '') + s.toFixed(dec) + '"' + hem;
+}
+function bisectInc(f, lo, hi, target){ for (let i = 0; i < 46; i++){ const mid = (lo + hi)/2; if (f(mid) < target) lo = mid; else hi = mid; } return (lo + hi)/2; }
+// Tick positions/labels for the four red map borders (bottom/top = longitude, left/right = latitude)
+function mapDmsTicks(xr, yr, wPx, hPx){
+  const g = WD.find(w => w.utm); if (!g) return null;
+  const zone = g.utm.zone, south = g.utm.south;
+  const nx = Math.max(3, Math.min(8, Math.floor(wPx/120))), ny = Math.max(3, Math.min(8, Math.floor(hPx/100)));
+  const edge = (isLat, fixed, lo, hi, n) => {
+    const val = v => (isLat ? utmToLL(fixed, v, zone, south).lat : utmToLL(v, fixed, zone, south).lon)*3600;
+    const s0 = val(lo), s1 = val(hi), mn = Math.min(s0, s1), mx = Math.max(s0, s1);
+    const step = dmsStep(mx - mn, n);
+    const list = st => { const a = []; if (!st) return a; for (let k = Math.ceil(mn/st - 1e-9), c = 0; k*st <= mx + 1e-9 && c < 80; k++, c++) a.push(k*st); return a; };
+    const pos = sec => bisectInc(val, lo, hi, sec);
+    const maj = list(step), ms = dmsMinor(step);
+    const min = list(ms).filter(s => Math.abs(s/step - Math.round(s/step)) > 1e-6);
+    return { vals: maj.map(pos), text: maj.map(s => fmtDMS(s, isLat, step)), minor: min.map(pos) };
+  };
+  const [xa, xb] = xr, [ya, yb] = yr;
+  return { x: edge(false, ya, xa, xb, nx), x2: edge(false, yb, xa, xb, nx), y: edge(true, xa, ya, yb, ny), y2: edge(true, xb, ya, yb, ny) };
+}
+function mapTickLayout(t, minorBase){
+  return { tickmode:'array', tickvals:t.vals, ticktext:t.text, minor:{ ...minorBase, tickmode:'array', tickvals:t.minor } };
+}
+function mapTicksUpdate(){
+  const gd = document.getElementById('pmap'); if (!gd || !gd._fullLayout || !gd._fullLayout.xaxis2 || !GEO()) return;
+  const fl = gd._fullLayout, xa = fl.xaxis, ya = fl.yaxis; if (!xa._length || !ya._length) return;
+  const t = mapDmsTicks(xa.range, ya.range, xa._length, ya._length); if (!t) return;
+  const sig = JSON.stringify(t); if (sig === gd._mapTickSig) return;
+  gd._mapTickSig = sig;
+  const upd = {};
+  [['xaxis','x'],['xaxis2','x2'],['yaxis','y'],['yaxis2','y2']].forEach(([ax, k]) => {
+    upd[ax + '.tickmode'] = 'array'; upd[ax + '.tickvals'] = t[k].vals; upd[ax + '.ticktext'] = t[k].text;
+    upd[ax + '.minor.tickmode'] = 'array'; upd[ax + '.minor.tickvals'] = t[k].minor;
+  });
+  gd._mapSyncing = true;
+  const done = () => { gd._mapSyncing = false; };
+  Plotly.relayout(gd, upd).then(done, done);
+}
+
+// ── Scale bar: switches to km for long bars, thins labels so they never overlap ──
+function mapScaleUpdate(){
+  const gd = document.getElementById('pmap'), box = document.getElementById('mapScale');
+  if (!gd || !gd._fullLayout || !gd._fullLayout.xaxis || !gd._fullLayout.xaxis._length) return;
+  const xa = gd._fullLayout.xaxis, mpp = Math.abs(xa.range[1] - xa.range[0]) / xa._length;
+  if (!isFinite(mpp) || mpp <= 0) return;
+  const target = 170 * mpp, mag = Math.pow(10, Math.floor(Math.log10(target)));
+  let Lm = mag; for (const m of [1, 2, 4, 10]) if (m * mag <= target * 1.25) Lm = m * mag;
+  const km = Lm >= 1000, div = km ? 1000 : 1, unit = km ? 'km' : 'm';
+  const px = Lm / mpp, seg = px / 4, fmt = v => String(+v.toFixed(3)), CW = 6.4;
+  const txt = i => fmt(Lm * i / 4 / div) + (i === 4 ? ' ' + unit : '');
+  let stepI = 1;                                    // label every 1st, 2nd or 4th tick, whichever fits without overlap
+  for (const st of [1, 2, 4]) {
+    let ok = true;
+    for (let i = 0; i + st <= 4; i += st) if ((txt(i).length + txt(i + st).length) * CW / 2 + 6 > st * seg) { ok = false; break; }
+    stepI = st; if (ok) break;
+  }
+  let bars = '', labs = '';
+  for (let i = 0; i < 4; i++) bars += '<i style="width:' + seg + 'px;background:' + (i % 2 ? '#fff' : '#111') + '"></i>';
+  for (let i = 0; i <= 4; i += stepI) labs += '<span style="left:' + (i * seg) + 'px">' + txt(i) + '</span>';
+  const ratio = Math.round(mpp * 3779.5276);
+  box.innerHTML = '<div class="sbar" style="width:' + px + 'px">' + bars + '</div><div class="slab" style="width:' + px + 'px">' + labs + '</div><div class="srat">1:' + ratio.toLocaleString('en-US') + '</div>';
+}
+
+// ── Wells on/off popup (kept in sync with the left-panel checkboxes) ──────────
+function mapWellsList(){
+  const pop = document.getElementById('mapWellPop'), btn = document.getElementById('mapWellBtn'); if (!pop) return;
+  const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;');
+  let h = '<div class="wph"><span style="flex:1">Show wells</span><button class="btn" onclick="mapWellsAll(true)">All</button><button class="btn" onclick="mapWellsAll(false)">None</button></div>';
+  if (!WD.length) h += '<div style="color:var(--txt3);padding:4px 2px;">No wells loaded.</div>';
+  WD.forEach((w, i) => {
+    h += '<label><input type="checkbox" ' + (visSet.has(i) ? 'checked ' : '') + 'onchange="mapWellApply([' + i + '],this.checked)" style="accent-color:' + COLORS[i % COLORS.length] + ';cursor:pointer;"/><span class="chip" style="background:' + COLORS[i % COLORS.length] + '"></span><span style="flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + esc(w.name) + '</span></label>';
+  });
+  pop.innerHTML = h;
+  if (btn) btn.innerHTML = 'Wells (' + visSet.size + '/' + WD.length + ') &#9662;';
+}
+function mapWellApply(list, on){
+  list.forEach(i => {
+    if (on) visSet.add(i); else visSet.delete(i);
+    const cb = document.getElementById('cb-' + i), card = document.getElementById('wcard-' + i);
+    if (cb) cb.checked = on; if (card) card.classList.toggle('hidden-well', !on);
+  });
+  Object.keys(rendered).forEach(k => rendered[k] = false);
+  mapFocus = null; renderCurrent(); rendered[curView] = true;
+}
+function mapWellsAll(on){ mapWellApply(WD.map((_, i) => i), on); }
+function mapWellPopToggle(e){
+  if (e) e.stopPropagation();
+  const pop = document.getElementById('mapWellPop'); mapWellsList(); pop.classList.toggle('open');
+}
+document.addEventListener('click', e => {
+  const pop = document.getElementById('mapWellPop');
+  if (pop && pop.classList.contains('open') && !e.target.closest('#mapWellPop') && !e.target.closest('#mapWellBtn')) pop.classList.remove('open');
+});
+
+// ── Map drawing tools: Line (2-point) · Polygon (multi-point, closes & fills, area) · Circle (centre + radius) ──
+const MAP_RED = '#e00000';
+const mapFmtDist = d => d >= 1000 ? (d/1000).toLocaleString('en-US', { maximumFractionDigits: 3 }) + ' km' : d.toLocaleString('en-US', { maximumFractionDigits: 2 }) + ' m';
+const mapFmtArea = a => { const f = (v, d) => v.toLocaleString('en-US', { maximumFractionDigits: d }); return f(a, 1) + ' m\u00B2 (' + (a >= 1e6 ? f(a/1e6, 3) + ' km\u00B2' : f(a/1e4, 3) + ' ha') + ')'; };
+const mapAz = (a, b) => (Math.atan2(b.x - a.x, b.y - a.y) * R2D + 360) % 360;
+function mapMeasCalc(){
+  const a = mapMeas.a, b = mapMeas.b; if (!a || !b) return null;
+  const dx = b.x - a.x, dy = b.y - a.y, dist = Math.hypot(dx, dy);
+  const az = (Math.atan2(dx, dy) * R2D + 360) % 360;
+  return { dx, dy, dist, az, back: (az + 180) % 360 };
+}
+// Polygon statistics: per-segment distance/azimuth, perimeter, area (shoelace, relative to 1st vertex for precision), centroid
+function mapPolyStats(pts, closed){
+  const n = pts.length, m = closed ? n : n - 1, segs = []; let per = 0;
+  for (let i = 0; i < m; i++){
+    const a = pts[i], b = pts[(i + 1) % n], d = Math.hypot(b.x - a.x, b.y - a.y);
+    per += d; segs.push({ a, b, dist: d, az: mapAz(a, b) });
+  }
+  let area = 0, cx = 0, cy = 0, self = false;
+  if (closed && n >= 3){
+    const o = pts[0]; let s = 0, sx = 0, sy = 0;
+    for (let i = 0; i < n; i++){
+      const a = pts[i], b = pts[(i + 1) % n], ax = a.x - o.x, ay = a.y - o.y, bx = b.x - o.x, by = b.y - o.y, cr = ax * by - bx * ay;
+      s += cr; sx += (ax + bx) * cr; sy += (ay + by) * cr;
+    }
+    area = Math.abs(s) / 2;
+    if (Math.abs(s) > 1e-9){ cx = o.x + sx / (3 * s); cy = o.y + sy / (3 * s); }
+    else { cx = pts.reduce((t, p) => t + p.x, 0) / n; cy = pts.reduce((t, p) => t + p.y, 0) / n; }
+    // self-intersection check (non-adjacent edges)
+    const X = (p, q, r, s2) => { const d = (q.x-p.x)*(s2.y-r.y) - (q.y-p.y)*(s2.x-r.x); if (!d) return false;
+      const t = ((r.x-p.x)*(s2.y-r.y) - (r.y-p.y)*(s2.x-r.x))/d, u = ((r.x-p.x)*(q.y-p.y) - (r.y-p.y)*(q.x-p.x))/d; return t > 0 && t < 1 && u > 0 && u < 1; };
+    for (let i = 0; i < n && !self; i++) for (let j = i + 1; j < n; j++){
+      if (j === i + 1 || (i === 0 && j === n - 1)) continue;
+      if (X(pts[i], pts[(i+1)%n], pts[j], pts[(j+1)%n])){ self = true; break; }
+    }
+  }
+  return { segs, per, area, cx, cy, self };
+}
+const mapDot = (p, big) => { const s = big ? 6 : 4; return { type:'circle', xref:'x', yref:'y', xsizemode:'pixel', ysizemode:'pixel', xanchor:p.x, yanchor:p.y, x0:-s, x1:s, y0:-s, y1:s,
+  line:{ color: MAP_RED, width: big ? 2 : 1.5 }, fillcolor: big ? 'rgba(224,0,0,.35)' : 'rgba(255,255,255,.85)', layer:'above' }; };
+const mapLbl = (x, y, text, extra) => ({ xref:'x', yref:'y', x, y, showarrow:false, align:'center', text, font:{ size:10, color:'#b00000' },
+  bgcolor:'rgba(255,255,255,.9)', bordercolor: MAP_RED, borderwidth:1, borderpad:2, ...(extra || {}) });
+function mapPolyOverlay(pts, closed, sh, an, active){
+  if (!pts.length) return;
+  const st = mapPolyStats(pts, closed);
+  if (pts.length >= 2){
+    const path = 'M ' + pts.map(p => p.x + ',' + p.y).join(' L ') + (closed ? ' Z' : '');
+    if (closed) sh.push({ type:'path', xref:'x', yref:'y', path, line:{ width:0 }, fillcolor:'rgba(224,0,0,.14)', layer:'below' });   // fill sits under the tracks so hover still works
+    sh.push({ type:'path', xref:'x', yref:'y', path, line:{ color: MAP_RED, width:1.8, dash: closed ? 'solid' : 'dash' }, fillcolor:'rgba(0,0,0,0)', layer:'above' });
+  }
+  pts.forEach((p, i) => sh.push(mapDot(p, active && i === 0 && pts.length >= 3)));
+  st.segs.forEach(s => an.push(mapLbl((s.a.x + s.b.x)/2, (s.a.y + s.b.y)/2, '<b>' + mapFmtDist(s.dist) + '</b><br>Az ' + s.az.toFixed(2) + '\u00B0')));
+  if (closed && st.area > 0)
+    an.push(mapLbl(st.cx, st.cy, '<b>Area</b><br>' + st.area.toLocaleString('en-US', { maximumFractionDigits: 1 }) + ' m\u00B2<br>' +
+      (st.area >= 1e6 ? (st.area/1e6).toLocaleString('en-US', { maximumFractionDigits: 3 }) + ' km\u00B2' : (st.area/1e4).toLocaleString('en-US', { maximumFractionDigits: 3 }) + ' ha'),
+      { font:{ size:11, color:'#7a0000' }, bgcolor:'rgba(255,255,255,.94)' }));
+}
+function mapCircleOverlay(c, e, sh, an, preview){
+  const r = Math.hypot(e.x - c.x, e.y - c.y); if (!(r > 0)) { sh.push(mapDot(c)); return; }
+  if (!preview) sh.push({ type:'circle', xref:'x', yref:'y', x0:c.x - r, x1:c.x + r, y0:c.y - r, y1:c.y + r, line:{ width:0 }, fillcolor:'rgba(224,0,0,.12)', layer:'below' });
+  sh.push({ type:'circle', xref:'x', yref:'y', x0:c.x - r, x1:c.x + r, y0:c.y - r, y1:c.y + r, line:{ color: MAP_RED, width:1.8, dash: preview ? 'dash' : 'solid' }, fillcolor:'rgba(0,0,0,0)', layer:'above' });
+  sh.push({ type:'line', xref:'x', yref:'y', x0:c.x, y0:c.y, x1:e.x, y1:e.y, line:{ color: MAP_RED, width:1.4, dash:'dash' }, layer:'above' });
+  sh.push(mapDot(c)); if (!preview) sh.push(mapDot(e));
+  an.push(mapLbl((c.x + e.x)/2, (c.y + e.y)/2, '<b>R = ' + mapFmtDist(r) + '</b><br>Az ' + mapAz(c, e).toFixed(2) + '\u00B0'));
+}
+function mapMeasOverlay(){
+  const sh = [], an = [], a = mapMeas.a, b = mapMeas.b, c = mapMeasCalc();
+  const dot = p => ({ type:'circle', xref:'x', yref:'y', xsizemode:'pixel', ysizemode:'pixel', xanchor:p.x, yanchor:p.y, x0:-5, x1:5, y0:-5, y1:5,
+    line:{ color:'#e00000', width:1.6 }, fillcolor:'rgba(255,255,255,.75)', layer:'above' });
+  if (a) sh.push(dot(a));
+  if (b) sh.push(dot(b));
+  if (a && b) {
+    sh.push({ type:'line', xref:'x', yref:'y', x0:a.x, y0:a.y, x1:b.x, y1:b.y, line:{ color:'#e00000', width:1.8, dash:'dash' }, layer:'above' });
+    an.push({ xref:'x', yref:'y', x:(a.x + b.x)/2, y:(a.y + b.y)/2, showarrow:false, align:'left',
+      text:'<b>' + mapFmtDist(c.dist) + '</b><br>Az ' + c.az.toFixed(2) + '\u00B0', font:{ size:11, color:'#b00000' },
+      bgcolor:'rgba(255,255,255,.92)', bordercolor:'#e00000', borderwidth:1, borderpad:3 });
+  }
+  mapItems.forEach(it => { if (it.type === 'poly') mapPolyOverlay(it.pts, it.closed, sh, an, false); else mapCircleOverlay(it.c, it.e, sh, an, false); });
+  if (mapCur){
+    if (mapCur.type === 'poly'){
+      mapPolyOverlay(mapCur.pts, false, sh, an, true);
+      const L = mapCur.pts[mapCur.pts.length - 1];
+      if (L && mapCursor) sh.push({ type:'line', xref:'x', yref:'y', x0:L.x, y0:L.y, x1:mapCursor.x, y1:mapCursor.y, line:{ color: MAP_RED, width:1.2, dash:'dot' }, layer:'above' });
+    } else if (mapCur.type === 'circle'){
+      if (mapCursor) mapCircleOverlay(mapCur.c, mapCursor, sh, an, true); else sh.push(mapDot(mapCur.c));
+    }
+  }
+  return { shapes: sh, annotations: an };
+}
+function mapMeasDraw(){
+  const gd = document.getElementById('pmap'), o = mapMeasOverlay();
+  mapInfoUpdate();
+  if (!gd || !gd.data) return;
+  gd._mapSyncing = true; const done = () => { gd._mapSyncing = false; };
+  Plotly.relayout(gd, { shapes: o.shapes, annotations: o.annotations }).then(done, done);
+}
+let mapRaf = 0;
+function mapPreview(){ if (mapRaf) return; mapRaf = requestAnimationFrame(() => { mapRaf = 0; mapMeasDraw(); }); }
+function mapBlur(){ try { if (document.activeElement && document.activeElement.blur) document.activeElement.blur(); } catch (e) {} }
+// Finish whatever is being drawn: an open polyline with >= 2 points is kept as an open line, anything else is dropped
+function mapCommit(){
+  if (mapCur && mapCur.type === 'poly' && mapCur.pts.length >= 2) mapItems.push({ type:'poly', pts: mapCur.pts, closed:false });
+  mapCur = null; mapCursor = null;
+}
+function mapMeasToggle(){
+  mapMeasOn = !mapMeasOn;
+  if (!mapMeasOn) mapCommit();
+  document.getElementById('mapMeasBtn').classList.toggle('btna', mapMeasOn);
+  document.getElementById('pmap').classList.toggle('measuring', mapMeasOn);
+  mapBlur(); mapMeasDraw();
+}
+function mapModeSet(m){
+  mapCommit(); mapMode = m;
+  document.getElementById('mapModeSel').value = m;
+  document.getElementById('mapCloseBtn').style.display = m === 'poly' ? '' : 'none';
+  if (!mapMeasOn) { mapMeasToggle(); return; }
+  mapBlur(); mapMeasDraw();
+}
+function mapMeasClear(){ mapMeas = { a:null, b:null }; mapItems = []; mapCur = null; mapCursor = null; mapMeasDraw(); }
+function mapUndo(){
+  if (mapCur){
+    if (mapCur.type === 'poly' && mapCur.pts.length > 1) mapCur.pts.pop(); else { mapCur = null; mapCursor = null; }
+  } else if (mapItems.length) mapItems.pop();
+  else if (mapMeas.b) mapMeas.b = null; else mapMeas.a = null;
+  mapMeasDraw();
+}
+function mapPolyClose(){
+  if (!mapCur || mapCur.type !== 'poly' || mapCur.pts.length < 3){ const el = document.getElementById('mapInfo'); if (el) { el.style.display = 'block'; el.innerHTML += '<br><span class="mres">Polygon needs at least 3 points to close</span>'; } return; }
+  mapItems.push({ type:'poly', pts: mapCur.pts, closed:true }); mapCur = null; mapCursor = null; mapMeasDraw();
+}
+function mapEvt(e){
+  const gd = document.getElementById('pmap'), fl = gd._fullLayout; if (!fl || !fl.xaxis) return null;
+  const xa = fl.xaxis, ya = fl.yaxis, r = gd.getBoundingClientRect();
+  const px = e.clientX - r.left - xa._offset, py = e.clientY - r.top - ya._offset;
+  if (px < 0 || py < 0 || px > xa._length || py > ya._length) return null;
+  return { px, py, xa, ya, x: xa.p2c(px), y: ya.p2c(py) };
+}
+function mapSnap(q){
+  const gd = document.getElementById('pmap'), xa = q.xa, ya = q.ya;
+  let pt = { x: q.x, y: q.y, tag: 'free point' }, best = null, bd = Infinity;   // snap: wellheads / TDs within 16 px, else trajectory nodes within 9 px
+  for (const p of (gd._mapPts || [])) {
+    const d = Math.hypot(xa.c2p(p.x) - q.px, ya.c2p(p.y) - q.py), lim = p.pr === 1 ? 16 : 9;
+    if (d <= lim && (p.pr < (best ? best.pr : 9) || (p.pr === (best ? best.pr : 9) && d < bd))) { best = p; bd = d; }
+  }
+  if (best) pt = { x: best.x, y: best.y, tag: best.tag };
+  return pt;
+}
+function mapMeasClick(e){
+  const q = mapEvt(e); if (!q) return;
+  if (mapMode === 'poly'){
+    if (!mapCur || mapCur.type !== 'poly') mapCur = { type:'poly', pts:[] };
+    const P = mapCur.pts;
+    if (P.length >= 3 && Math.hypot(q.xa.c2p(P[0].x) - q.px, q.ya.c2p(P[0].y) - q.py) <= 12){ mapPolyClose(); return; }   // click the 1st point again = close
+    const pt = mapSnap(q), L = P[P.length - 1];
+    if (L && L.x === pt.x && L.y === pt.y) return;
+    P.push(pt); mapCursor = null; mapMeasDraw(); return;
+  }
+  if (mapMode === 'circle'){
+    const pt = mapSnap(q);
+    if (!mapCur || mapCur.type !== 'circle'){ mapCur = { type:'circle', c: pt }; mapCursor = null; }
+    else if (Math.hypot(pt.x - mapCur.c.x, pt.y - mapCur.c.y) > 0){ mapItems.push({ type:'circle', c: mapCur.c, e: pt }); mapCur = null; mapCursor = null; }
+    mapMeasDraw(); return;
+  }
+  const pt = mapSnap(q);
+  if (!mapMeas.a || (mapMeas.a && mapMeas.b)) mapMeas = { a: pt, b: null }; else mapMeas.b = pt;
+  mapMeasDraw();
+}
+function mapInfoUpdate(){
+  const el = document.getElementById('mapInfo'); if (!el) return;
+  const g = WD.find(w => w.utm), esc2 = s => String(s).replace(/</g, '&lt;');
+  let h = WD.length ? (g ? 'Lat/Lon (WGS84) \u00B7 <span class="dim">UTM zone ' + g.utm.zone + (g.utm.south ? 'S' : 'N') + ' grid</span>'
+                        : '<span class="dim">No surface lat/lon in survey files \u2013 axes in local metres</span>') : '';
+  const a = mapMeas.a, b = mapMeas.b, c = mapMeasCalc();
+  if (mapMeasOn){
+    if (mapMode === 'line') h += !a ? '<br><span class="mres">Measure: click start point (wellhead / TD / track snaps)</span>' : (!b ? '<br><span class="mres">Measure: click end point</span>' : '');
+    else if (mapMode === 'poly') h += '<br><span class="mres">Polygon: ' + (mapCur && mapCur.pts && mapCur.pts.length
+      ? mapCur.pts.length + ' point(s) \u2013 click next; click 1st point or \u201CClose\u201D = fill + area; Enter = finish open line; Backspace = undo'
+      : 'click points one after another (wellhead / TD / track snaps)') + '</span>';
+    else h += '<br><span class="mres">Circle: ' + (mapCur && mapCur.type === 'circle' ? 'click a point on the edge (sets the radius)' : 'click the centre point') + '</span>';
+  }
+  if (a) h += '<br><span class="dim">A:</span> ' + esc2(a.tag);
+  if (b) h += '<br><span class="dim">B:</span> ' + esc2(b.tag);
+  if (c) h += '<br><span class="mres">Distance ' + mapFmtDist(c.dist) + (c.dist >= 1000 ? ' (' + c.dist.toLocaleString('en-US', { maximumFractionDigits: 1 }) + ' m)' : '') +
+    ' \u00B7 Azimuth ' + c.az.toFixed(3) + '\u00B0 <span class="dim">(back ' + c.back.toFixed(3) + '\u00B0)</span></span>' +
+    '<br><span class="dim">\u0394E ' + c.dx.toLocaleString('en-US', { maximumFractionDigits: 1 }) + ' m \u00B7 \u0394N ' + c.dy.toLocaleString('en-US', { maximumFractionDigits: 1 }) + ' m (grid)</span>';
+  // live readout while drawing
+  if (mapCur && mapCur.type === 'poly' && mapCur.pts.length){
+    const P = mapCur.pts, st = mapPolyStats(P, false), L = P[P.length - 1];
+    h += '<br><span class="mres">Length ' + mapFmtDist(st.per) + ' \u00B7 ' + P.length + ' pts' + (mapCursor ? ' \u00B7 next ' + mapFmtDist(Math.hypot(mapCursor.x - L.x, mapCursor.y - L.y)) + ' @ ' + mapAz(L, mapCursor).toFixed(2) + '\u00B0' : '') + '</span>';
+  } else if (mapCur && mapCur.type === 'circle' && mapCursor){
+    h += '<br><span class="mres">Radius ' + mapFmtDist(Math.hypot(mapCursor.x - mapCur.c.x, mapCursor.y - mapCur.c.y)) + ' @ Az ' + mapAz(mapCur.c, mapCursor).toFixed(2) + '\u00B0</span>';
+  }
+  // finished shapes
+  let np = 0, nc = 0; const lines = [];
+  mapItems.forEach(it => {
+    if (it.type === 'circle'){
+      const r = Math.hypot(it.e.x - it.c.x, it.e.y - it.c.y); nc++;
+      lines.push('<span class="mres">Circle ' + nc + ':</span> R ' + mapFmtDist(r) + ' \u00B7 \u00D8 ' + mapFmtDist(2*r) + ' \u00B7 circumf. ' + mapFmtDist(2*Math.PI*r) + ' \u00B7 area ' + mapFmtArea(Math.PI*r*r) +
+        '<br><span class="dim">&nbsp;&nbsp;centre: ' + esc2(it.c.tag) + '</span>');
+    } else {
+      const st = mapPolyStats(it.pts, it.closed); np++;
+      lines.push(it.closed
+        ? '<span class="mres">Polygon ' + np + ':</span> ' + it.pts.length + ' pts \u00B7 perimeter ' + mapFmtDist(st.per) + ' \u00B7 <b>area ' + mapFmtArea(st.area) + '</b>' + (st.self ? ' <span class="mres">(self-intersecting \u2013 check order)</span>' : '')
+        : '<span class="mres">Line ' + np + ':</span> ' + it.pts.length + ' pts \u00B7 length ' + mapFmtDist(st.per));
+    }
+  });
+  if (lines.length > 6) h += '<br><span class="dim">\u2026 ' + (lines.length - 6) + ' earlier shape(s)</span>';
+  lines.slice(-6).forEach(l => { h += '<br>' + l; });
+  el.innerHTML = h; el.style.display = h ? 'block' : 'none';
+}
+document.addEventListener('keydown', e => {
+  if (!mapMeasOn || curView !== 'map' || mapMode === 'line') return;
+  const t = e.target; if (t && /^(INPUT|SELECT|TEXTAREA)$/.test(t.tagName)) return;
+  if (e.key === 'Enter'){ if (mapCur && mapCur.type === 'poly'){ mapCommit(); mapMeasDraw(); e.preventDefault(); } }
+  else if (e.key === 'Escape'){ if (mapCur){ mapCur = null; mapCursor = null; mapMeasDraw(); } }
+  else if (e.key === 'Backspace' || ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z')){ mapUndo(); e.preventDefault(); }
+});
+function mapSyncAxes(){
+  const gd = document.getElementById('pmap'); if (!gd || !gd._fullLayout || !gd._fullLayout.xaxis2) return;
+  const fl = gd._fullLayout, upd = {}, diff = (a, b) => Math.abs(a[0] - b[0]) > 1e-6 * (Math.abs(a[1] - a[0]) || 1) || Math.abs(a[1] - b[1]) > 1e-6 * (Math.abs(a[1] - a[0]) || 1);
+  if (diff(fl.xaxis.range, fl.xaxis2.range)) upd['xaxis2.range'] = fl.xaxis.range.slice();
+  if (diff(fl.yaxis.range, fl.yaxis2.range)) upd['yaxis2.range'] = fl.yaxis.range.slice();
+  if (Object.keys(upd).length){ gd._mapSyncing = true; Plotly.relayout(gd, upd).then(() => { gd._mapSyncing = false; }, () => { gd._mapSyncing = false; }); }
+}
+function renderMap() {
+  const ws = getVisible(), tr = [], geo = GEO();
+  let x0 = Infinity, x1 = -Infinity, y0 = Infinity, y1 = -Infinity;
+  const wbb = {}, mapPts = [];
+  const XY = p => [p.x != null ? p.x : p.easting, p.y != null ? p.y : p.northing];
+  ws.forEach(w => {
+    const t = w.trajectory; if (!t.length) return;
+    const d = mapDensify(t);
+    const X = d.map(p => XY(p)[0]), Y = d.map(p => XY(p)[1]);
+    const bb = { x0: Infinity, x1: -Infinity, y0: Infinity, y1: -Infinity };
+    for (const v of X) { if (v < bb.x0) bb.x0 = v; if (v > bb.x1) bb.x1 = v; }
+    for (const v of Y) { if (v < bb.y0) bb.y0 = v; if (v > bb.y1) bb.y1 = v; }
+    wbb[w.ci] = bb;
+    x0 = Math.min(x0, bb.x0); x1 = Math.max(x1, bb.x1); y0 = Math.min(y0, bb.y0); y1 = Math.max(y1, bb.y1);
+    const cd = d.map((q, i) => [q.md, q.inc, q.azi, q.tvd, q.northing, q.easting, q.vertSec, q.closureDistance, q.closureDirStr,
+      q.dls, q.dlsPer100ft, q.buildRate, q.turnRate, q.doglegDeg, q.rf, q.deltaMd, X[i], Y[i]]);
+    const tpl = '<b>' + w.name + '</b><br>' +
+      'MD: %{customdata[0]:.2f} m<br>TVD: %{customdata[3]:.2f} m<br>' +
+      'Inc: %{customdata[1]:.3f}\u00B0   Azi: %{customdata[2]:.3f}\u00B0<br>' +
+      '<br>' + (geo ? 'UTM Easting (X): ' : 'X: ') + '%{customdata[16]:.2f} m<br>' + (geo ? 'UTM Northing (Y): ' : 'Y: ') + '%{customdata[17]:.2f} m<br>' +
+      'N/S: %{customdata[4]:.2f} m   E/W: %{customdata[5]:.2f} m<br>' +
+      'V.Sec: %{customdata[6]:.2f} m<br>' +
+      'Closure: %{customdata[7]:.2f} m @ %{customdata[8]}<br>' +
+      '<br>DLS: %{customdata[9]:.3f} \u00B0/30m  (%{customdata[10]:.3f} \u00B0/100ft)<br>' +
+      'Build: %{customdata[11]:.3f} \u00B0/30m   Turn: %{customdata[12]:.3f} \u00B0/30m<br>' +
+      'Dogleg: %{customdata[13]:.3f}\u00B0   RF: %{customdata[14]:.4f}   \u0394MD: %{customdata[15]:.2f} m<extra></extra>';
+    tr.push({ type: 'scatter', mode: 'lines+markers', name: w.name, showlegend: false,
+      x: X, y: Y, line: { color: '#111827', width: 1.4 },
+      marker: { size: 9, opacity: 0, color: '#111827' }, customdata: cd, hovertemplate: tpl });
+    const h = d[0], L = d[d.length - 1];
+    tr.push({ type: 'scatter', mode: 'markers+text', showlegend: false, name: w.name,
+      x: [X[0]], y: [Y[0]], text: [w.name], textposition: 'bottom center', textfont: { color: '#111827', size: 10.5 },
+      marker: { symbol: 'circle-cross-open', size: 12, color: '#111827', line: { color: '#111827', width: 1.1 } },
+      hovertemplate: '<b>' + w.name + '</b> \u2014 Wellhead<br>' + (geo ? 'UTM Easting (X): ' : 'X: ') + X[0].toFixed(2) + ' m<br>' +
+        (geo ? 'UTM Northing (Y): ' : 'Y: ') + Y[0].toFixed(2) + ' m<extra></extra>' });
+    tr.push({ type: 'scatter', mode: 'markers', showlegend: false, name: w.name,
+      x: [X[X.length - 1]], y: [Y[Y.length - 1]],
+      marker: { symbol: 'square', size: 4, color: '#111827' },
+      hovertemplate: '<b>' + w.name + '</b> \u2014 TD<br>MD: ' + L.md.toFixed(2) + ' m<br>TVD: ' + L.tvd.toFixed(2) + ' m<br>X: ' + X[X.length - 1].toFixed(2) + ' m<br>Y: ' + Y[Y.length - 1].toFixed(2) + ' m<extra></extra>' });
+    mapPts.push({ x: X[0], y: Y[0], tag: w.name + ' \u2014 Wellhead', pr: 1 });
+    mapPts.push({ x: X[X.length - 1], y: Y[Y.length - 1], tag: w.name + ' \u2014 TD (MD ' + L.md.toFixed(1) + ' m)', pr: 1 });
+    d.forEach((q, i) => { if (i > 0 && i < d.length - 1) mapPts.push({ x: X[i], y: Y[i], tag: w.name + ' \u2014 MD ' + q.md.toFixed(1) + ' m', pr: 2 }); });
+  });
+  if (!isFinite(x0)) {
+    const g0 = WD.find(w => w.utm);   // every well hidden: stay on the located area instead of jumping to 0,0
+    if (g0) { x0 = g0.utm.E - 100; x1 = g0.utm.E + 100; y0 = g0.utm.N - 100; y1 = g0.utm.N + 100; }
+    else { x0 = -100; x1 = 100; y0 = -100; y1 = 100; }
+  }
+  // Zoom target: wells are often far apart, so one well's track is invisible at full extent -> auto-zoom to the active well
+  const spanOf = b => Math.max(b.x1 - b.x0, b.y1 - b.y0);
+  const allB = { x0, x1, y0, y1 };
+  const maxW = Math.max(200, ...Object.values(wbb).map(spanOf));
+  let focus = mapFocus;
+  if (focus === null) focus = (spanOf(allB) > 8 * maxW) ? (wbb[curWell] ? curWell : (ws[0] ? ws[0].ci : 'all')) : 'all';
+  if (focus !== 'all' && !wbb[focus]) focus = 'all';
+  const sel = document.getElementById('mapSel');
+  sel.innerHTML = '<option value="all">All wells</option>' + ws.map(w => '<option value="' + w.ci + '">' + w.name.replace(/</g, '&lt;') + '</option>').join('');
+  sel.value = String(focus);
+  const B = focus === 'all' ? allB : wbb[focus];
+  const span = Math.max(spanOf(B), 200), pad = span * 0.25;
+  const cx = (B.x0 + B.x1) / 2, cy = (B.y0 + B.y1) / 2, half = span / 2 + pad;
+  const rx = [cx - half, cx + half], ry = [cy - half, cy + half];
+  tr.push({ type: 'scatter', mode: 'markers', x: [cx], y: [cy], xaxis: 'x2', yaxis: 'y2', marker: { opacity: 0, size: 1 }, hoverinfo: 'skip', showlegend: false });
+  const RED = '#e00000';
+  const base = { showgrid: false, zeroline: false, showline: true, linecolor: RED, linewidth: 1.6, mirror: false,
+    ticks: 'outside', ticklen: 5, tickcolor: '#111827', tickfont: { color: '#111827', size: 11 },
+    tickformat: 'd', exponentformat: 'none', separatethousands: false, nticks: 8,
+    minor: { ticks: 'outside', ticklen: 3, tickcolor: '#111827', nticks: 40, showgrid: false } };
+  const gd = document.getElementById('pmap');
+  gd._mapPts = mapPts;
+  // geo-referenced: label the four red borders in lat/lon (deg-min-sec); otherwise plain metres
+  const dms = geo ? mapDmsTicks(rx, ry, Math.max(300, (gd.clientWidth || 800) - 156), Math.max(250, (gd.clientHeight || 600) - 124)) : null;
+  gd._mapTickSig = dms ? JSON.stringify(dms) : null;
+  const TK = k => dms ? mapTickLayout(dms[k], base.minor) : {};
+  const ov = mapMeasOverlay();
+  Plotly.react(gd, tr, {
+    ...LB, plot_bgcolor: '#ffffff', hovermode: 'closest', hoverdistance: 20, dragmode: 'pan', showlegend: false,
+    margin: { l: 78, r: 78, t: 40, b: 84 }, shapes: ov.shapes, annotations: ov.annotations,
+    xaxis:  { ...base, range: rx, autorange: false, side: 'bottom', tickangle: 0, ...TK('x') },
+    yaxis:  { ...base, range: ry, autorange: false, side: 'left', tickangle: -90, scaleanchor: 'x', scaleratio: 1, ...TK('y') },
+    xaxis2: { ...base, range: rx, autorange: false, side: 'top', overlaying: 'x', tickangle: 0, ...TK('x2') },
+    yaxis2: { ...base, range: ry, autorange: false, side: 'right', overlaying: 'y', tickangle: 90, ...TK('y2') }
+  }, { responsive: true, displaylogo: false, scrollZoom: true,
+       modeBarButtonsToRemove: ['select2d', 'lasso2d'],
+       toImageButtonOptions: { filename: 'WellSight_Map_View', format: 'png', scale: 2 } });
+  if (!gd._mapBound) {
+    gd._mapBound = true;
+    const upd = () => { if (!gd._mapSyncing) { mapSyncAxes(); } mapScaleUpdate(); };
+    gd.on('plotly_afterplot', () => { upd(); mapTicksUpdate(); });
+    gd.on('plotly_relayouting', upd);
+    gd.on('plotly_relayout', () => { upd(); mapTicksUpdate(); });
+  }
+  if (!gd._mapClkBound) {
+    gd._mapClkBound = true;
+    gd.addEventListener('mousedown', e => { gd._md = [e.clientX, e.clientY]; }, true);
+    gd.addEventListener('click', e => {
+      if (!mapMeasOn || e.target.closest('.modebar')) return;
+      if (gd._md && Math.hypot(e.clientX - gd._md[0], e.clientY - gd._md[1]) > 4) return;   // it was a pan, not a click
+      mapMeasClick(e);
+    }, true);
+    gd.addEventListener('mousemove', e => {      // rubber-band preview for polygon / circle
+      if (!mapMeasOn || !mapCur || e.target.closest('.modebar')) return;
+      const q = mapEvt(e);
+      if (!q) { if (mapCursor) { mapCursor = null; mapPreview(); } return; }
+      mapCursor = mapSnap(q); mapPreview();
+    }, true);
+  }
+  mapWellsList(); mapInfoUpdate();
+  setTimeout(() => { mapSyncAxes(); mapScaleUpdate(); mapTicksUpdate(); }, 80);
 }
 
 // ── VERTICAL SECTION ──────────────────────────────────────────────────────────
@@ -1154,22 +2147,20 @@ function renderVSec() {
       x: t.map(p => p.vertSec),
       y: t.map(p => p.tvd),
       line: { color: col, width: 2.5 },
-      hovertemplate:
-        '<b>' + w.name + '</b><br>' +
-        'V.Sec: %{x:.1f} m<br>TVD: %{y:.1f} m<br>' +
-        'MD: %{customdata[0]:.1f} m  Inc: %{customdata[1]:.2f}°<extra></extra>',
-      customdata: t.map(p => [p.md, p.inc])
+      hovertemplate: wellHover(w.name),
+      customdata: t.map(wellHoverData)
     });
   }
   Plotly.react('pvsec', tr, {
     ...LB,
-    title: { text: 'Vertical Section', font: { color: '#374151', size: 13 } },
+    title: { text: 'Vertical Section — azimuth ' + (VS_AZI === null ? 'auto (each well\'s TD closure direction)' : (((VS_AZI % 360) + 360) % 360).toFixed(1) + '°'), font: { color: '#374151', size: 13 } },
     xaxis: { ...ax2('Vertical Section (m)') },
     yaxis: {
       ...ax2('TVD (m)'),
       autorange: 'reversed',
       tickformat: '.0f',
-      dtick: 500
+      tick0: 0,
+      dtick: 250
     }
   }, { responsive: true, displaylogo: false });
 }
@@ -1222,6 +2213,30 @@ function renderDLS() {
   }, { responsive: true, displaylogo: false });
 }
 
+// ── Compass: tracks the 3D camera ────────────────────────────────────────────
+(function(){
+  const rot = document.getElementById('cmpRot'), lab = document.getElementById('cmpN');
+  let last = null;
+  function cam(){
+    const gd = document.getElementById('p3d');
+    try { const c = gd._fullLayout.scene._scene.getCamera(); if (c && c.eye) return c; } catch(e){}
+    return (gd && gd.layout && gd.layout.scene && gd.layout.scene.camera) || { eye:{x:1.4,y:1.4,z:-1.2}, center:{x:0,y:0,z:0}, up:{x:0,y:0,z:-1} };
+  }
+  const cross=(a,b)=>[a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]];
+  const dot=(a,b)=>a[0]*b[0]+a[1]*b[1]+a[2]*b[2];
+  const nrm=a=>{const l=Math.hypot(a[0],a[1],a[2])||1;return [a[0]/l,a[1]/l,a[2]/l];};
+  function tick(){
+    if (curView === '3d' && WD.length){
+      const c = cam(), e=[c.eye.x,c.eye.y,c.eye.z], ct=[(c.center||{}).x||0,(c.center||{}).y||0,(c.center||{}).z||0], u=[(c.up||{}).x||0,(c.up||{}).y||0,(c.up||{}).z||1];
+      const f = nrm([ct[0]-e[0],ct[1]-e[1],ct[2]-e[2]]), r = nrm(cross(f,u)), t = cross(r,f);
+      const ang = Math.atan2(r[1], t[1]) * 180 / Math.PI;   // screen direction of +Northing (clockwise from up)
+      if (last === null || Math.abs(ang - last) > 0.2){ last = ang; rot.setAttribute('transform', 'rotate(' + ang.toFixed(1) + ')'); lab.setAttribute('transform', 'rotate(' + (-ang).toFixed(1) + ' 0 -24.5)'); }
+    }
+    requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+})();
+
 // ── Reset camera to default ───────────────────────────────────────────────────
 function resetCam() {
   Plotly.relayout('p3d', {
@@ -1233,9 +2248,25 @@ function resetCam() {
   });
 }
 
+// ── Resizable side panel ──────────────────────────────────────────────────────
+(function(){
+  const rz = document.getElementById('rz'), root = document.documentElement;
+  const MIN = 240, DEF = 340;
+  const maxW = () => Math.max(MIN + 60, Math.min(window.innerWidth * 0.65, 900));
+  const refit = () => ['p3d','pplan','pvsec','pmap','pdls'].forEach(id => { const el = document.getElementById(id); if (el && el.data) Plotly.Plots.resize(el); });
+  const setW = w => root.style.setProperty('--pw', Math.round(Math.min(maxW(), Math.max(MIN, w))) + 'px');
+  let drag = false, raf = 0;
+  rz.addEventListener('pointerdown', e => { drag = true; rz.setPointerCapture(e.pointerId); document.body.classList.add('rzing'); e.preventDefault(); });
+  rz.addEventListener('pointermove', e => { if (!drag) return; setW(e.clientX - document.getElementById('lp').getBoundingClientRect().left);
+    cancelAnimationFrame(raf); raf = requestAnimationFrame(refit); });
+  const end = e => { if (!drag) return; drag = false; document.body.classList.remove('rzing'); refit(); };
+  rz.addEventListener('pointerup', end); rz.addEventListener('pointercancel', end);
+  rz.addEventListener('dblclick', () => { setW(DEF); setTimeout(refit, 30); });
+})();
+
 // ── Resize on window change ───────────────────────────────────────────────────
 window.onresize = () => {
-  ['p3d','pplan','pvsec','pdls'].forEach(id => {
+  ['p3d','pplan','pvsec','pmap','pdls'].forEach(id => {
     const el = document.getElementById(id);
     if (el && el.data) Plotly.Plots.resize(el);
   });
